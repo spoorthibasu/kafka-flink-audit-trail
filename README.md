@@ -1,5 +1,7 @@
 # kafka-flink-audit-trail
 
+Companion to the DZone article: Rethinking Historical State in Streaming Systems
+
 A Kafka + Flink pipeline that writes customer profile change events to an append-only Iceberg table on S3. Previous field values are not stored in the schema. All historical state is reconstructed at query time using SQL window functions.
 
 ## Stack
