@@ -1,3 +1,0 @@
-com/example/audit/CustomerProfileChangeEvent.class
-com/example/audit/CustomerProfileChangeDeserializer.class
-com/example/audit/CustomerProfileAuditJob.class
