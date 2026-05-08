@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "CustomerProfileChangeEvent",
+  "namespace": "com.example.audit",
+  "doc": "A single change to a customer profile. Fields are nullable because not every field changes on every event. Only the fields that changed are populated.",
+  "fields": [
+    {"name": "customerId",     "type": "string"},
+    {
+      "name": "eventTimestamp",
+      "type": {"type": "long", "logicalType": "timestamp-millis"},
+      "doc": "Milliseconds since epoch. Stored as microseconds in Iceberg."
+    },
+    {
+      "name": "eventSequence",
+      "type": "long",
+      "doc": "Monotonic counter per customer assigned at the producer. Tiebreaker when two events share the same eventTimestamp."
+    },
+    {"name": "email",   "type": ["null", "string"], "default": null},
+    {"name": "phone",   "type": ["null", "string"], "default": null},
+    {"name": "address", "type": ["null", "string"], "default": null}
+  ]
+}
