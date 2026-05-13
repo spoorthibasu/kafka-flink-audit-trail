@@ -1,6 +1,6 @@
 # kafka-flink-audit-trail
 
-Companion to the DZone article: Rethinking Historical State in Streaming Systems
+Companion to the CACM Practitioner article: Eliminating Previous-Value Fields with Audit Trails
 
 A Kafka + Flink pipeline that writes customer profile change events to an append-only Iceberg table on S3. Previous field values are not stored in the schema. All historical state is reconstructed at query time using SQL window functions.
 
@@ -49,6 +49,8 @@ Every event is appended as a new row. The table is never updated or overwritten.
 The table is partitioned by day on `eventTimestamp` and sorted by `customerId` within each partition. That sort order matters for query performance: LAG window functions only need the rows for one customer, and keeping those rows together cuts the amount of data scanned.
 
 `eventSequence` is a monotonic counter per customer assigned at the producer. It breaks ties when two events land with the same timestamp, which is common at high throughput.
+
+The deserializer here reads JSON to keep the example self-contained. In practice you'd swap it for Avro deserialization backed by a schema registry — the schema to register is in `src/main/avro/customer_profile_change_event.avsc`.
 
 ## Querying
 

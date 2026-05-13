@@ -11,10 +11,10 @@
 
     <name>Kafka Flink Audit Trail</name>
     <description>
-        Reference implementation for the audit trail pattern described in
-        "Rethinking Historical State in Streaming Systems". Demonstrates how to
-        replace previous-value fields in event schemas with an append-only Iceberg
-        audit trail queried via SQL window functions.
+        Companion code for the CACM Practitioner article "Eliminating Previous-Value
+        Fields with Audit Trails". Replaces previous-value fields with an append-only
+        Iceberg audit trail; history is reconstructed at query time using SQL window
+        functions.
     </description>
 
     <properties>
@@ -74,12 +74,6 @@
         </dependency>
 
         <!-- Testing -->
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-test-utils</artifactId>
-            <version>${flink.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

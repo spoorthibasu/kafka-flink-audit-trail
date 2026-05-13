@@ -6,6 +6,9 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 
 import java.io.IOException;
 
+// Uses JSON to keep the example self-contained. In production, swap this for
+// Avro deserialization backed by a schema registry; the schema to register is
+// in src/main/avro/customer_profile_change_event.avsc.
 public class CustomerProfileChangeDeserializer
         implements DeserializationSchema<CustomerProfileChangeEvent> {
 
