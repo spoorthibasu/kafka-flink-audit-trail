@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "CustomerProfileChangeEvent",
+  "namespace": "com.example.audit",
+  "doc": "Customer profile change. Only changed fields are set; unchanged fields are null.",
+  "fields": [
+    {"name": "customer_id",     "type": "string"},
+    {
+      "name": "event_timestamp",
+      "type": {"type": "long", "logicalType": "timestamp-millis"},
+      "doc": "Milliseconds since epoch. Iceberg stores as microseconds."
+    },
+    {
+      "name": "event_sequence",
+      "type": "long",
+      "doc": "Per-customer monotonic counter. Tiebreaker for same-timestamp events."
+    },
+    {"name": "email",   "type": ["null", "string"], "default": null},
+    {"name": "phone",   "type": ["null", "string"], "default": null},
+    {"name": "address", "type": ["null", "string"], "default": null}
+  ]
+}

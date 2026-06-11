@@ -1,0 +1,9 @@
+target/
+dependency-reduced-pom.xml
+*.class
+*.jar
+.idea/
+*.iml
+warehouse/
+/tmp/audit-warehouse/
+*.log

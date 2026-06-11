@@ -1,0 +1,31 @@
+name: ci
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Generate benchmark schemas
+        run: python3 bench/generate_schemas.py
+
+      - name: Unit tests
+        run: mvn -q -B test
+
+      - name: Demo (window-function reconstruction)
+        run: mvn -q -B compile exec:java -Dexec.mainClass=com.example.audit.demo.DemoRunner
+
+      - name: Benchmark
+        run: mvn -q -B compile exec:java -Dexec.mainClass=com.example.audit.bench.SchemaBenchmark
+
+      - name: Fat jar builds
+        run: mvn -q -B package -DskipTests

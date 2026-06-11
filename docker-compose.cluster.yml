@@ -1,0 +1,50 @@
+# A full local Flink cluster (JobManager + TaskManager) plus Kafka, to run the job
+# the production way with `flink run`. Flink dashboard at http://localhost:8081.
+#   mvn clean package -DskipTests
+#   docker compose -f docker-compose.cluster.yml up -d
+# See the README "On a real Flink cluster" section for the submit + produce steps.
+name: kfat-cluster
+services:
+  kafka:
+    image: apache/kafka:3.7.0
+    hostname: kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CLUSTER_ID: 5L6g3nShTeMCtK00X86swQ
+
+  jobmanager:
+    image: flink:1.20.3-java17
+    command: jobmanager
+    depends_on: [kafka]
+    ports:
+      - "8081:8081"            # Flink web UI
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+    volumes:
+      - ./target:/jars         # the fat jar built by `mvn package`
+      - ./warehouse:/opt/warehouse   # Iceberg warehouse for --sink iceberg
+
+  taskmanager:
+    image: flink:1.20.3-java17
+    command: taskmanager
+    depends_on: [jobmanager]
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2
+    volumes:
+      - ./warehouse:/opt/warehouse
