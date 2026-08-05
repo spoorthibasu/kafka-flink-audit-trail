@@ -1,5 +1,6 @@
 -- Reconstruct previous values using LAG. No previous fields in the schema.
 -- event_sequence breaks ties when two events share the same timestamp.
+-- Plain LAG, so this runs as written on DuckDB, Spark, Trino, and Athena.
 
 SELECT
   customer_id,

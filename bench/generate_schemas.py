@@ -15,10 +15,10 @@ scale so you can run it yourself.
 import json
 import os
 
-# (name, avro primitive type). The first MUTABLE_COUNT are "mutable" and so get a
-# previous-value companion in the previous-value schema. A realistic customer
-# profile: identity, contact, address, billing, preferences, flags, and ids.
-ATTRIBUTES = [
+# (name, avro primitive type). Mutable profile attributes: each one gets a
+# previous_<attr> companion in the previous-value schema. A realistic customer
+# profile: identity, contact, address, billing, preferences, and flags.
+MUTABLE_ATTRIBUTES = [
     ("email", "string"), ("phone", "string"), ("secondary_phone", "string"),
     ("first_name", "string"), ("last_name", "string"), ("display_name", "string"),
     ("address_line1", "string"), ("address_line2", "string"), ("city", "string"),
@@ -41,7 +41,12 @@ ATTRIBUTES = [
     ("gender", "string"), ("household_size", "long"), ("annual_income_band", "string"),
     ("interests", "string"), ("favorite_category", "string"), ("preferred_brand", "string"),
     ("shoe_size", "string"), ("shirt_size", "string"), ("dietary_preference", "string"),
-    # --- below here: non-mutable / system-managed (no previous companion) ---
+    ("marital_status", "string"),
+]
+
+# System-managed / derived attributes. These are not mutable profile fields, so they get
+# no previous_* companion and enlarge both schemas equally.
+SYSTEM_ATTRIBUTES = [
     ("created_at", "long"), ("first_order_at", "long"), ("last_login_at", "long"),
     ("last_order_at", "long"), ("total_orders", "long"), ("lifetime_value", "double"),
     ("external_crm_id", "string"), ("external_billing_id", "string"), ("data_region", "string"),
@@ -49,7 +54,10 @@ ATTRIBUTES = [
     ("partition_hint", "string"),
 ]
 
-MUTABLE_COUNT = 67  # first N attributes get a previous_<attr> companion
+ATTRIBUTES = MUTABLE_ATTRIBUTES + SYSTEM_ATTRIBUTES
+# Derived, not hardcoded: the companion boundary follows the list and cannot drift into
+# SYSTEM_ATTRIBUTES the way a literal count silently did.
+MUTABLE_COUNT = len(MUTABLE_ATTRIBUTES)
 
 KEYS = [
     {"name": "customer_id", "type": "string"},
@@ -90,7 +98,7 @@ def dump(schema, path):
     lines.append("}")
     with open(path, "w") as fh:
         fh.write("\n".join(lines) + "\n")
-    return len(lines) + 1
+    return len(lines)
 
 
 def main():

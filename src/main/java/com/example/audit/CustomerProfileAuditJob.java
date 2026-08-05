@@ -3,7 +3,7 @@ package com.example.audit;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
-import org.apache.flink.streaming.api.CheckpointingMode;
+import org.apache.flink.core.execution.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.GenericRowData;
@@ -59,12 +59,12 @@ public class CustomerProfileAuditJob {
 
         StreamExecutionEnvironment env =
             StreamExecutionEnvironment.getExecutionEnvironment();
-        // Preferred form (Flink 1.14+): single-arg enableCheckpointing + setCheckpointingMode,
-        // instead of the deprecated two-arg enableCheckpointing(ms, mode). On Flink 1.20+
-        // setCheckpointingMode is itself superseded by setCheckpointingConsistencyMode
-        // (org.apache.flink.core.execution.CheckpointingMode); behavior is identical.
-        env.enableCheckpointing(checkpointMs);
-        env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
+        // Current form on Flink 1.20+: two-arg enableCheckpointing taking
+        // org.apache.flink.core.execution.CheckpointingMode. The same call taking the older
+        // org.apache.flink.streaming.api.CheckpointingMode is deprecated, as is
+        // CheckpointConfig.setCheckpointingMode (replaced by setCheckpointingConsistencyMode).
+        // All spellings produce identical behavior; this one compiles warning-free.
+        env.enableCheckpointing(checkpointMs, CheckpointingMode.EXACTLY_ONCE);
         env.getCheckpointConfig().setMinPauseBetweenCheckpoints(30_000);
 
         KafkaSource<CustomerProfileChangeEvent> source =

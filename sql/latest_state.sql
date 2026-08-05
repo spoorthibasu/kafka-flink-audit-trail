@@ -1,5 +1,5 @@
 -- Most recent state per customer. Columns listed explicitly to drop rn.
--- Works in Spark, Trino, and Athena.
+-- Plain ROW_NUMBER, so this runs as written on DuckDB, Spark, Trino, and Athena.
 
 SELECT
   customer_id,

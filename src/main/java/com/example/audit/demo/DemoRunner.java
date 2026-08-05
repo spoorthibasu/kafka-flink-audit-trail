@@ -15,12 +15,14 @@ import java.util.List;
  *
  * Seeds an append-only customer_profile_changes table for customer 98765 (sparse
  * updates, the way the pipeline writes), then runs the three queries in sql/ on an
- * in-process DuckDB. The same SQL runs on Spark, Trino, and Athena over Iceberg, so
- * the output is what those engines return.
+ * in-process DuckDB. The results are what Spark, Trino, or Athena return over Iceberg:
+ * the first two files are portable as written, and the third has a portable twin that
+ * differs only in where IGNORE NULLS sits.
  *
  *   sql/lag_history.sql     previous values via LAG
  *   sql/latest_state.sql    current state via ROW_NUMBER
- *   sql/sparse_updates.sql  last known value via LAST_VALUE
+ *   sql/sparse_updates.sql  last known value via LAST_VALUE (DuckDB spelling;
+ *                           see sql/sparse_updates_portable.sql for the others)
  */
 public class DemoRunner {
 

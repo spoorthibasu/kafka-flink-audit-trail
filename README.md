@@ -19,8 +19,10 @@ make loop     # Flink writes a real Iceberg table, then query it back (a few sec
 `make demo` seeds one customer's history (sparse updates, nothing overwritten) and runs
 the three queries. Row 3's previous email is rebuilt from earlier rows. `LAG(phone)` is
 null on the sparse rows, and `LAST_VALUE ... IGNORE NULLS` carries the last known value
-forward. The queries run on DuckDB here; the same SQL runs on Spark, Trino, and Athena
-over Iceberg.
+forward. The queries run on DuckDB here. `lag_history.sql` and `latest_state.sql` run
+unchanged on Spark, Trino, and Athena over Iceberg. `sparse_updates.sql` is the one
+exception: engines disagree on where `IGNORE NULLS` goes, so the Trino/Athena/Spark
+spelling lives in `sparse_updates_portable.sql`.
 
 `make loop` runs the real Flink job into a local Iceberg table and queries it back, so
 every row went event -> Flink -> Iceberg -> `LAG`. It runs in batch mode, so it needs no
@@ -32,7 +34,8 @@ Kafka or Docker, just a few extra seconds.
 sql/
   lag_history.sql      previous value of each field via LAG
   latest_state.sql     latest row per customer via ROW_NUMBER
-  sparse_updates.sql   last known value via LAST_VALUE IGNORE NULLS
+  sparse_updates.sql   last known value via LAST_VALUE IGNORE NULLS (DuckDB spelling)
+  sparse_updates_portable.sql  the same query, Trino/Athena/Spark spelling
 
 src/main/avro/
   customer_profile_change_event.avsc   the event contract you'd register
