@@ -1,5 +1,7 @@
 # kafka-flink-audit-trail
 
+Companion to the CACM Practice article *The History Was Already There*, under review.
+
 A Kafka and Flink pipeline that appends customer profile change events to an Apache
 Iceberg table. The schema has no previous-value fields. The old value of a field is
 read back at query time with SQL window functions: `LAG`, `ROW_NUMBER`, and
