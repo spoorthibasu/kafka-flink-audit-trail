@@ -1,7 +1,7 @@
 # Kafka, Flink, and Iceberg audit-trail example.
 # Everything below needs only JDK 11+ and Maven, except the targets that say Docker,
 # and the Python benchmark, which needs bench/requirements.txt.
-.PHONY: help test demo bench bench-full bench-smoke sql-matrix trino-up trino-down crash-test loop build run produce up down
+.PHONY: help test demo bench bench-full bench-smoke bench-resources sql-matrix trino-up trino-down crash-test loop build run produce up down
 
 PYTHON ?= python3
 
@@ -9,8 +9,9 @@ help:
 	@echo "make test        - unit tests (no infra)"
 	@echo "make demo        - run sql/ over a seeded table; prints the reconstructed values"
 	@echo "make bench       - schema size comparison on one synthetic event (schema lines, fields, Avro bytes)"
-	@echo "make bench-full  - the full benchmark: schema, payload, storage, latency, scaling; writes results/"
-	@echo "make bench-smoke - the same benchmark on a tiny config, to check the script runs"
+	@echo "make bench-full  - the full benchmark: schema, payload, storage, latency, scaling, resources, cost; writes results/"
+	@echo "make bench-smoke - the same benchmark on a tiny config, to check the scripts run"
+	@echo "make bench-resources - only the resource-use and cost stage; adds its files to results/"
 	@echo "make sql-matrix  - run every sql/ file on DuckDB, Spark and Trino against the golden outputs (needs 'make trino-up')"
 	@echo "make trino-up    - start a local Trino (Docker) for sql-matrix; make trino-down stops it"
 	@echo "make crash-test  - Flink to Iceberg job: fail, restart from the last checkpoint, assert counts (needs 'make up')"
@@ -35,9 +36,17 @@ bench:
 # pip install -r bench/requirements.txt first.
 bench-full:
 	@$(PYTHON) bench/benchmark.py --config bench/config.json --out results
+	@$(PYTHON) bench/resources.py --config bench/config.json --prices bench/prices.json --out results
 
 bench-smoke:
 	@$(PYTHON) bench/benchmark.py --config bench/config.smoke.json --out results-smoke
+	@$(PYTHON) bench/resources.py --config bench/config.smoke.json --prices bench/prices.json --out results-smoke
+
+# Resource use (CPU, peak memory, spill, bytes scanned) and cost (S3 storage, Athena scans)
+# for the datasets in results/, without rerunning the rest of the benchmark. Writes
+# resources.csv, cost.csv, prices.json, resources_environment.json; appends to SUMMARY.md.
+bench-resources:
+	@$(PYTHON) bench/resources.py --config bench/config.json --prices bench/prices.json --out results
 
 # Cross-engine golden tests. pip install -r ci/requirements.txt first. ENGINES=duckdb,spark
 # skips Trino when no container is running.

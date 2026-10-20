@@ -108,6 +108,7 @@ make trino-down
 `results/SUMMARY.md` holds the tables, the CSV files hold every measured value, and
 `results/environment.json` records the machine, the DuckDB version and the wall time.
 `make bench-full` reproduces field counts, payload sizes and storage sizes exactly; latencies vary between runs; the ratios between designs are the stable result.
+Resource use and cost are now measured as well (`results/resources.csv`, `results/cost.csv`): CPU time and peak memory vary across runs, while bytes scanned and cost reproduce exactly.
 The data is synthetic, generated from the seed in the config at demonstration scale
 (N entities, H events each, K attributes, default K=67). It compares three designs:
 
