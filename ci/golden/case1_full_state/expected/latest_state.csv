@@ -1,0 +1,2 @@
+customer_id,event_timestamp,event_sequence,email,phone,address
+98765,3000,3,alice@newjob.com,555-493,

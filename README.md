@@ -85,6 +85,23 @@ records to Iceberg twice. That is the whole guarantee. A duplicate already prese
 the topic, such as a producer retry that wrote the same event twice, is a separate Kafka
 record and arrives as a separate Iceberg row. `sql/dedup.sql` is what drops it.
 
+## Validated on three engines
+
+`ci/run_sql_matrix.py` runs every file under `sql/` on DuckDB, Spark (local pyspark) and
+Trino (Docker) against three golden cases, and compares the rows with the expected CSVs
+under `ci/golden/`. GitHub Actions runs it on every push; `ci/matrix.md` is the matrix
+from the last local run. The cases are the article's: full-state events for customer
+98765, sparse events with a phone-only row, and a duplicated `(customer_id,
+event_sequence)`. Each SQL file declares the engines it is written for, and the run
+fails if a file does not return exactly the expected rows on one of them.
+
+```bash
+pip install -r ci/requirements.txt
+make trino-up
+make sql-matrix
+make trino-down
+```
+
 ## Benchmark
 
 `make bench-full` regenerates everything under `results/` from `bench/config.json`:
@@ -147,6 +164,11 @@ bench/
 results/
   SUMMARY.md                            benchmark tables, environment, wall time
   *.csv, explain/                       every measured value and the EXPLAIN ANALYZE text
+
+ci/
+  run_sql_matrix.py                     every sql/ file on DuckDB, Spark, Trino vs golden outputs
+  golden/                               three cases: input.csv and expected/<query>.csv
+  matrix.md                             the dialect matrix from the last local run
 
 docs/
   AUDIT.md                              the repository audited against the article

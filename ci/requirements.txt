@@ -1,0 +1,3 @@
+duckdb==1.4.5
+pyspark==4.0.4
+trino==0.340.0

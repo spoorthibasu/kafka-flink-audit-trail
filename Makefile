@@ -1,7 +1,7 @@
 # Kafka, Flink, and Iceberg audit-trail example.
 # Everything below needs only JDK 11+ and Maven, except the targets that say Docker,
 # and the Python benchmark, which needs bench/requirements.txt.
-.PHONY: help test demo bench bench-full bench-smoke loop build run produce up down
+.PHONY: help test demo bench bench-full bench-smoke sql-matrix trino-up trino-down loop build run produce up down
 
 PYTHON ?= python3
 
@@ -11,6 +11,8 @@ help:
 	@echo "make bench       - schema size comparison on one synthetic event (schema lines, fields, Avro bytes)"
 	@echo "make bench-full  - the full benchmark: schema, payload, storage, latency, scaling; writes results/"
 	@echo "make bench-smoke - the same benchmark on a tiny config, to check the script runs"
+	@echo "make sql-matrix  - run every sql/ file on DuckDB, Spark and Trino against the golden outputs (needs 'make trino-up')"
+	@echo "make trino-up    - start a local Trino (Docker) for sql-matrix; make trino-down stops it"
 	@echo "make loop        - Flink writes a real Iceberg table, then query it back (no Kafka/Docker)"
 	@echo "make build       - shaded fat jar for 'flink run'"
 	@echo "make up          - start single-node Kafka (Docker)"
@@ -35,6 +37,21 @@ bench-full:
 
 bench-smoke:
 	@$(PYTHON) bench/benchmark.py --config bench/config.smoke.json --out results-smoke
+
+# Cross-engine golden tests. pip install -r ci/requirements.txt first. ENGINES=duckdb,spark
+# skips Trino when no container is running.
+ENGINES ?= duckdb,spark,trino
+sql-matrix:
+	@$(PYTHON) ci/run_sql_matrix.py --engines $(ENGINES) --out ci/matrix.md
+
+trino-up:
+	docker run -d --name kfat-trino -p 8080:8080 trinodb/trino:483
+	@for i in $$(seq 1 60); do \
+	  if curl -sf localhost:8080/v1/info | grep -q '"starting":false'; then echo "trino ready"; exit 0; fi; sleep 2; \
+	done; echo "trino did not start"; exit 1
+
+trino-down:
+	docker rm -f kfat-trino
 
 loop:
 	@mvn -q compile exec:exec@run-loop

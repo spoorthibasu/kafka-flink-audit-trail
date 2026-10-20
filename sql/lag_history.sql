@@ -6,6 +6,7 @@
 -- Plain LAG, so the same text runs on every engine listed.
 -- Run sql/dedup.sql first if the topic may contain retried or replayed events;
 -- a repeated (customer_id, event_sequence) pair otherwise appears as its own row.
+-- Further back: LAG(email, 2), LAG(email, 3), and so on. The schema does not change.
 
 SELECT
   customer_id,
@@ -29,5 +30,3 @@ SELECT
 FROM customer_profile_changes
 WHERE customer_id = '98765'
 ORDER BY event_timestamp, event_sequence;
-
--- Further back: LAG(email, 2), LAG(email, 3), and so on. The schema does not change.
