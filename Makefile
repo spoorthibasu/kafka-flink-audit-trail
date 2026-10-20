@@ -1,7 +1,7 @@
 # Kafka, Flink, and Iceberg audit-trail example.
 # Everything below needs only JDK 11+ and Maven, except the targets that say Docker,
 # and the Python benchmark, which needs bench/requirements.txt.
-.PHONY: help test demo bench bench-full bench-smoke bench-resources sql-matrix trino-up trino-down crash-test loop build run produce up down
+.PHONY: help test demo bench bench-full bench-smoke bench-resources bench-sweep bench-pipeline engine-docs kafka3-up kafka3-down sql-matrix trino-up trino-down crash-test loop build run produce up down
 
 PYTHON ?= python3
 
@@ -12,6 +12,10 @@ help:
 	@echo "make bench-full  - the full benchmark: schema, payload, storage, latency, scaling, resources, cost; writes results/"
 	@echo "make bench-smoke - the same benchmark on a tiny config, to check the scripts run"
 	@echo "make bench-resources - only the resource-use and cost stage; adds its files to results/"
+	@echo "make bench-sweep - only the attribute-count sweep (K = 10, 25, 67, 150); adds its files to results/"
+	@echo "make bench-pipeline - Kafka, Flink and Iceberg measurements for both schemas (needs 'make kafka3-up'; about an hour)"
+	@echo "make engine-docs - write results/engine_docs.csv and its SUMMARY section"
+	@echo "make kafka3-up   - start a three-broker Kafka for bench-pipeline (Docker); make kafka3-down stops it"
 	@echo "make sql-matrix  - run every sql/ file on DuckDB, Spark and Trino against the golden outputs (needs 'make trino-up')"
 	@echo "make trino-up    - start a local Trino (Docker) for sql-matrix; make trino-down stops it"
 	@echo "make crash-test  - Flink to Iceberg job: fail, restart from the last checkpoint, assert counts (needs 'make up')"
@@ -37,10 +41,30 @@ bench:
 bench-full:
 	@$(PYTHON) bench/benchmark.py --config bench/config.json --out results
 	@$(PYTHON) bench/resources.py --config bench/config.json --prices bench/prices.json --out results
+	@$(PYTHON) bench/sweep_attributes.py --config bench/config.json --out results
+	@$(PYTHON) bench/engine_docs.py --out results
 
 bench-smoke:
 	@$(PYTHON) bench/benchmark.py --config bench/config.smoke.json --out results-smoke
 	@$(PYTHON) bench/resources.py --config bench/config.smoke.json --prices bench/prices.json --out results-smoke
+	@$(PYTHON) bench/sweep_attributes.py --config bench/config.smoke.json --out results-smoke
+	@$(PYTHON) bench/engine_docs.py --out results-smoke
+
+bench-sweep:
+	@$(PYTHON) bench/sweep_attributes.py --config bench/config.json --out results
+
+# Pipeline measurements need Kafka: three brokers (make kafka3-up) for bench/config.json.
+bench-pipeline:
+	@$(PYTHON) bench/pipeline.py --config bench/config.json --out results
+
+engine-docs:
+	@$(PYTHON) bench/engine_docs.py --out results
+
+kafka3-up:
+	docker compose -f docker-compose.kafka3.yml up -d
+
+kafka3-down:
+	docker compose -f docker-compose.kafka3.yml down -v
 
 # Resource use (CPU, peak memory, spill, bytes scanned) and cost (S3 storage, Athena scans)
 # for the datasets in results/, without rerunning the rest of the benchmark. Writes

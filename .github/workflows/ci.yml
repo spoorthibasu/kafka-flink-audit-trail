@@ -116,6 +116,14 @@ jobs:
           REQUIRE_KAFKA: '1'
           KAFKA_BOOTSTRAP: localhost:9092
         run: mvn -q -B test -Dtest=CrashRestartTest
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Pipeline measurements on the smoke configuration
+        run: |
+          pip install -r bench/requirements.txt
+          python3 bench/pipeline.py --config bench/config.smoke.json --out results-smoke-pipeline
       - name: Evidence as job summary
         if: always()
         run: cat results/crash_restart_case1.md results/crash_restart_case2.md >> "$GITHUB_STEP_SUMMARY" || true
@@ -124,3 +132,8 @@ jobs:
         with:
           name: crash-restart-evidence
           path: results/crash_restart_case*.md
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: pipeline-smoke-results
+          path: results-smoke-pipeline

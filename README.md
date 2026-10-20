@@ -54,7 +54,7 @@ engines disagree on where `IGNORE NULLS` goes: Trino, Athena and Spark take it a
 closing parenthesis, `LAST_VALUE(x) IGNORE NULLS OVER (...)`; DuckDB takes it inside,
 `LAST_VALUE(x IGNORE NULLS) OVER (...)`. Neither spelling parses on the other engine.
 Spark also accepts `LAST(x, true)`. Each file's `-- engines:` header names the engines
-it is written for.
+it is written for. `results/engine_docs.csv` gives, for DuckDB, Spark, Trino and Athena, the official page that defines LAST_VALUE with IGNORE NULLS, its documented version, and the syntax line it shows.
 
 ### Sparse updates
 
@@ -109,6 +109,8 @@ make trino-down
 `results/environment.json` records the machine, the DuckDB version and the wall time.
 `make bench-full` reproduces field counts, payload sizes and storage sizes exactly; latencies vary between runs; the ratios between designs are the stable result.
 Resource use and cost are now measured as well (`results/resources.csv`, `results/cost.csv`): CPU time and peak memory vary across runs, while bytes scanned and cost reproduce exactly.
+An attribute-count sweep repeats the field-count, Avro, Parquet and latency comparison at K = 10, 25, 67 and 150 on full-state events and reports the previous-value to audit-trail ratio at each point (`results/sweep_attributes.csv`).
+`make bench-pipeline` measures both schemas through Kafka, Flink and Iceberg on a three-broker cluster (`make kafka3-up`): broker log bytes, producer send-to-acknowledgement latency, Flink throughput and checkpoint duration, and Iceberg metadata growth through snapshot expiration and compaction (`results/pipeline_*.csv`).
 The data is synthetic, generated from the seed in the config at demonstration scale
 (N entities, H events each, K attributes, default K=67). It compares three designs:
 

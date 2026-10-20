@@ -9,3 +9,4 @@ warehouse/
 *.log
 .venv/
 results-smoke/
+results-smoke-pipeline/
