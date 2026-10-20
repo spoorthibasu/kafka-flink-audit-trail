@@ -1,0 +1,70 @@
+{
+  "started_utc": "2026-10-20T19:29:04Z",
+  "config_file": "bench/config.json",
+  "prices_file": "bench/prices.json",
+  "config": {
+    "_comment": "All benchmark parameters. Synthetic data at demonstration scale. Change nothing else to re-run.",
+    "seed": 20261113,
+    "n_entities": 1000,
+    "h_events": 100,
+    "k_attributes": 67,
+    "event_models": [
+      "full",
+      "sparse"
+    ],
+    "changed_attributes_per_event": {
+      "min": 1,
+      "max": 5
+    },
+    "payload": {
+      "deflate_level": 6
+    },
+    "storage": {
+      "parquet_compressions": [
+        "snappy",
+        "zstd"
+      ],
+      "parquet_row_group_size": 10000
+    },
+    "queries": {
+      "runs": 20,
+      "warmup_runs": 3
+    },
+    "scaling": {
+      "n_entities": 100,
+      "h_values": [
+        1,
+        10,
+        100,
+        1000
+      ],
+      "runs": 10,
+      "warmup_runs": 2
+    }
+  },
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.9.6",
+    "cpu_count": 8,
+    "cpu": "Apple M3",
+    "memory_bytes": 17179869184,
+    "git_commit": "e4a03b18fe7cfdb9385f808e42bed431dc3abac1"
+  },
+  "duckdb": "1.4.5",
+  "duckdb_threads": 8,
+  "row_group_rows": {
+    "full": {
+      "A": "9 x 10240 + 1 x 7840",
+      "B": "9 x 10240 + 1 x 7840",
+      "C": "1 x 1000"
+    },
+    "sparse": {
+      "A": "9 x 10240 + 1 x 7840",
+      "B": "9 x 10240 + 1 x 7840",
+      "C": "1 x 1000"
+    }
+  },
+  "wall_seconds": 193.0,
+  "finished_utc": "2026-10-20T19:32:17Z"
+}

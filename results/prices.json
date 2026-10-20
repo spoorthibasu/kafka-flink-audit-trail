@@ -1,0 +1,26 @@
+{
+  "_comment": "List prices applied by bench/resources.py. Read from the pages below on date_read. Prices are strings so the cost arithmetic stays exact.",
+  "date_read": "2026-10-20",
+  "currency": "USD",
+  "region": "US East (N. Virginia), us-east-1",
+  "s3_standard_storage": {
+    "price_per_gb_month": "0.023",
+    "tier": "First 50 TB / Month",
+    "page_text": "S3 Standard - General purpose storage ... First 50 TB / Month $0.023 per GB",
+    "url": "https://aws.amazon.com/s3/pricing/",
+    "gb_bytes": 1073741824,
+    "gb_definition": "1 GB = 1,073,741,824 bytes, from the GB-Month worked example in the Amazon S3 FAQ: '(1 GB / 1,073,741,824 bytes)'",
+    "gb_definition_url": "https://aws.amazon.com/s3/faqs/"
+  },
+  "athena_sql_queries": {
+    "price_per_tb_scanned": "5.00",
+    "page_text": "SQL queries $5.00 per TB of data scanned. ... You are charged for the number of bytes scanned per query, rounded up to the nearest megabyte, with a 10 MB minimum per query.",
+    "url": "https://aws.amazon.com/athena/pricing/",
+    "minimum_mb_per_query": 10,
+    "rounding": "bytes scanned per query rounded up to the nearest megabyte",
+    "tb_bytes": 1099511627776,
+    "mb_bytes": 1048576,
+    "unit_definition": "The Athena pricing page and the Athena FAQ do not define TB or MB in bytes. Binary units are applied (TB = 2^40 bytes, MB = 2^20 bytes), matching the 2^30-byte GB in the Amazon S3 FAQ.",
+    "unit_definition_url": "https://aws.amazon.com/athena/faqs/"
+  }
+}

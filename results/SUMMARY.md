@@ -306,3 +306,111 @@ Before timing, each dataset was checked so that the designs agree wherever they 
 - `scaling_storage.csv`, `scaling_latency.csv`
 - `explain/` EXPLAIN ANALYZE text per dataset, query and design
 - `environment.json` machine, versions, configuration, wall time
+
+## Resource use and cost
+
+Measured by `bench/resources.py` from `bench/config.json` and `bench/prices.json` on 2026-10-20T19:29:04Z, on the same datasets as the tables above (seed 20261113, N=1000, H=100, K=67): the script regenerates them and checks every Parquet size against storage.csv. Machine: Apple M3, 8 logical CPUs. DuckDB 1.4.5, threads=8. Wall time 193.0 s. CPU time and peak memory vary between runs; bytes scanned and cost reproduce exactly.
+
+- CPU ms: DuckDB profiler metric `cpu_time`, the sum of `operator_timing` over every operator and thread, times 1000. It excludes parsing and planning and is not operating-system process CPU time. Values are kept exactly as DuckDB writes them to the profiler JSON; long tails such as 0.08604200000000001 come from DuckDB's floating-point summation.
+- Peak memory MB: profiler metric `system_peak_buffer_memory`, the database instance's buffer pool usage sampled after each operator call, maximum within the query, in units of 1,000,000 bytes.
+- Spill MB: profiler metric `system_peak_temp_dir_size`, temp-directory usage sampled the same way, in units of 1,000,000 bytes.
+- In DuckDB 1.4.5 these two peaks are running maxima across profiled queries on one connection (QueryProfiler::Reset does not clear them), so each of the 20 timed runs uses a fresh in-memory database, executes the query for 3 unprofiled warm-up runs, drops the result, and profiles the next execution. Values are the median of the 20 runs (the mean of the two middle values); resources.csv also holds min and max.
+- Bytes scanned: from `parquet_metadata()` of the snappy file each query reads. Columns are the TABLE_SCAN operator's `Projections` plus any column named in its pushed-down `Filters`. Row groups are those whose min/max statistics (or null counts, for IS NOT NULL) do not exclude every row under those filters. The value is the sum of `total_compressed_size` over those column chunks. Footer and page-index reads are excluded. DuckDB 1.4.5 reports neither bytes read nor pruned row groups for Parquet, so this is derived, not observed.
+- Row groups as written, read from `parquet_metadata()`: with ROW_GROUP_SIZE 10000, DuckDB 1.4.5 wrote FULL model: design A 9 x 10240 + 1 x 7840 rows, design B 9 x 10240 + 1 x 7840 rows, design C 1 x 1000 rows; SPARSE model: design A 9 x 10240 + 1 x 7840 rows, design B 9 x 10240 + 1 x 7840 rows, design C 1 x 1000 rows. The Parameters table above gives the setting, not these counts.
+
+### FULL model: resources
+
+| Query | Design | CPU ms | Peak memory MB | Spill MB | Bytes scanned | Columns read | Row groups read |
+|---|---|---|---|---|---|---|---|
+| q1_one_hop_previous_single | A | 1.2774775000000001 | 2.927104 | 0 | 68,460 | 5 of 137 | 1 of 10 |
+| q1_one_hop_previous_single | B | 0.757563 | 2.213888 | 0 | 56,100 | 4 of 70 | 1 of 10 |
+| q1_one_hop_previous_single | C | not supported: holds no history |  |  |  |  |  |
+| q2_three_changes_back_single | A | not supported: holds one hop only |  |  |  |  |  |
+| q2_three_changes_back_single | B | 0.71947750000000005 | 2.213888 | 0 | 56,100 | 4 of 70 | 1 of 10 |
+| q2_three_changes_back_single | C | not supported: holds no history |  |  |  |  |  |
+| q3_current_state_all | A | 248.109209499999965 | 304.012352 | 0 | 7,590,968 | 70 of 137 | 10 of 10 |
+| q3_current_state_all | B | 248.686181000000015 | 300.807872 | 0 | 7,590,968 | 70 of 70 | 10 of 10 |
+| q3_current_state_all | C | 2.7382085 | 8.556032 | 0 | 977,485 | 68 of 70 | 1 of 1 |
+| q4_previous_value_all | A | 20.703182 | 123.205952 | 0 | 667,145 | 5 of 137 | 10 of 10 |
+| q4_previous_value_all | B | 35.640286499999998 | 122.080448 | 0 | 546,737 | 4 of 70 | 10 of 10 |
+| q4_previous_value_all | C | not supported: holds no history |  |  |  |  |  |
+
+### SPARSE model: resources
+
+| Query | Design | CPU ms | Peak memory MB | Spill MB | Bytes scanned | Columns read | Row groups read |
+|---|---|---|---|---|---|---|---|
+| q1_one_hop_previous_single | A | 1.2793749999999999 | 2.905088 | 0 | 65,336 | 5 of 137 | 1 of 10 |
+| q1_one_hop_previous_single | B | 1.0642324999999999 | 2.213888 | 0 | 55,559 | 4 of 70 | 1 of 10 |
+| q1_one_hop_previous_single | C | not supported: holds no history |  |  |  |  |  |
+| q2_three_changes_back_single | A | not supported: holds one hop only |  |  |  |  |  |
+| q2_three_changes_back_single | B | 1.04625149999999975 | 2.197504 | 0 | 55,559 | 4 of 70 | 1 of 10 |
+| q2_three_changes_back_single | C | not supported: holds no history |  |  |  |  |  |
+| q3_current_state_all | A | 1056.3640775 | 532.074496 | 0 | 6,883,681 | 70 of 137 | 10 of 10 |
+| q3_current_state_all | B | 1110.318538 | 531.03616 | 0 | 6,883,681 | 70 of 70 | 10 of 10 |
+| q3_current_state_all | C | 2.7548755 | 8.556032 | 0 | 977,098 | 68 of 70 | 1 of 1 |
+| q4_previous_value_all | A | 7.2736495 | 108.971776 | 0 | 620,911 | 5 of 137 | 10 of 10 |
+| q4_previous_value_all | B | 9.0979165 | 104.94208 | 0 | 533,310 | 4 of 70 | 10 of 10 |
+| q4_previous_value_all | C | not supported: holds no history |  |  |  |  |  |
+| q5_last_and_previous_known_single | A | 9.964895500000001 | 63.866368 | 0 | 1,248,740 | 137 of 137 | 1 of 10 |
+| q5_last_and_previous_known_single | B | 5.86947999999999975 | 33.35168 | 0 | 705,374 | 70 of 70 | 1 of 10 |
+| q5_last_and_previous_known_single | C | not supported: holds the last known value only |  |  |  |  |  |
+| q5_last_and_previous_known_all | A | 1511.3069134999998 | 750.862336 | 0 | 12,180,853 | 137 of 137 | 10 of 10 |
+| q5_last_and_previous_known_all | B | 1286.6908769999998 | 645.15328 | 0 | 6,883,681 | 70 of 70 | 10 of 10 |
+| q5_last_and_previous_known_all | C | not supported: holds the last known value only |  |  |  |  |  |
+
+### Prices
+
+| Item | Price | Region | Page | Read on |
+|---|---|---|---|---|
+| S3 Standard storage | 0.023 USD per GB-month (First 50 TB / Month); 1 GB = 1,073,741,824 bytes per the S3 FAQ | US East (N. Virginia), us-east-1 | https://aws.amazon.com/s3/pricing/ | 2026-10-20 |
+| Athena SQL queries | 5.00 USD per TB scanned; rounded up to the nearest MB; 10 MB minimum per query | US East (N. Virginia), us-east-1 | https://aws.amazon.com/athena/pricing/ | 2026-10-20 |
+
+The Athena pricing page and the Athena FAQ do not define TB or MB in bytes. Binary units are applied (TB = 2^40 bytes, MB = 2^20 bytes), matching the 2^30-byte GB in the Amazon S3 FAQ. The tables use TB = 1,099,511,627,776 bytes and MB = 1,048,576 bytes.
+
+### Storage cost: S3 Standard
+
+Parquet bytes from storage.csv times the price. Per million events scales the dataset's 100,000 events linearly; design C's size follows the number of entities, so its per-event figure holds only for 100 events per entity.
+
+| Model | Design | Compression | Parquet bytes | USD per month, dataset | USD per million events per month |
+|---|---|---|---|---|---|
+| full | A | snappy | 16,163,283 | 0.000346224297769367694854736328125 | 0.00346224297769367694854736328125 |
+| full | B | snappy | 8,299,637 | 0.000177781703881919384002685546875 | 0.00177781703881919384002685546875 |
+| full | C | snappy | 990,482 | 0.00002121653966605663299560546875 | 0.0002121653966605663299560546875 |
+| full | A | zstd | 11,142,258 | 0.00023867183737456798553466796875 | 0.0023867183737456798553466796875 |
+| full | B | zstd | 5,642,494 | 0.00012086458690464496612548828125 | 0.0012086458690464496612548828125 |
+| full | C | zstd | 625,076 | 0.0000133893899619579315185546875 | 0.000133893899619579315185546875 |
+| sparse | A | snappy | 13,565,699 | 0.000290582959540188312530517578125 | 0.00290582959540188312530517578125 |
+| sparse | B | snappy | 7,593,772 | 0.0001626617796719074249267578125 | 0.001626617796719074249267578125 |
+| sparse | C | snappy | 990,205 | 0.000021210606209933757781982421875 | 0.00021210606209933757781982421875 |
+| sparse | A | zstd | 9,163,027 | 0.000196275879628956317901611328125 | 0.00196275879628956317901611328125 |
+| sparse | B | zstd | 5,027,397 | 0.000107688951306045055389404296875 | 0.00107688951306045055389404296875 |
+| sparse | C | zstd | 624,884 | 0.0000133852772414684295654296875 | 0.000133852772414684295654296875 |
+
+### Query cost: Athena
+
+Bytes scanned times the price, per 1,000 runs of the query. "With minimum" bills each query at max(10 MB, bytes scanned rounded up to the nearest MB).
+
+| Model | Query | Design | Bytes scanned | Billed bytes with minimum | USD per 1,000 queries, per-TB rate | USD per 1,000 queries, with minimum |
+|---|---|---|---|---|---|---|
+| full | q1_one_hop_previous_single | A | 68,460 | 10,485,760 | 0.00031132003641687333583831787109375 | 0.0476837158203125 |
+| full | q1_one_hop_previous_single | B | 56,100 | 10,485,760 | 0.00025511326384730637073516845703125 | 0.0476837158203125 |
+| full | q2_three_changes_back_single | B | 56,100 | 10,485,760 | 0.00025511326384730637073516845703125 | 0.0476837158203125 |
+| full | q3_current_state_all | A | 7,590,968 | 10,485,760 | 0.0345197258866392076015472412109375 | 0.0476837158203125 |
+| full | q3_current_state_all | B | 7,590,968 | 10,485,760 | 0.0345197258866392076015472412109375 | 0.0476837158203125 |
+| full | q3_current_state_all | C | 977,485 | 10,485,760 | 0.0044450871428125537931919097900390625 | 0.0476837158203125 |
+| full | q4_previous_value_all | A | 667,145 | 10,485,760 | 0.0030338242140715010464191436767578125 | 0.0476837158203125 |
+| full | q4_previous_value_all | B | 546,737 | 10,485,760 | 0.0024862720238161273300647735595703125 | 0.0476837158203125 |
+| sparse | q1_one_hop_previous_single | A | 65,336 | 10,485,760 | 0.0002971137291751801967620849609375 | 0.0476837158203125 |
+| sparse | q1_one_hop_previous_single | B | 55,559 | 10,485,760 | 0.0002526530806790105998516082763671875 | 0.0476837158203125 |
+| sparse | q2_three_changes_back_single | B | 55,559 | 10,485,760 | 0.0002526530806790105998516082763671875 | 0.0476837158203125 |
+| sparse | q3_current_state_all | A | 6,883,681 | 10,485,760 | 0.0313033569909748621284961700439453125 | 0.0476837158203125 |
+| sparse | q3_current_state_all | B | 6,883,681 | 10,485,760 | 0.0313033569909748621284961700439453125 | 0.0476837158203125 |
+| sparse | q3_current_state_all | C | 977,098 | 10,485,760 | 0.004443327270564623177051544189453125 | 0.0476837158203125 |
+| sparse | q4_previous_value_all | A | 620,911 | 10,485,760 | 0.0028235763238626532256603240966796875 | 0.0476837158203125 |
+| sparse | q4_previous_value_all | B | 533,310 | 10,485,760 | 0.002425213097012601792812347412109375 | 0.0476837158203125 |
+| sparse | q5_last_and_previous_known_single | A | 1,248,740 | 10,485,760 | 0.00567861206945963203907012939453125 | 0.0476837158203125 |
+| sparse | q5_last_and_previous_known_single | B | 705,374 | 10,485,760 | 0.003207669578841887414455413818359375 | 0.0476837158203125 |
+| sparse | q5_last_and_previous_known_all | A | 12,180,853 | 12,582,912 | 0.0553921063328743912279605865478515625 | 0.057220458984375 |
+| sparse | q5_last_and_previous_known_all | B | 6,883,681 | 10,485,760 | 0.0313033569909748621284961700439453125 | 0.0476837158203125 |
+
+Files: `resources.csv`, `cost.csv`, `prices.json`, `resources_environment.json`.
