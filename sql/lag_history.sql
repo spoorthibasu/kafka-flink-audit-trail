@@ -1,6 +1,11 @@
--- Reconstruct previous values using LAG. No previous fields in the schema.
--- event_sequence breaks ties when two events share the same timestamp.
--- Plain LAG, so this runs as written on DuckDB, Spark, Trino, and Athena.
+-- Previous value of each field via LAG. The schema has no previous-value fields; the
+-- old value is read from the earlier row at query time.
+-- Events are ordered by event_timestamp, event_sequence. event_sequence is a
+-- per-customer counter set by the producer and breaks exact timestamp ties.
+-- engines: duckdb, spark, trino, athena
+-- Plain LAG, so the same text runs on every engine listed.
+-- Run sql/dedup.sql first if the topic may contain retried or replayed events;
+-- a repeated (customer_id, event_sequence) pair otherwise appears as its own row.
 
 SELECT
   customer_id,
@@ -25,5 +30,4 @@ FROM customer_profile_changes
 WHERE customer_id = '98765'
 ORDER BY event_timestamp, event_sequence;
 
--- To go further back: LAG(email, 2), LAG(email, 3), etc.
--- Schema doesn't change; only the query does.
+-- Further back: LAG(email, 2), LAG(email, 3), and so on. The schema does not change.

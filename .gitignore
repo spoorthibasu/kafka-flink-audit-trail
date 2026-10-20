@@ -7,3 +7,4 @@ dependency-reduced-pom.xml
 warehouse/
 /tmp/audit-warehouse/
 *.log
+.venv/

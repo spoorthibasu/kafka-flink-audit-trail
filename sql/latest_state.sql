@@ -1,5 +1,9 @@
--- Most recent state per customer. Columns listed explicitly to drop rn.
--- Plain ROW_NUMBER, so this runs as written on DuckDB, Spark, Trino, and Athena.
+-- Newest row per customer via ROW_NUMBER. Columns are listed explicitly to drop rn.
+-- Ordering key: event_timestamp, event_sequence (descending here, to pick the newest).
+-- engines: duckdb, spark, trino, athena
+-- Plain ROW_NUMBER, so the same text runs on every engine listed.
+-- On sparse events the newest row holds nulls for untouched fields; use
+-- sparse_current_value.sql for the last known value of each field.
 
 SELECT
   customer_id,

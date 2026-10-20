@@ -18,7 +18,7 @@ import java.util.Comparator;
 
 /**
  * The whole loop, out loud. A Flink job writes three events into a real Iceberg
- * table on disk; then we read the Parquet files it wrote and run the LAG query
+ * table on disk; the demo then reads the Parquet files it wrote and runs the LAG query
  * over them, printing what comes back.
  *
  * Unlike DemoRunner (which seeds a table directly), every row here went through the
@@ -33,7 +33,7 @@ public class IcebergLoopRunner {
         Path warehouse = Path.of(WAREHOUSE_DIR);
         deleteIfExists(warehouse);
 
-        System.out.println("\n=== Iceberg loop  (Flink writes, then we query what it wrote) ===\n");
+        System.out.println("\n=== Iceberg loop  (Flink writes, then the demo queries what it wrote) ===\n");
         System.out.println("1. Flink appends three events into an Iceberg table at " + warehouse);
 
         writeWithFlink("file://" + warehouse);

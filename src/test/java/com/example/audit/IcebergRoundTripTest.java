@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * The full loop, end to end: a Flink job writes three events into a real Iceberg
- * table, we read them back out through Iceberg's own reader, and a LAG query
+ * table, the test reads them back out through Iceberg's own reader, and a LAG query
  * rebuilds the previous email from those rows.
  *
  * The job runs in batch mode, so the Iceberg commit happens when the input ends.

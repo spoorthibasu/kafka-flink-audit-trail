@@ -14,15 +14,17 @@ import java.util.List;
  * Runs the sql/ queries with no infrastructure.
  *
  * Seeds an append-only customer_profile_changes table for customer 98765 (sparse
- * updates, the way the pipeline writes), then runs the three queries in sql/ on an
- * in-process DuckDB. The results are what Spark, Trino, or Athena return over Iceberg:
- * the first two files are portable as written, and the third has a portable twin that
- * differs only in where IGNORE NULLS sits.
+ * updates, the way the pipeline writes), then runs the queries in sql/ on an
+ * in-process DuckDB. The plain LAG, ROW_NUMBER and dedup files run unchanged on Spark,
+ * Trino and Athena; the sparse-update files have a standard spelling for those engines
+ * and a DuckDB spelling under sql/duckdb/, which is what this demo runs. CI runs every
+ * file on DuckDB, Spark and Trino against golden outputs (see ci/).
  *
- *   sql/lag_history.sql     previous values via LAG
- *   sql/latest_state.sql    current state via ROW_NUMBER
- *   sql/sparse_updates.sql  last known value via LAST_VALUE (DuckDB spelling;
- *                           see sql/sparse_updates_portable.sql for the others)
+ *   sql/lag_history.sql                   previous values via LAG
+ *   sql/latest_state.sql                  newest row via ROW_NUMBER
+ *   sql/duckdb/sparse_current_value.sql   last known value, frame ends at CURRENT ROW
+ *   sql/duckdb/sparse_previous_value.sql  previous known value, frame ends at 1 PRECEDING
+ *   sql/dedup.sql                         drop repeated (customer_id, event_sequence)
  */
 public class DemoRunner {
 
@@ -55,29 +57,55 @@ public class DemoRunner {
 
             seed(stmt);
 
-            banner("Audit-trail demo  (DuckDB stand-in for Spark / Trino / Athena)");
+            banner("Audit-trail demo  (DuckDB; synthetic data, three events)");
             System.out.println("Seed: customer 98765, append-only change events (sparse updates).");
             System.out.println("Nothing is overwritten; previous values live in earlier rows.\n");
-            print(stmt, "SELECT * FROM customer_profile_changes ORDER BY event_sequence");
+            print(stmt, "SELECT * FROM customer_profile_changes ORDER BY event_timestamp, event_sequence");
 
             section("[1] sql/lag_history.sql  -  previous values via LAG");
             note("Row 3 previous_email = alice@yahoo.com, reconstructed from the log alone.");
-            note("LAG(phone) is null on the sparse rows, exactly the sparse-update pitfall.");
+            note("LAG(phone) is null on the sparse rows: the preceding row did not touch phone.");
             runFile(stmt, "sql/lag_history.sql");
 
-            section("[2] sql/latest_state.sql  -  current state via ROW_NUMBER");
-            note("One row per customer: the most recent event. (For per-field latest value");
-            note("on sparse data, use the LAST_VALUE form below.)");
+            section("[2] sql/latest_state.sql  -  newest row via ROW_NUMBER");
+            note("One row per customer: the most recent event. On sparse data its untouched");
+            note("fields are null; the per-field last known value is query [3].");
             runFile(stmt, "sql/latest_state.sql");
 
-            section("[3] sql/sparse_updates.sql  -  last known value via LAST_VALUE IGNORE NULLS");
+            section("[3] sql/duckdb/sparse_current_value.sql  -  last known value, frame ends at CURRENT ROW");
             note("phone is carried forward as 555-1001 across the sparse rows, where LAG gave null.");
-            runFile(stmt, "sql/sparse_updates.sql");
+            runFile(stmt, "sql/duckdb/sparse_current_value.sql");
+
+            section("[4] sql/duckdb/sparse_previous_value.sql  -  previous known value, frame ends at 1 PRECEDING");
+            note("Row 3 previous_email = alice@yahoo.com, the value it replaced. Row 3 previous_phone");
+            note("= 555-1001: phone did not change on row 3, so the previous known value is the");
+            note("current one.");
+            runFile(stmt, "sql/duckdb/sparse_previous_value.sql");
+
+            duplicates(stmt);
 
             orderingInvariant(stmt);
 
             System.out.println("\nEvery previous value came from an earlier row. No previous-value fields anywhere.\n");
         }
+    }
+
+    /** A retry resends event 2. The topic now holds two Kafka records with the same
+     *  (customer_id, event_sequence), and each lands as its own Iceberg row. Exactly-once
+     *  in the Flink job does not remove it: that guarantee covers Flink's own recovery
+     *  path, not records the producer wrote twice. sql/dedup.sql drops it. */
+    private static void duplicates(Statement stmt) throws Exception {
+        stmt.execute("INSERT INTO customer_profile_changes VALUES "
+                + "('98765', 2000, 2, 'alice@yahoo.com', NULL, NULL)");
+
+        section("[5] Duplicates: a retried event appears as a repeated (customer_id, event_sequence)");
+        note("Event 2 was sent twice. Without dedup, LAG sees four rows and the duplicate");
+        note("reports alice@yahoo.com as its own previous email.");
+        runFile(stmt, "sql/lag_history.sql");
+
+        section("    sql/dedup.sql  -  one row per (customer_id, event_sequence)");
+        note("Three rows come back. Run this first, as a view or CTE, then the window queries.");
+        runFile(stmt, "sql/dedup.sql");
     }
 
     /** Why event_sequence exists. Two events share a timestamp; sorting by timestamp
@@ -90,19 +118,18 @@ public class DemoRunner {
                 + "('24680', 2000, 3, 'third@x.com',  NULL, NULL),"   // events 2 and 3 share
                 + "('24680', 2000, 2, 'second@x.com', NULL, NULL)");  // timestamp 2000
 
-        section("[4] The ordering invariant");
+        section("[6] The ordering invariant");
         note("A second customer, 24680, changed their email three times. Events 2 and 3");
         note("landed on the same timestamp, 2000 (clock skew, a retry, the same millisecond).");
 
-        System.out.println("\n    Sorted by event_timestamp alone:");
+        System.out.println("\n    Sorted by event_timestamp alone (the counterexample):");
         print(stmt, "SELECT event_timestamp, email, "
                 + "LAG(email) OVER (PARTITION BY customer_id ORDER BY event_timestamp) AS previous_email "
                 + "FROM customer_profile_changes WHERE customer_id = '24680' ORDER BY event_timestamp");
-        note("Two rows share timestamp 2000, so the sort can't order them, and the result");
+        note("Two rows share timestamp 2000, so the sort cannot order them, and the result");
         note("is not guaranteed: another engine or a different data layout can flip it.");
         note("Here third lands before second, so third's previous is first@x.com. The");
-        note("change to second is skipped. Nothing errors; the wrong history just flows");
-        note("downstream, which is far harder to catch than an explicit failure.");
+        note("change to second is skipped. Nothing errors; the wrong history flows downstream.");
 
         System.out.println("\n    Sorted by event_timestamp, event_sequence:");
         print(stmt, "SELECT event_timestamp, event_sequence, email, "
@@ -112,9 +139,14 @@ public class DemoRunner {
     }
 
     private static void runFile(Statement stmt, String relPath) throws Exception {
+        print(stmt, readQuery(relPath));
+    }
+
+    /** The query text of a sql/ file with the trailing semicolon removed, so JDBC runs it. */
+    public static String readQuery(String relPath) throws Exception {
         String sql = Files.readString(Path.of(relPath)).trim();
         if (sql.endsWith(";")) sql = sql.substring(0, sql.length() - 1);
-        print(stmt, sql);
+        return sql;
     }
 
     /** Execute a query and print the result set as an aligned table. */

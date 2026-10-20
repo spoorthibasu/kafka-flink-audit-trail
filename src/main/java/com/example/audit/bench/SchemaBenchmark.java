@@ -25,7 +25,7 @@ import java.util.Map;
  * Prints the schema lines, field counts, and the Avro binary size of a representative
  * event for each, with the reduction.
  *
- * This is a representative 80-attribute profile, kept small so you can run it.
+ * Synthetic data: a representative 80-attribute profile, kept small so it runs anywhere.
  */
 public class SchemaBenchmark {
 
@@ -80,7 +80,7 @@ public class SchemaBenchmark {
     }
 
     /** How many mutable fields a representative event changes. Byte size is population-
-     *  dependent, so we show a range. */
+     *  dependent, so three counts are shown. */
     private static final int[] CHANGE_COUNTS = {3, 8, 16};
 
     public static void main(String[] args) throws Exception {

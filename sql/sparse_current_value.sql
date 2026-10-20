@@ -1,13 +1,13 @@
--- Same query as sparse_updates.sql, in the SQL-standard spelling: IGNORE NULLS goes
--- after the closing paren, before OVER. This is the form Trino, Athena, and Spark
--- accept. DuckDB rejects it, so use sparse_updates.sql there, which is why the demo
--- runs the other file. Spark also accepts LAST(email, true) OVER (...) as an
--- equivalent alternative.
---
--- Use when events are sparse: not every field changes on every event.
--- LAG returns null if the preceding row didn't touch that field.
--- LAST_VALUE IGNORE NULLS returns the last known non-null value instead.
--- The explicit ROWS frame stops engines from looking past the current row.
+-- Last known value of each field as of each event.
+-- For sparse events an untouched field is null, so LAG returns null when the preceding
+-- row did not touch it. LAST_VALUE ... IGNORE NULLS returns the most recent non-null
+-- value instead. The frame ends at CURRENT ROW, so a row that changes email reports
+-- the new email.
+-- engines: spark, trino, athena
+-- Standard spelling: IGNORE NULLS after the closing parenthesis, before OVER. Trino,
+-- Athena and Spark accept it. DuckDB rejects it; use sql/duckdb/sparse_current_value.sql
+-- there. Spark also accepts LAST(email, true) OVER (...).
+-- Companion query: sparse_previous_value.sql ends the frame at 1 PRECEDING.
 
 SELECT
   customer_id,
