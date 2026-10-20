@@ -476,3 +476,98 @@ Official pages that define LAST_VALUE with IGNORE NULLS, fetched on 2026-10-20. 
 CI (`ci/run_sql_matrix.py`) checks the placements on DuckDB 1.4.5, Spark 4.0.4 and Trino 483, which are the versions it runs, not the documentation versions above.
 
 Files: `engine_docs.csv`.
+
+## Pipeline measurements
+
+Measured by `bench/pipeline.py` from `bench/config.json` on 2026-10-20T23:16:03Z: designs A and B through the Kafka to Flink to Iceberg topology of CustomerProfileAuditJob, seed 20261113, N=1000, H=100 (100,000 events per run), K=67, models full, sparse. Medians over 5 runs. Machine: Apple M3, 8 logical CPUs. Kafka 3 brokers (apache/kafka:3.7.0 in Docker on the same machine), Flink 1.20.3 embedded, Iceberg 1.10.1 on the local filesystem. Wall time 2342.0 s. Synthetic data at demonstration scale.
+
+- Events: written by this script from the benchmark generator, sent in event-time order as Avro binary datums with no Confluent framing, keyed by customer_id, to a fresh topic per run with 3 partitions, replication factor 3 and min.insync.replicas 2. The job deserializes them with the same Avro schema into Iceberg rows.
+- Broker storage: the topic's log bytes per replica from the brokers' log directories (AdminClient describeLogDirs), read once every replica matches its leader. One copy is the sum of the leader replicas; all replicas is the sum over brokers. Replication traffic is derived, not measured: one-copy bytes x (replication factor - 1).
+- Producer latency: time from each send() call to its acknowledgement callback, acks=all, Kafka client 3.4.0 defaults otherwise; nearest-rank p50, p95 and p99 over all events of a run, then the median over runs. Events are sent back to back with no pacing, so the time includes each record's wait in the producer's buffer behind earlier records; it is latency at the producer's maximum send rate, not for an isolated event.
+- Flink: parallelism 3, checkpoint every 60000 ms, minimum pause 30000 ms, exactly-once, noWatermarks, the reference job's settings. Throughput = events / (time the source operator's numRecordsOut, summed over subtasks, first equals the event count - the job's RUNNING timestamp), both from the Flink REST API, polled every 100 ms with the metric fetcher set to 100 ms. Checkpoint duration and size are the REST checkpoint statistics (end_to_end_duration, checkpointed_size) of the checkpoint whose Iceberg commit made every event visible.
+
+### FULL model: Kafka broker storage
+
+| Design | Compression | Log bytes, one copy | Bytes per event, one copy | Log bytes, all replicas | Replication traffic bytes (derived) |
+|---|---|---|---|---|---|
+| A previous-value schema | none | 192307974 | 1923.07974 | 576923922 | 384615948 |
+| A previous-value schema | zstd | 73947561 | 739.47561 | 221842683 | 147895122 |
+| B audit trail | none | 98259232 | 982.59232 | 294777696 | 196518464 |
+| B audit trail | zstd | 64718917 | 647.18917 | 194156751 | 129437834 |
+
+### FULL model: producer latency, send to acknowledgement, ms
+
+| Design | Compression | p50 | p95 | p99 |
+|---|---|---|---|---|
+| A previous-value schema | none | 1035.134 | 1957.135541 | 2108.171083 |
+| A previous-value schema | zstd | 871.356125 | 1309.548583 | 1372.614 |
+| B audit trail | none | 748.521333 | 1441.931875 | 1519.281708 |
+| B audit trail | zstd | 738.188708 | 982.152834 | 1051.895791 |
+
+### FULL model: Flink throughput and checkpoints
+
+| Design | Topic compression | Events per second | Checkpoint end-to-end ms | Checkpointed size bytes | Checkpoints completed |
+|---|---|---|---|---|---|
+| A previous-value schema | none | 18406.0371801951... | 208 | 4428 | 1 |
+| A previous-value schema | zstd | 22084.8056537102... | 276 | 4428 | 1 |
+| B audit trail | none | 62617.4076393237... | 256 | 4428 | 1 |
+| B audit trail | zstd | 50735.6671740233... | 197 | 4428 | 1 |
+
+### SPARSE model: Kafka broker storage
+
+| Design | Compression | Log bytes, one copy | Bytes per event, one copy | Log bytes, all replicas | Replication traffic bytes (derived) |
+|---|---|---|---|---|---|
+| A previous-value schema | none | 25499103 | 254.99103 | 76497309 | 50998206 |
+| A previous-value schema | zstd | 9061197 | 90.61197 | 27183591 | 18122394 |
+| B audit trail | none | 14907975 | 149.07975 | 44723925 | 29815950 |
+| B audit trail | zstd | 5965863 | 59.65863 | 17897589 | 11931726 |
+
+### SPARSE model: producer latency, send to acknowledgement, ms
+
+| Design | Compression | p50 | p95 | p99 |
+|---|---|---|---|---|
+| A previous-value schema | none | 233.358333 | 395.883875 | 412.285291 |
+| A previous-value schema | zstd | 320.452375 | 361.476541 | 364.641125 |
+| B audit trail | none | 344.942209 | 417.859125 | 432.024666 |
+| B audit trail | zstd | 458.628 | 977.6815 | 1000.312708 |
+
+### SPARSE model: Flink throughput and checkpoints
+
+| Design | Topic compression | Events per second | Checkpoint end-to-end ms | Checkpointed size bytes | Checkpoints completed |
+|---|---|---|---|---|---|
+| A previous-value schema | none | 131926.1213720316... | 84 | 4434 | 1 |
+| A previous-value schema | zstd | 139664.8044692737... | 90 | 4434 | 1 |
+| B audit trail | none | 165837.4792703150... | 93 | 4434 | 1 |
+| B audit trail | zstd | 170068.0272108843... | 99 | 4434 | 1 |
+
+### Iceberg metadata growth
+
+Each run appends the same events to a fresh table in 20 bounded Flink jobs through the same Iceberg sink, one commit each, commit k holding event_sequence values of slice k for every customer. Then: snapshot expiration (expireSnapshots, retainLast 1), compaction (Actions.rewriteDataFiles, default target file size), and expiration again. Metadata bytes are the files under the table's metadata/ directory (metadata JSON, manifest lists, manifests, version hint); Iceberg's defaults keep old metadata JSON files. History check: DuckDB over the current snapshot's data files computes the row count, distinct (customer_id, event_sequence), and a hash over LAG(email) and the previous known email (LAST_VALUE IGNORE NULLS, frame ending at 1 PRECEDING) for every row; the hash must equal the one taken after the commits.
+
+#### FULL model
+
+| Design | State | Snapshots | Metadata bytes | Metadata JSON files | Manifest lists | Manifest files | Manifests in current snapshot | Data files in current snapshot | Data files on disk | Rows | History unchanged |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| A previous-value schema | after commits | 20 | 1008396 | 22 | 20 | 20 | 20 | 60 | 60 | 100000 | yes |
+| A previous-value schema | after expiration | 1 | 930078 | 23 | 1 | 20 | 20 | 60 | 60 | 100000 | yes |
+| A previous-value schema | after compaction | 2 | 1384032 | 24 | 2 | 41 | 21 | 2 | 62 | 100000 | yes |
+| A previous-value schema | after compaction and expiration | 1 | 983777 | 25 | 1 | 21 | 21 | 2 | 62 | 100000 | yes |
+| B audit trail | after commits | 20 | 787228 | 22 | 20 | 20 | 20 | 60 | 60 | 100000 | yes |
+| B audit trail | after expiration | 1 | 703911 | 23 | 1 | 20 | 20 | 60 | 60 | 100000 | yes |
+| B audit trail | after compaction | 2 | 1035884 | 24 | 2 | 41 | 21 | 2 | 62 | 100000 | yes |
+| B audit trail | after compaction and expiration | 1 | 741929 | 25 | 1 | 21 | 21 | 2 | 62 | 100000 | yes |
+
+#### SPARSE model
+
+| Design | State | Snapshots | Metadata bytes | Metadata JSON files | Manifest lists | Manifest files | Manifests in current snapshot | Data files in current snapshot | Data files on disk | Rows | History unchanged |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| A previous-value schema | after commits | 20 | 1097589 | 22 | 20 | 20 | 20 | 60 | 60 | 100000 | yes |
+| A previous-value schema | after expiration | 1 | 1019271 | 23 | 1 | 20 | 20 | 60 | 60 | 100000 | yes |
+| A previous-value schema | after compaction | 2 | 1564440 | 24 | 2 | 41 | 21 | 2 | 62 | 100000 | yes |
+| A previous-value schema | after compaction and expiration | 1 | 1074575 | 25 | 1 | 21 | 21 | 2 | 62 | 100000 | yes |
+| B audit trail | after commits | 20 | 839515 | 22 | 20 | 20 | 20 | 60 | 60 | 100000 | yes |
+| B audit trail | after expiration | 1 | 756248 | 23 | 1 | 20 | 20 | 60 | 60 | 100000 | yes |
+| B audit trail | after compaction | 2 | 1142178 | 24 | 2 | 41 | 21 | 2 | 62 | 100000 | yes |
+| B audit trail | after compaction and expiration | 1 | 795482 | 25 | 1 | 21 | 21 | 2 | 62 | 100000 | yes |
+
+Files: `pipeline_kafka.csv`, `pipeline_iceberg.csv` (medians), `pipeline_kafka_runs.csv`, `pipeline_iceberg_runs.csv` (every run), `pipeline_environment.json`.

@@ -1,0 +1,17 @@
+model,schema,state,runs,commits,snapshots_median,metadata_total_bytes_median,metadata_json_files_median,metadata_json_bytes_median,manifest_list_files_median,manifest_list_bytes_median,manifest_files_median,manifest_bytes_median,manifests_in_current_snapshot_median,data_files_in_current_snapshot_median,data_files_on_disk_median,data_bytes_on_disk_median,rows_median,distinct_customer_sequence_median,history_digest_matches_in_all_runs
+full,A,after_commits,5,20,20,1008396,22,496980,20,99932,20,411392,20,60,60,89336433,100000,100000,yes
+full,A,after_expiration,5,20,1,930078,23,513186,1,5420,20,411392,20,60,60,89336433,100000,100000,yes
+full,A,after_compaction,5,20,2,1384032,24,530570,2,10144,41,843212,21,2,62,108653494,100000,100000,yes
+full,A,after_compaction_and_expiration,5,20,1,983777,25,547125,1,4723,21,431830,21,2,62,108653494,100000,100000,yes
+full,B,after_commits,5,20,20,787228,22,387104,20,99947,20,300137,20,60,60,44941250,100000,100000,yes
+full,B,after_expiration,5,20,1,703911,23,398314,1,5422,20,300137,20,60,60,44941250,100000,100000,yes
+full,B,after_compaction,5,20,2,1035884,24,410703,2,10148,41,615031,21,2,62,54645169,100000,100000,yes
+full,B,after_compaction_and_expiration,5,20,1,741929,25,422265,1,4723,21,314942,21,2,62,54645169,100000,100000,yes
+sparse,A,after_commits,5,20,20,1097589,22,496646,20,99988,20,501003,20,60,60,10889880,100000,100000,yes
+sparse,A,after_expiration,5,20,1,1019271,23,512851,1,5429,20,501003,20,60,60,10889880,100000,100000,yes
+sparse,A,after_compaction,5,20,2,1564440,24,530232,2,10150,41,1024063,21,2,62,18486080,100000,100000,yes
+sparse,A,after_compaction_and_expiration,5,20,1,1074575,25,546785,1,4722,21,523057,21,2,62,18486080,100000,100000,yes
+sparse,B,after_commits,5,20,20,839515,22,386788,20,99902,20,352836,20,60,60,5876134,100000,100000,yes
+sparse,B,after_expiration,5,20,1,756248,23,398001,1,5419,20,352836,20,60,60,5876134,100000,100000,yes
+sparse,B,after_compaction,5,20,2,1142178,24,410389,2,10138,41,721677,21,2,62,10087876,100000,100000,yes
+sparse,B,after_compaction_and_expiration,5,20,1,795482,25,421950,1,4719,21,368830,21,2,62,10087876,100000,100000,yes
