@@ -17,6 +17,9 @@
     "runs": 3,
     "warmup_runs": 1
   },
+  "attribute_sweep": {
+    "k_values": [10, 25, 67, 150]
+  },
   "scaling": {
     "n_entities": 5,
     "h_values": [1, 10],
