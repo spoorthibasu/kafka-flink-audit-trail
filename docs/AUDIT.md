@@ -107,3 +107,11 @@ and `SchemaBenchmark.java`. No em dashes found.
 5. Benchmarks: byte counts come from one hand-built event each, without the compressed
    sizes, storage, latency or history-length sweep the revision calls for, and without a
    synthetic-data label.
+
+## Found after the audit, by the cross-engine CI
+
+`sql/lag_history.sql` at commit 7eeae21 ended with a comment after the final semicolon.
+Read as a whole file, the statement sent to an engine still contains the `;`. DuckDB and
+Spark accept that; Trino 483 rejects it with a syntax error. The query itself is portable;
+the file was not. The comment now sits in the header, and `ci/run_sql_matrix.py` drops
+trailing comment-only lines before sending a file, so the matrix tests the statement.
