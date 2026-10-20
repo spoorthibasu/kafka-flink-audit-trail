@@ -45,6 +45,7 @@ import duckdb
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import benchmark as b  # noqa: E402  same generator, schemas, Parquet writer and queries
+from summary_sections import replace_section  # noqa: E402
 
 TABLE_FOR_DESIGN = {"A": "a", "B": "b", "C": "c"}
 SECTION_HEADING = "## Resource use and cost"
@@ -460,14 +461,8 @@ def section(env, prices, resource_rows, cost):
 
 
 def append_section(summary_path, text):
-    with open(summary_path) as fh:
-        current = fh.read()
-    marker = "\n" + SECTION_HEADING + "\n"
-    if marker in current:
-        current = current[:current.index(marker)]
-    current = current.rstrip("\n") + "\n\n" + text
-    with open(summary_path, "w") as fh:
-        fh.write(current)
+    """Replace this stage's section only, leaving any later section in place."""
+    replace_section(summary_path, SECTION_HEADING, text)
 
 
 # ---------------------------------------------------------------------------- main
