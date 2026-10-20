@@ -200,15 +200,28 @@ make produce   # send the three sample events; watch them appear in terminal 1
 make down      # stop Kafka
 ```
 
-`make run` prints one line per event:
+`make produce` sends the article's example: three full-state events for customer 98765,
+each carrying email and phone. `make run` prints one line per event (the `1>` prefix is
+Flink's print sink naming the subtask):
 
 ```
-APPEND  customer_id=98765 seq=1 email=alice@gmail.com   phone=555-1001 address=123 Main St
-APPEND  customer_id=98765 seq=2 email=alice@yahoo.com   phone=null     address=null
-APPEND  customer_id=98765 seq=3 email=alice@outlook.com phone=null     address=null
+1> APPEND  customer_id=98765 seq=1 ts=1000 email=alice@gmail.com phone=555-397 address=null
+1> APPEND  customer_id=98765 seq=2 ts=2000 email=alice@yahoo.com phone=555-397 address=null
+1> APPEND  customer_id=98765 seq=3 ts=3000 email=alice@newjob.com phone=555-493 address=null
 ```
 
-Every event is a new row; nothing gets updated.
+Every event is a new row; nothing gets updated. `sql/lag_history.sql` over those three
+rows returns the previous values without any previous-value field in the schema
+(address columns omitted; they are null throughout):
+
+| event_timestamp | event_sequence | email | previous_email | phone | previous_phone |
+|---|---|---|---|---|---|
+| 1000 | 1 | alice@gmail.com | null | 555-397 | null |
+| 2000 | 2 | alice@yahoo.com | alice@gmail.com | 555-397 | 555-397 |
+| 3000 | 3 | alice@newjob.com | alice@yahoo.com | 555-493 | 555-397 |
+
+These rows are golden case 1 in `ci/golden/case1_full_state`, which CI checks on DuckDB,
+Spark and Trino.
 
 The job checkpoints every 60 s with a 30 s minimum pause between checkpoints, in
 exactly-once mode, and uses `WatermarkStrategy.noWatermarks()`: there is no event-time

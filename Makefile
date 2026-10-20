@@ -77,9 +77,9 @@ run:
 
 produce:
 	@printf '%s\n' \
-	  '{"customerId":"98765","eventTimestamp":1000,"eventSequence":1,"email":"alice@gmail.com","phone":"555-1001","address":"123 Main St"}' \
-	  '{"customerId":"98765","eventTimestamp":2000,"eventSequence":2,"email":"alice@yahoo.com"}' \
-	  '{"customerId":"98765","eventTimestamp":3000,"eventSequence":3,"email":"alice@outlook.com"}' \
+	  '{"customerId":"98765","eventTimestamp":1000,"eventSequence":1,"email":"alice@gmail.com","phone":"555-397"}' \
+	  '{"customerId":"98765","eventTimestamp":2000,"eventSequence":2,"email":"alice@yahoo.com","phone":"555-397"}' \
+	  '{"customerId":"98765","eventTimestamp":3000,"eventSequence":3,"email":"alice@newjob.com","phone":"555-493"}' \
 	  | docker exec -i kfat-kafka /opt/kafka/bin/kafka-console-producer.sh \
 	    --topic customer-profile-changes --bootstrap-server localhost:9092
 	@echo "produced 3 events"
