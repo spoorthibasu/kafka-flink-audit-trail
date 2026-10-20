@@ -29,6 +29,12 @@ import java.util.Map;
  * Stateless: each event becomes one new row, nothing is updated. Previous values
  * are reconstructed at query time with the window-function SQL in sql/.
  *
+ * Exactly-once here means Flink's own recovery path: each checkpoint commits the Kafka
+ * offsets and the Iceberg snapshot together, so a restart from the last checkpoint does
+ * not commit the same Kafka records twice. A duplicate already present in the topic is
+ * a separate Kafka record and lands as a separate row; sql/dedup.sql drops it.
+ * CrashRestartTest exercises both halves of that statement against a real broker.
+ *
  * Args (all optional):
  *   --kafka-bootstrap-servers  default localhost:9092
  *   --topic                    default customer-profile-changes
@@ -67,32 +73,18 @@ public class CustomerProfileAuditJob {
         env.enableCheckpointing(checkpointMs, CheckpointingMode.EXACTLY_ONCE);
         env.getCheckpointConfig().setMinPauseBetweenCheckpoints(30_000);
 
-        KafkaSource<CustomerProfileChangeEvent> source =
-            KafkaSource.<CustomerProfileChangeEvent>builder()
-                .setBootstrapServers(bootstrap)
-                .setTopics(topic)
-                .setGroupId("profile-audit-consumer")
-                .setStartingOffsets(OffsetsInitializer.earliest())
-                .setValueOnlyDeserializer(new CustomerProfileChangeDeserializer())
-                .build();
-
         DataStream<CustomerProfileChangeEvent> eventStream =
             env.fromSource(
-                source,
+                kafkaSource(bootstrap, topic, "profile-audit-consumer"),
                 WatermarkStrategy.noWatermarks(), // no event-time windowing, no operator state
-                "Kafka customer profile events");
+                "Kafka customer profile events")
+            .uid("kafka-customer-profile-events");
 
         if (sink.equals("iceberg")) {
             // Production / cluster path: append each event as a new Iceberg row.
-            DataStream<RowData> rowDataStream = eventStream
-                .map(CustomerProfileAuditJob::toRowData)
-                .name("convert-to-row-data");
             System.out.println("Appending '" + topic + "' -> " + warehouse
                 + " (audit.customer_profile_changes)");
-            FlinkSink.forRowData(rowDataStream)
-                .tableLoader(buildTableLoader(warehouse, ioImpl))
-                .overwrite(false)
-                .append();
+            appendToIceberg(eventStream, warehouse, ioImpl);
         } else {
             // Default demo path: print each appended row, so the Kafka -> Flink round
             // trip runs anywhere with no Iceberg/Hadoop/S3 setup. The query-time
@@ -105,6 +97,33 @@ public class CustomerProfileAuditJob {
         }
 
         env.execute("Customer Profile Audit Trail");
+    }
+
+    /** The unbounded Kafka source the job reads; CrashRestartTest reads the same one. */
+    public static KafkaSource<CustomerProfileChangeEvent> kafkaSource(
+            String bootstrap, String topic, String groupId) {
+        return KafkaSource.<CustomerProfileChangeEvent>builder()
+            .setBootstrapServers(bootstrap)
+            .setTopics(topic)
+            .setGroupId(groupId)
+            .setStartingOffsets(OffsetsInitializer.earliest())
+            .setValueOnlyDeserializer(new CustomerProfileChangeDeserializer())
+            .build();
+    }
+
+    /** Append every event as one Iceberg row. Operator uids are fixed so a restart from a
+     *  checkpoint maps the writer and committer state back onto the same operators. */
+    public static void appendToIceberg(
+            DataStream<CustomerProfileChangeEvent> events, String warehouse, String ioImpl) {
+        DataStream<RowData> rowDataStream = events
+            .map(CustomerProfileAuditJob::toRowData)
+            .name("convert-to-row-data")
+            .uid("convert-to-row-data");
+        FlinkSink.forRowData(rowDataStream)
+            .tableLoader(buildTableLoader(warehouse, ioImpl))
+            .uidPrefix("iceberg-audit-trail")
+            .overwrite(false)
+            .append();
     }
 
     static String describe(CustomerProfileChangeEvent e) {

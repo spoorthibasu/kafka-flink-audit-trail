@@ -146,6 +146,10 @@ sql/
 src/main/avro/
   customer_profile_change_event.avsc   the event contract to register
 
+src/test/java/com/example/audit/
+  CrashRestartTest.java                 fail, restart from the last checkpoint, assert counts
+  IcebergRoundTripTest.java             Flink writes Iceberg in batch mode, LAG reads it back
+
 src/main/java/com/example/audit/
   CustomerProfileAuditJob.java          the Flink job (prints rows, or writes Iceberg)
   CustomerProfileChangeEvent.java       the event POJO
@@ -164,6 +168,7 @@ bench/
 results/
   SUMMARY.md                            benchmark tables, environment, wall time
   *.csv, explain/                       every measured value and the EXPLAIN ANALYZE text
+  crash_restart_case1.md, _case2.md     what CrashRestartTest observed on the last run
 
 ci/
   run_sql_matrix.py                     every sql/ file on DuckDB, Spark, Trino vs golden outputs
@@ -224,6 +229,35 @@ mvn -q compile exec:exec@run-job   # add: --sink iceberg --warehouse file:///tmp
 
 `make loop` and `IcebergRoundTripTest` exercise the write path into a real Iceberg table
 and read the rows back through Iceberg's own reader.
+
+### Crash and restart evidence
+
+`CrashRestartTest` runs the job against a real Kafka broker, twice:
+
+1. Recovery. 5,000 distinct events go to a fresh topic. The job checkpoints every 200 ms
+   with retained checkpoints, and an operator between the source and the sink throws
+   once after at least one checkpoint has completed and 2,000 records have passed. The
+   restart strategy is "none", so the job dies. A second submission of the same pipeline
+   restores from the last completed checkpoint. The test asserts that the Iceberg table
+   then holds exactly 5,000 rows and no repeated `(customer_id, event_sequence)`: the
+   records between the last commit and the failure were replayed from Kafka and
+   committed once.
+2. A duplicate already in the topic. The same events plus one of them sent a second
+   time, with no failure. The test asserts 5,001 rows, 5,000 distinct pairs, and that
+   `sql/dedup.sql` returns 5,000. Exactly-once covers the first case, not the second.
+
+Both tests write what they observed to `results/crash_restart_case1.md` and
+`results/crash_restart_case2.md`. GitHub Actions runs them against a Kafka service
+container on every push. Locally:
+
+```bash
+make up
+make crash-test
+make down
+```
+
+Without a reachable broker the tests are skipped by `make test`; `make crash-test` sets
+`REQUIRE_KAFKA=1` so they fail instead.
 
 ### On a real cluster
 

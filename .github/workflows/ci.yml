@@ -81,3 +81,46 @@ jobs:
         with:
           name: bench-smoke-results
           path: results-smoke
+
+  crash-restart:
+    name: Flink to Iceberg job fails, restarts from the last checkpoint, counts match
+    runs-on: ubuntu-latest
+    services:
+      kafka:
+        image: apache/kafka:3.7.0
+        ports:
+          - 9092:9092
+        env:
+          KAFKA_NODE_ID: 1
+          KAFKA_PROCESS_ROLES: broker,controller
+          KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+          KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+          KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+          KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+          KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+          KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+          CLUSTER_ID: 5L6g3nShTeMCtK00X86swQ
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Crash and restart test
+        env:
+          REQUIRE_KAFKA: '1'
+          KAFKA_BOOTSTRAP: localhost:9092
+        run: mvn -q -B test -Dtest=CrashRestartTest
+      - name: Evidence as job summary
+        if: always()
+        run: cat results/crash_restart_case1.md results/crash_restart_case2.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crash-restart-evidence
+          path: results/crash_restart_case*.md

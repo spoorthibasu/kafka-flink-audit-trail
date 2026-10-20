@@ -1,7 +1,7 @@
 # Kafka, Flink, and Iceberg audit-trail example.
 # Everything below needs only JDK 11+ and Maven, except the targets that say Docker,
 # and the Python benchmark, which needs bench/requirements.txt.
-.PHONY: help test demo bench bench-full bench-smoke sql-matrix trino-up trino-down loop build run produce up down
+.PHONY: help test demo bench bench-full bench-smoke sql-matrix trino-up trino-down crash-test loop build run produce up down
 
 PYTHON ?= python3
 
@@ -13,6 +13,7 @@ help:
 	@echo "make bench-smoke - the same benchmark on a tiny config, to check the script runs"
 	@echo "make sql-matrix  - run every sql/ file on DuckDB, Spark and Trino against the golden outputs (needs 'make trino-up')"
 	@echo "make trino-up    - start a local Trino (Docker) for sql-matrix; make trino-down stops it"
+	@echo "make crash-test  - Flink to Iceberg job: fail, restart from the last checkpoint, assert counts (needs 'make up')"
 	@echo "make loop        - Flink writes a real Iceberg table, then query it back (no Kafka/Docker)"
 	@echo "make build       - shaded fat jar for 'flink run'"
 	@echo "make up          - start single-node Kafka (Docker)"
@@ -52,6 +53,12 @@ trino-up:
 
 trino-down:
 	docker rm -f kfat-trino
+
+# Crash and restart evidence against the Kafka that `make up` starts. Writes what it
+# observed to results/crash_restart_case1.md and results/crash_restart_case2.md.
+KAFKA_BOOTSTRAP ?= localhost:9092
+crash-test:
+	REQUIRE_KAFKA=1 KAFKA_BOOTSTRAP=$(KAFKA_BOOTSTRAP) mvn -q test -Dtest=CrashRestartTest
 
 loop:
 	@mvn -q compile exec:exec@run-loop
