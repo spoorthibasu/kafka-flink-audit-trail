@@ -1,0 +1,26 @@
+{
+  "_comment": "Tiny configuration so CI can exercise bench/benchmark.py end to end in seconds.",
+  "seed": 20261113,
+  "n_entities": 20,
+  "h_events": 5,
+  "k_attributes": 67,
+  "event_models": ["full", "sparse"],
+  "changed_attributes_per_event": {"min": 1, "max": 5},
+  "payload": {
+    "deflate_level": 6
+  },
+  "storage": {
+    "parquet_compressions": ["snappy", "zstd"],
+    "parquet_row_group_size": 10000
+  },
+  "queries": {
+    "runs": 3,
+    "warmup_runs": 1
+  },
+  "scaling": {
+    "n_entities": 5,
+    "h_values": [1, 10],
+    "runs": 2,
+    "warmup_runs": 1
+  }
+}

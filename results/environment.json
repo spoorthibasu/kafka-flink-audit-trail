@@ -1,0 +1,59 @@
+{
+  "started_utc": "2026-10-20T15:07:05Z",
+  "config_file": "bench/config.json",
+  "config": {
+    "_comment": "All benchmark parameters. Synthetic data at demonstration scale. Change nothing else to re-run.",
+    "seed": 20261113,
+    "n_entities": 1000,
+    "h_events": 100,
+    "k_attributes": 67,
+    "event_models": [
+      "full",
+      "sparse"
+    ],
+    "changed_attributes_per_event": {
+      "min": 1,
+      "max": 5
+    },
+    "payload": {
+      "deflate_level": 6
+    },
+    "storage": {
+      "parquet_compressions": [
+        "snappy",
+        "zstd"
+      ],
+      "parquet_row_group_size": 10000
+    },
+    "queries": {
+      "runs": 20,
+      "warmup_runs": 3
+    },
+    "scaling": {
+      "n_entities": 100,
+      "h_values": [
+        1,
+        10,
+        100,
+        1000
+      ],
+      "runs": 10,
+      "warmup_runs": 2
+    }
+  },
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.9.6",
+    "cpu_count": 8,
+    "cpu": "Apple M3",
+    "memory_bytes": 17179869184,
+    "git_commit": "8bd6e743949b72bd93fc46b2d3f580bd3de2dce5"
+  },
+  "duckdb": "1.4.5",
+  "fastavro": "1.12.2",
+  "cramjam": "2.11.0",
+  "duckdb_threads": 8,
+  "wall_seconds": 150.5,
+  "finished_utc": "2026-10-20T15:09:35Z"
+}

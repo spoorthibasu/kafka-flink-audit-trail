@@ -16,10 +16,11 @@ scale. No production data exists here.
 ## Quickstart
 
 ```bash
-make test     # unit tests, no infrastructure
-make demo     # run the sql/ queries over a seeded table and print the results
-make bench    # schema size comparison on synthetic events
-make loop     # Flink writes a real Iceberg table, then query it back (a few seconds)
+make test        # unit tests, no infrastructure
+make demo        # run the sql/ queries over a seeded table and print the results
+make bench       # schema size comparison on one synthetic event
+make bench-full  # the full benchmark; regenerates results/ (Python, a few minutes)
+make loop        # Flink writes a real Iceberg table, then query it back (a few seconds)
 ```
 
 `make demo` seeds one customer's history (sparse updates, nothing overwritten) and runs
@@ -84,6 +85,36 @@ records to Iceberg twice. That is the whole guarantee. A duplicate already prese
 the topic, such as a producer retry that wrote the same event twice, is a separate Kafka
 record and arrives as a separate Iceberg row. `sql/dedup.sql` is what drops it.
 
+## Benchmark
+
+`make bench-full` regenerates everything under `results/` from `bench/config.json`:
+`results/SUMMARY.md` holds the tables, the CSV files hold every measured value, and
+`results/environment.json` records the machine, the DuckDB version and the wall time.
+The data is synthetic, generated from the seed in the config at demonstration scale
+(N entities, H events each, K attributes, default K=67). It compares three designs:
+
+- A, previous-value schema: every attribute `x` has a companion `previous_x`.
+- B, audit trail: attributes only; history is reconstructed with window functions.
+- C, materialized current-state table: one row per entity holding the latest values.
+
+Two event models are generated from one seed: FULL, where every event carries every
+attribute, and SPARSE, where each event carries only the attributes it changes and null
+for the rest. For each design the benchmark measures the schema (field count, schema
+size), the Avro payload per event (mean, median, p95; uncompressed, deflate, snappy;
+Confluent framing excluded), the Parquet size of the whole N x H dataset, and DuckDB
+query latency (p50, p95, p99 over repeated runs) for one-hop previous value and
+three-changes-back on a single entity, current state and previous value over all
+entities, and the last-known and previous-known value on sparse events. A sweep over
+H in 1, 10, 100, 1000 shows how latency and storage grow with the length of a
+customer's history. Where a design cannot answer a question from its own data, such
+as three changes back on the one-hop schema A, the table says so instead of a number.
+
+```bash
+pip install -r bench/requirements.txt
+make bench-full      # about ten minutes on a laptop; results/SUMMARY.md
+make bench-smoke     # tiny configuration, seconds; checks the script runs
+```
+
 ## Layout
 
 ```
@@ -109,6 +140,13 @@ bench/
   generate_schemas.py                   one attribute list, two schemas
   customer_profile_previous_value.avsc  generated: attributes plus previous_* companions
   customer_profile_audit_trail.avsc     generated: attributes only
+  benchmark.py                          what `make bench-full` runs
+  config.json                           every benchmark parameter, including the seed
+  config.smoke.json                     tiny configuration for `make bench-smoke` and CI
+
+results/
+  SUMMARY.md                            benchmark tables, environment, wall time
+  *.csv, explain/                       every measured value and the EXPLAIN ANALYZE text
 
 docs/
   AUDIT.md                              the repository audited against the article

@@ -1,0 +1,64 @@
+┌─────────────────────────────────────┐
+│┌───────────────────────────────────┐│
+││    Query Profiling Information    ││
+│└───────────────────────────────────┘│
+└─────────────────────────────────────┘
+EXPLAIN ANALYZE SELECT customer_id, email, phone, secondary_phone, first_name, last_name, display_name, address_line1, address_line2, city, state, postal_code, country, billing_line1, billing_line2, billing_city, billing_state, billing_postal_code, billing_country, company, job_title, department, timezone, locale, preferred_language, currency, account_tier, account_status, loyalty_tier, loyalty_points, credit_limit, payment_method, card_last_four, card_brand, billing_cycle_day, tax_id, tax_exempt, marketing_opt_in, sms_opt_in, email_opt_in, push_opt_in, newsletter_frequency, contact_preference, referral_code, referred_by, segment, lifecycle_stage, lead_source, utm_campaign, preferred_store_id, default_shipping_method, gift_wrap_default, avatar_url, bio, website, twitter_handle, linkedin_url, date_of_birth, gender, household_size, annual_income_band, interests, favorite_category, preferred_brand, shoe_size, shirt_size, dietary_preference, marital_status FROM c
+┌────────────────────────────────────────────────┐
+│┌──────────────────────────────────────────────┐│
+││              Total Time: 0.0010s             ││
+│└──────────────────────────────────────────────┘│
+└────────────────────────────────────────────────┘
+┌───────────────────────────┐
+│           QUERY           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│      EXPLAIN_ANALYZE      │
+│    ────────────────────   │
+│           0 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         TABLE_SCAN        │
+│    ────────────────────   │
+│         Function:         │
+│        READ_PARQUET       │
+│                           │
+│        Projections:       │
+│        customer_id        │
+│           email           │
+│           phone           │
+│      secondary_phone      │
+│         first_name        │
+│         last_name         │
+│        display_name       │
+│       address_line1       │
+│       address_line2       │
+│            city           │
+│           state           │
+│        postal_code        │
+│          country          │
+│       billing_line1       │
+│            ...            │
+│            bio            │
+│          website          │
+│       twitter_handle      │
+│        linkedin_url       │
+│       date_of_birth       │
+│           gender          │
+│       household_size      │
+│     annual_income_band    │
+│         interests         │
+│     favorite_category     │
+│      preferred_brand      │
+│         shoe_size         │
+│         shirt_size        │
+│     dietary_preference    │
+│       marital_status      │
+│                           │
+│    Total Files Read: 1    │
+│                           │
+│          100 rows         │
+│          (0.00s)          │
+└───────────────────────────┘
+

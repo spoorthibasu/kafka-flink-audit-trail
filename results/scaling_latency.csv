@@ -1,0 +1,121 @@
+model,n_entities,h_events,query,description,scope,design,entity,supported,reason,runs,warmup_runs,p50_ms,p95_ms,p99_ms,mean_ms,min_ms,max_ms,rows_returned,scan_rows_out,scan_ms,profiler_rows_scanned
+full,100,1,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,0.884,0.983,0.983,0.909,0.875,0.983,1,1,0.019,100
+full,100,1,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,0.692,0.746,0.746,0.692,0.662,0.746,1,1,0.015,100
+full,100,1,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,1,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+full,100,1,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,0.665,0.705,0.705,0.672,0.66,0.705,1,1,0.016,100
+full,100,1,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,1,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,5.81,6.076,6.076,5.822,5.496,6.076,100,100,0.275,100
+full,100,1,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,5.294,5.511,5.511,5.36,5.212,5.511,100,100,0.27,100
+full,100,1,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.537,1.62,1.62,1.54,1.489,1.62,100,100,0.241,100
+full,100,1,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,1.511,1.568,1.568,1.517,1.463,1.568,100,100,0.018,100
+full,100,1,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,1.635,3.981,3.981,1.918,1.584,3.981,100,100,0.015,100
+full,100,1,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+full,100,10,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,1.017,1.389,1.389,1.067,0.979,1.389,10,10,0.085,1000
+full,100,10,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,0.751,0.802,0.802,0.762,0.731,0.802,10,10,0.066,1000
+full,100,10,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,10,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+full,100,10,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,0.74,0.761,0.761,0.739,0.719,0.761,10,10,0.064,1000
+full,100,10,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,10,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,6.651,7.159,7.159,6.655,6.238,7.159,100,1000,0.575,1000
+full,100,10,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,6.322,6.43,6.43,6.241,5.808,6.43,100,1000,0.582,1000
+full,100,10,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.539,1.711,1.711,1.581,1.496,1.711,100,100,0.237,100
+full,100,10,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,1.682,1.891,1.891,1.704,1.587,1.891,100,1000,0.037,1000
+full,100,10,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,2.056,2.339,2.339,2.037,1.751,2.339,100,1000,0.027,1000
+full,100,10,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+full,100,100,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,1.132,1.431,1.431,1.175,1.056,1.431,100,100,0.158,10000
+full,100,100,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,0.887,1.076,1.076,0.912,0.86,1.076,100,100,0.126,10000
+full,100,100,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,100,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+full,100,100,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,0.832,1.01,1.01,0.859,0.794,1.01,100,100,0.128,10000
+full,100,100,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,100,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,16.172,19.13,19.13,16.636,15.92,19.13,100,10000,1.827,10000
+full,100,100,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,15.916,34.557,34.557,17.997,15.402,34.557,100,10000,1.774,10000
+full,100,100,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.896,2.293,2.293,1.93,1.782,2.293,100,100,0.293,100
+full,100,100,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,3.173,3.539,3.539,3.243,2.922,3.539,100,10000,0.141,10000
+full,100,100,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,3.162,4.072,4.072,3.254,2.831,4.072,100,10000,0.097,10000
+full,100,100,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+full,100,1000,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,2.217,2.509,2.509,2.26,2.104,2.509,1000,1000,1.195,800000
+full,100,1000,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,1.535,1.777,1.777,1.578,1.472,1.777,1000,1000,0.746,800000
+full,100,1000,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,1000,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+full,100,1000,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,1.533,1.703,1.703,1.562,1.508,1.703,1000,1000,0.555,800000
+full,100,1000,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+full,100,1000,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,58.469,67.034,67.034,59.543,54.922,67.034,100,100000,32.97,800000
+full,100,1000,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,54.866,64.542,64.542,55.944,53.277,64.542,100,100000,33.141,800000
+full,100,1000,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.635,1.982,1.982,1.676,1.578,1.982,100,100,0.245,100
+full,100,1000,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,8.38,26.677,26.677,10.501,6.371,26.677,100,100000,2.297,800000
+full,100,1000,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,9.585,10.283,10.283,9.673,9.008,10.283,100,100000,2.687,800000
+full,100,1000,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+sparse,100,1,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,0.957,1.083,1.083,0.98,0.893,1.083,1,1,0.02,100
+sparse,100,1,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,0.707,0.982,0.982,0.742,0.663,0.982,1,1,0.017,100
+sparse,100,1,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,1,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+sparse,100,1,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,0.686,0.815,0.815,0.704,0.674,0.815,1,1,0.017,100
+sparse,100,1,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,1,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,12.671,13.813,13.813,12.888,12.243,13.813,100,100,0.298,100
+sparse,100,1,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,12.45,12.819,12.819,12.371,11.727,12.819,100,100,0.292,100
+sparse,100,1,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.639,1.967,1.967,1.667,1.54,1.967,100,100,0.252,100
+sparse,100,1,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,1.557,1.836,1.836,1.6,1.475,1.836,100,100,0.018,100
+sparse,100,1,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,1.678,2.09,2.09,1.728,1.643,2.09,100,100,0.017,100
+sparse,100,1,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+sparse,100,1,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,A,C0000050,yes,,10,2,6.468,6.883,6.883,6.548,6.295,6.883,1,1,0.431,100
+sparse,100,1,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,B,C0000050,yes,,10,2,5.59,5.982,5.982,5.645,5.452,5.982,1,1,0.235,100
+sparse,100,1,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,C,C0000050,no,holds the last known value only,0,0,,,,,,,,,,
+sparse,100,1,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,A,,yes,,10,2,14.859,16.42,16.42,15.009,14.083,16.42,100,100,0.489,100
+sparse,100,1,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,B,,yes,,10,2,12.617,12.894,12.894,12.484,11.719,12.894,100,100,0.291,100
+sparse,100,1,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,C,,no,holds the last known value only,0,0,,,,,,,,,,
+sparse,100,10,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,1.006,1.161,1.161,1.039,0.955,1.161,2,2,0.079,1000
+sparse,100,10,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,0.776,1.027,1.027,0.804,0.746,1.027,2,2,0.066,1000
+sparse,100,10,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,10,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+sparse,100,10,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,0.727,0.796,0.796,0.737,0.711,0.796,2,2,0.071,1000
+sparse,100,10,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,10,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,15.022,15.539,15.539,15.072,14.542,15.539,100,1000,0.58,1000
+sparse,100,10,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,14.479,14.871,14.871,14.457,14.116,14.871,100,1000,0.564,1000
+sparse,100,10,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.643,1.863,1.863,1.66,1.549,1.863,100,100,0.236,100
+sparse,100,10,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,1.649,1.869,1.869,1.69,1.624,1.869,100,154,0.037,1000
+sparse,100,10,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,1.841,2.293,2.293,1.898,1.763,2.293,100,154,0.031,1000
+sparse,100,10,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+sparse,100,10,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,A,C0000050,yes,,10,2,8.779,9.214,9.214,8.804,8.53,9.214,10,10,2.365,1000
+sparse,100,10,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,B,C0000050,yes,,10,2,7.064,7.681,7.681,7.172,6.849,7.681,10,10,1.167,1000
+sparse,100,10,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,C,C0000050,no,holds the last known value only,0,0,,,,,,,,,,
+sparse,100,10,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,A,,yes,,10,2,22.002,22.405,22.405,21.979,21.506,22.405,1000,1000,1.02,1000
+sparse,100,10,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,B,,yes,,10,2,20.076,20.677,20.677,20.086,19.618,20.677,1000,1000,0.692,1000
+sparse,100,10,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,C,,no,holds the last known value only,0,0,,,,,,,,,,
+sparse,100,100,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,1.076,1.276,1.276,1.104,1.008,1.276,3,3,0.152,10000
+sparse,100,100,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,0.844,0.94,0.94,0.848,0.8,0.94,3,3,0.125,10000
+sparse,100,100,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,100,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+sparse,100,100,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,0.844,0.98,0.98,0.85,0.782,0.98,3,3,0.146,10000
+sparse,100,100,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,100,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,34.188,35.217,35.217,34.249,33.507,35.217,100,10000,1.816,10000
+sparse,100,100,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,33.887,35.739,35.739,34.03,33.31,35.739,100,10000,2.668,10000
+sparse,100,100,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.61,1.805,1.805,1.674,1.539,1.805,100,100,0.244,100
+sparse,100,100,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,1.83,2.042,2.042,1.863,1.789,2.042,100,576,0.132,10000
+sparse,100,100,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,1.977,2.412,2.412,2.036,1.878,2.412,100,576,0.094,10000
+sparse,100,100,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+sparse,100,100,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,A,C0000050,yes,,10,2,12.028,12.159,12.159,11.952,11.645,12.159,100,100,4.165,10000
+sparse,100,100,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,B,C0000050,yes,,10,2,9.185,20.76,20.76,10.329,8.887,20.76,100,100,2.287,10000
+sparse,100,100,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,C,C0000050,no,holds the last known value only,0,0,,,,,,,,,,
+sparse,100,100,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,A,,yes,,10,2,101.763,116.724,116.724,103.747,99.987,116.724,10000,10000,3.946,10000
+sparse,100,100,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,B,,yes,,10,2,92.338,113.922,113.922,97.217,87.755,113.922,10000,10000,1.857,10000
+sparse,100,100,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,C,,no,holds the last known value only,0,0,,,,,,,,,,
+sparse,100,1000,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,A,C0000050,yes,,10,2,2.037,2.413,2.413,2.101,1.995,2.413,49,49,1.263,800000
+sparse,100,1000,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,B,C0000050,yes,,10,2,1.38,1.545,1.545,1.394,1.306,1.545,49,49,0.617,800000
+sparse,100,1000,q1_one_hop_previous_single,"one-hop previous value of email, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,1000,q2_three_changes_back_single,"value of email three changes back, single entity",single,A,C0000050,no,holds one hop only,0,0,,,,,,,,,,
+sparse,100,1000,q2_three_changes_back_single,"value of email three changes back, single entity",single,B,C0000050,yes,,10,2,1.379,1.417,1.417,1.37,1.299,1.417,49,49,1.196,800000
+sparse,100,1000,q2_three_changes_back_single,"value of email three changes back, single entity",single,C,C0000050,no,holds no history,0,0,,,,,,,,,,
+sparse,100,1000,q3_current_state_all,"current state, all 67 attributes, all entities",all,A,,yes,,10,2,194.094,336.075,336.075,217.338,182.81,336.075,100,100000,36.83,800000
+sparse,100,1000,q3_current_state_all,"current state, all 67 attributes, all entities",all,B,,yes,,10,2,185.223,218.283,218.283,187.848,172.779,218.283,100,100000,31.032,800000
+sparse,100,1000,q3_current_state_all,"current state, all 67 attributes, all entities",all,C,,yes,,10,2,1.563,1.744,1.744,1.606,1.546,1.744,100,100,0.235,100
+sparse,100,1000,q4_previous_value_all,"current and previous value of email, all entities",all,A,,yes,,10,2,3.432,3.572,3.572,3.423,3.287,3.572,100,4657,2.412,800000
+sparse,100,1000,q4_previous_value_all,"current and previous value of email, all entities",all,B,,yes,,10,2,3.167,4.379,4.379,3.305,3.089,4.379,100,4657,2.082,800000
+sparse,100,1000,q4_previous_value_all,"current and previous value of email, all entities",all,C,,no,holds no history,0,0,,,,,,,,,,
+sparse,100,1000,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,A,C0000050,yes,,10,2,25.198,28.833,28.833,25.689,24.011,28.833,1000,1000,9.98,800000
+sparse,100,1000,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,B,C0000050,yes,,10,2,19.676,19.857,19.857,19.71,19.609,19.857,1000,1000,4.842,800000
+sparse,100,1000,q5_last_and_previous_known_single,"last-known and previous-known value of all 67 attributes, single entity",single,C,C0000050,no,holds the last known value only,0,0,,,,,,,,,,
+sparse,100,1000,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,A,,yes,,10,2,767.317,862.814,862.814,784.576,762.269,862.814,100000,100000,75.875,800000
+sparse,100,1000,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,B,,yes,,10,2,725.678,846.069,846.069,744.423,708.789,846.069,100000,100000,33.316,800000
+sparse,100,1000,q5_last_and_previous_known_all,"last-known and previous-known value of all 67 attributes, all entities",all,C,,no,holds the last known value only,0,0,,,,,,,,,,

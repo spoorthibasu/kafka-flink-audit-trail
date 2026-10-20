@@ -1,0 +1,117 @@
+┌─────────────────────────────────────┐
+│┌───────────────────────────────────┐│
+││    Query Profiling Information    ││
+│└───────────────────────────────────┘│
+└─────────────────────────────────────┘
+EXPLAIN ANALYZE SELECT event_timestamp, event_sequence, email, LAG(email, 3) OVER (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence) AS email_three_back FROM b WHERE customer_id = 'C0000050' AND email IS NOT NULL ORDER BY event_timestamp, event_sequence
+┌────────────────────────────────────────────────┐
+│┌──────────────────────────────────────────────┐│
+││              Total Time: 0.0009s             ││
+│└──────────────────────────────────────────────┘│
+└────────────────────────────────────────────────┘
+┌───────────────────────────┐
+│           QUERY           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│      EXPLAIN_ANALYZE      │
+│    ────────────────────   │
+│           0 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│__internal_decompress_integ│
+│       ral_bigint(#0,      │
+│       1700000000000)      │
+│__internal_decompress_integ│
+│     ral_bigint(#1, 1)     │
+│             #2            │
+│             #3            │
+│                           │
+│          10 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│          ORDER_BY         │
+│    ────────────────────   │
+│       memory.main.b       │
+│    .event_timestamp ASC   │
+│       memory.main.b       │
+│    .event_sequence ASC    │
+│                           │
+│          10 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│__internal_compress_integra│
+│       l_uinteger(#0,      │
+│       1700000000000)      │
+│__internal_compress_integra│
+│     l_utinyint(#1, 1)     │
+│             #2            │
+│             #3            │
+│                           │
+│          10 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│      event_timestamp      │
+│       event_sequence      │
+│           email           │
+│      email_three_back     │
+│                           │
+│          10 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│             #0            │
+│             #1            │
+│             #2            │
+│             #3            │
+│             #4            │
+│                           │
+│          10 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           WINDOW          │
+│    ────────────────────   │
+│        Projections:       │
+│    LAG(email, 3) OVER     │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│            LAST)          │
+│                           │
+│          10 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         TABLE_SCAN        │
+│    ────────────────────   │
+│         Function:         │
+│        READ_PARQUET       │
+│                           │
+│        Projections:       │
+│        customer_id        │
+│      event_timestamp      │
+│       event_sequence      │
+│           email           │
+│                           │
+│          Filters:         │
+│   customer_id='C0000050'  │
+│                           │
+│    Total Files Read: 1    │
+│                           │
+│          10 rows          │
+│          (0.00s)          │
+└───────────────────────────┘
+

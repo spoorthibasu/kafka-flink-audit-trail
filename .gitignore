@@ -8,3 +8,4 @@ warehouse/
 /tmp/audit-warehouse/
 *.log
 .venv/
+results-smoke/

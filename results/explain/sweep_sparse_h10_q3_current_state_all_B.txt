@@ -1,0 +1,424 @@
+┌─────────────────────────────────────┐
+│┌───────────────────────────────────┐│
+││    Query Profiling Information    ││
+│└───────────────────────────────────┘│
+└─────────────────────────────────────┘
+EXPLAIN ANALYZE SELECT customer_id, email, phone, secondary_phone, first_name, last_name, display_name, address_line1, address_line2, city, state, postal_code, country, billing_line1, billing_line2, billing_city, billing_state, billing_postal_code, billing_country, company, job_title, department, timezone, locale, preferred_language, currency, account_tier, account_status, loyalty_tier, loyalty_points, credit_limit, payment_method, card_last_four, card_brand, billing_cycle_day, tax_id, tax_exempt, marketing_opt_in, sms_opt_in, email_opt_in, push_opt_in, newsletter_frequency, contact_preference, referral_code, referred_by, segment, lifecycle_stage, lead_source, utm_campaign, preferred_store_id, default_shipping_method, gift_wrap_default, avatar_url, bio, website, twitter_handle, linkedin_url, date_of_birth, gender, household_size, annual_income_band, interests, favorite_category, preferred_brand, shoe_size, shirt_size, dietary_preference, marital_status FROM (SELECT customer_id, LAST_VALUE(email IGNORE NULLS) OVER w_cur AS email, LAST_VALUE(phone IGNORE NULLS) OVER w_cur AS phone, LAST_VALUE(secondary_phone IGNORE NULLS) OVER w_cur AS secondary_phone, LAST_VALUE(first_name IGNORE NULLS) OVER w_cur AS first_name, LAST_VALUE(last_name IGNORE NULLS) OVER w_cur AS last_name, LAST_VALUE(display_name IGNORE NULLS) OVER w_cur AS display_name, LAST_VALUE(address_line1 IGNORE NULLS) OVER w_cur AS address_line1, LAST_VALUE(address_line2 IGNORE NULLS) OVER w_cur AS address_line2, LAST_VALUE(city IGNORE NULLS) OVER w_cur AS city, LAST_VALUE(state IGNORE NULLS) OVER w_cur AS state, LAST_VALUE(postal_code IGNORE NULLS) OVER w_cur AS postal_code, LAST_VALUE(country IGNORE NULLS) OVER w_cur AS country, LAST_VALUE(billing_line1 IGNORE NULLS) OVER w_cur AS billing_line1, LAST_VALUE(billing_line2 IGNORE NULLS) OVER w_cur AS billing_line2, LAST_VALUE(billing_city IGNORE NULLS) OVER w_cur AS billing_city, LAST_VALUE(billing_state IGNORE NULLS) OVER w_cur AS billing_state, LAST_VALUE(billing_postal_code IGNORE NULLS) OVER w_cur AS billing_postal_code, LAST_VALUE(billing_country IGNORE NULLS) OVER w_cur AS billing_country, LAST_VALUE(company IGNORE NULLS) OVER w_cur AS company, LAST_VALUE(job_title IGNORE NULLS) OVER w_cur AS job_title, LAST_VALUE(department IGNORE NULLS) OVER w_cur AS department, LAST_VALUE(timezone IGNORE NULLS) OVER w_cur AS timezone, LAST_VALUE(locale IGNORE NULLS) OVER w_cur AS locale, LAST_VALUE(preferred_language IGNORE NULLS) OVER w_cur AS preferred_language, LAST_VALUE(currency IGNORE NULLS) OVER w_cur AS currency, LAST_VALUE(account_tier IGNORE NULLS) OVER w_cur AS account_tier, LAST_VALUE(account_status IGNORE NULLS) OVER w_cur AS account_status, LAST_VALUE(loyalty_tier IGNORE NULLS) OVER w_cur AS loyalty_tier, LAST_VALUE(loyalty_points IGNORE NULLS) OVER w_cur AS loyalty_points, LAST_VALUE(credit_limit IGNORE NULLS) OVER w_cur AS credit_limit, LAST_VALUE(payment_method IGNORE NULLS) OVER w_cur AS payment_method, LAST_VALUE(card_last_four IGNORE NULLS) OVER w_cur AS card_last_four, LAST_VALUE(card_brand IGNORE NULLS) OVER w_cur AS card_brand, LAST_VALUE(billing_cycle_day IGNORE NULLS) OVER w_cur AS billing_cycle_day, LAST_VALUE(tax_id IGNORE NULLS) OVER w_cur AS tax_id, LAST_VALUE(tax_exempt IGNORE NULLS) OVER w_cur AS tax_exempt, LAST_VALUE(marketing_opt_in IGNORE NULLS) OVER w_cur AS marketing_opt_in, LAST_VALUE(sms_opt_in IGNORE NULLS) OVER w_cur AS sms_opt_in, LAST_VALUE(email_opt_in IGNORE NULLS) OVER w_cur AS email_opt_in, LAST_VALUE(push_opt_in IGNORE NULLS) OVER w_cur AS push_opt_in, LAST_VALUE(newsletter_frequency IGNORE NULLS) OVER w_cur AS newsletter_frequency, LAST_VALUE(contact_preference IGNORE NULLS) OVER w_cur AS contact_preference, LAST_VALUE(referral_code IGNORE NULLS) OVER w_cur AS referral_code, LAST_VALUE(referred_by IGNORE NULLS) OVER w_cur AS referred_by, LAST_VALUE(segment IGNORE NULLS) OVER w_cur AS segment, LAST_VALUE(lifecycle_stage IGNORE NULLS) OVER w_cur AS lifecycle_stage, LAST_VALUE(lead_source IGNORE NULLS) OVER w_cur AS lead_source, LAST_VALUE(utm_campaign IGNORE NULLS) OVER w_cur AS utm_campaign, LAST_VALUE(preferred_store_id IGNORE NULLS) OVER w_cur AS preferred_store_id, LAST_VALUE(default_shipping_method IGNORE NULLS) OVER w_cur AS default_shipping_method, LAST_VALUE(gift_wrap_default IGNORE NULLS) OVER w_cur AS gift_wrap_default, LAST_VALUE(avatar_url IGNORE NULLS) OVER w_cur AS avatar_url, LAST_VALUE(bio IGNORE NULLS) OVER w_cur AS bio, LAST_VALUE(website IGNORE NULLS) OVER w_cur AS website, LAST_VALUE(twitter_handle IGNORE NULLS) OVER w_cur AS twitter_handle, LAST_VALUE(linkedin_url IGNORE NULLS) OVER w_cur AS linkedin_url, LAST_VALUE(date_of_birth IGNORE NULLS) OVER w_cur AS date_of_birth, LAST_VALUE(gender IGNORE NULLS) OVER w_cur AS gender, LAST_VALUE(household_size IGNORE NULLS) OVER w_cur AS household_size, LAST_VALUE(annual_income_band IGNORE NULLS) OVER w_cur AS annual_income_band, LAST_VALUE(interests IGNORE NULLS) OVER w_cur AS interests, LAST_VALUE(favorite_category IGNORE NULLS) OVER w_cur AS favorite_category, LAST_VALUE(preferred_brand IGNORE NULLS) OVER w_cur AS preferred_brand, LAST_VALUE(shoe_size IGNORE NULLS) OVER w_cur AS shoe_size, LAST_VALUE(shirt_size IGNORE NULLS) OVER w_cur AS shirt_size, LAST_VALUE(dietary_preference IGNORE NULLS) OVER w_cur AS dietary_preference, LAST_VALUE(marital_status IGNORE NULLS) OVER w_cur AS marital_status, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY event_timestamp DESC, event_sequence DESC) AS rn FROM b WINDOW w_cur AS (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) t WHERE rn = 1
+┌────────────────────────────────────────────────┐
+│┌──────────────────────────────────────────────┐│
+││              Total Time: 0.0130s             ││
+│└──────────────────────────────────────────────┘│
+└────────────────────────────────────────────────┘
+┌───────────────────────────┐
+│           QUERY           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│      EXPLAIN_ANALYZE      │
+│    ────────────────────   │
+│           0 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│             #0            │
+│            #70            │
+│            #71            │
+│            #72            │
+│            #73            │
+│            #74            │
+│            #75            │
+│            #76            │
+│            #77            │
+│            #78            │
+│            #79            │
+│            #80            │
+│            #81            │
+│            #82            │
+│            #83            │
+│            ...            │
+│            #122           │
+│            #123           │
+│            #124           │
+│            #125           │
+│            #126           │
+│            #127           │
+│            #128           │
+│            #129           │
+│            #130           │
+│            #131           │
+│            #132           │
+│            #133           │
+│            #134           │
+│            #135           │
+│            #136           │
+│                           │
+│          100 rows         │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           FILTER          │
+│    ────────────────────   │
+│          (rn = 1)         │
+│                           │
+│          100 rows         │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│             #0            │
+│             #1            │
+│             #2            │
+│             #3            │
+│             #4            │
+│             #5            │
+│             #6            │
+│             #7            │
+│             #8            │
+│             #9            │
+│            #10            │
+│            #11            │
+│            #12            │
+│            #13            │
+│            #14            │
+│            ...            │
+│            #123           │
+│            #124           │
+│            #125           │
+│            #126           │
+│            #127           │
+│            #128           │
+│            #129           │
+│            #130           │
+│            #131           │
+│            #132           │
+│            #133           │
+│            #134           │
+│            #135           │
+│            #136           │
+│            #137           │
+│                           │
+│         1,000 rows        │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           WINDOW          │
+│    ────────────────────   │
+│        Projections:       │
+│     ROW_NUMBER() OVER     │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│      DESC NULLS LAST,     │
+│  event_sequence DESC NULLS│
+│            LAST)          │
+│                           │
+│         1,000 rows        │
+│          (0.02s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           WINDOW          │
+│    ────────────────────   │
+│        Projections:       │
+│  LAST_VALUE(email IGNORE  │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(phone IGNORE  │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│ LAST_VALUE(secondary_phone│
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│   LAST_VALUE(first_name   │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│    LAST_VALUE(last_name   │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(display_name  │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(address_line1 │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(address_line2 │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│   LAST_VALUE(city IGNORE  │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(state IGNORE  │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│   LAST_VALUE(postal_code  │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│ LAST_VALUE(country IGNORE │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(billing_line1 │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(billing_line2 │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│            ...            │
+│   LAST_VALUE(bio IGNORE   │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│ LAST_VALUE(website IGNORE │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│ LAST_VALUE(twitter_handle │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(linkedin_url  │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(date_of_birth │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│  LAST_VALUE(gender IGNORE │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│ LAST_VALUE(household_size │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│         LAST_VALUE        │
+│ (annual_income_band IGNORE│
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│    LAST_VALUE(interests   │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│         LAST_VALUE        │
+│ (favorite_category IGNORE │
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│ LAST_VALUE(preferred_brand│
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│    LAST_VALUE(shoe_size   │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│   LAST_VALUE(shirt_size   │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│         LAST_VALUE        │
+│ (dietary_preference IGNORE│
+│  NULLS) OVER (PARTITION BY│
+│    customer_id ORDER BY   │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│   NULLS LAST ROWS BETWEEN │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│ LAST_VALUE(marital_status │
+│     IGNORE NULLS) OVER    │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│       ASC NULLS LAST,     │
+│  event_sequence ASC NULLS │
+│      LAST ROWS BETWEEN    │
+│   UNBOUNDED PRECEDING AND │
+│        CURRENT ROW)       │
+│                           │
+│         1,000 rows        │
+│          (0.02s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         TABLE_SCAN        │
+│    ────────────────────   │
+│         Function:         │
+│        READ_PARQUET       │
+│                           │
+│        Projections:       │
+│        customer_id        │
+│      event_timestamp      │
+│       event_sequence      │
+│           email           │
+│           phone           │
+│      secondary_phone      │
+│         first_name        │
+│         last_name         │
+│        display_name       │
+│       address_line1       │
+│       address_line2       │
+│            city           │
+│           state           │
+│        postal_code        │
+│            ...            │
+│            bio            │
+│          website          │
+│       twitter_handle      │
+│        linkedin_url       │
+│       date_of_birth       │
+│           gender          │
+│       household_size      │
+│     annual_income_band    │
+│         interests         │
+│     favorite_category     │
+│      preferred_brand      │
+│         shoe_size         │
+│         shirt_size        │
+│     dietary_preference    │
+│       marital_status      │
+│                           │
+│    Total Files Read: 1    │
+│                           │
+│         1,000 rows        │
+│          (0.00s)          │
+└───────────────────────────┘
+

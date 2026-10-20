@@ -1,0 +1,96 @@
+┌─────────────────────────────────────┐
+│┌───────────────────────────────────┐│
+││    Query Profiling Information    ││
+│└───────────────────────────────────┘│
+└─────────────────────────────────────┘
+EXPLAIN ANALYZE SELECT customer_id, email, previous_email FROM (SELECT customer_id, email, LAG(email) OVER (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence) AS previous_email, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY event_timestamp DESC, event_sequence DESC) AS rn FROM b WHERE email IS NOT NULL) t WHERE rn = 1
+┌────────────────────────────────────────────────┐
+│┌──────────────────────────────────────────────┐│
+││              Total Time: 0.0021s             ││
+│└──────────────────────────────────────────────┘│
+└────────────────────────────────────────────────┘
+┌───────────────────────────┐
+│           QUERY           │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│      EXPLAIN_ANALYZE      │
+│    ────────────────────   │
+│           0 rows          │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│             #0            │
+│             #3            │
+│             #4            │
+│                           │
+│          100 rows         │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           FILTER          │
+│    ────────────────────   │
+│          (rn = 1)         │
+│                           │
+│          100 rows         │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│             #0            │
+│             #1            │
+│             #2            │
+│             #3            │
+│             #4            │
+│             #5            │
+│                           │
+│         1,000 rows        │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           WINDOW          │
+│    ────────────────────   │
+│        Projections:       │
+│     ROW_NUMBER() OVER     │
+│ (PARTITION BY customer_id │
+│  ORDER BY event_timestamp │
+│      DESC NULLS LAST,     │
+│  event_sequence DESC NULLS│
+│            LAST)          │
+│                           │
+│         1,000 rows        │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│           WINDOW          │
+│    ────────────────────   │
+│        Projections:       │
+│ LAG(email) OVER (PARTITION│
+│   BY customer_id ORDER BY │
+│  event_timestamp ASC NULLS│
+│  LAST, event_sequence ASC │
+│         NULLS LAST)       │
+│                           │
+│         1,000 rows        │
+│          (0.00s)          │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         TABLE_SCAN        │
+│    ────────────────────   │
+│         Function:         │
+│        READ_PARQUET       │
+│                           │
+│        Projections:       │
+│        customer_id        │
+│      event_timestamp      │
+│       event_sequence      │
+│           email           │
+│                           │
+│    Total Files Read: 1    │
+│                           │
+│         1,000 rows        │
+│          (0.00s)          │
+└───────────────────────────┘
+

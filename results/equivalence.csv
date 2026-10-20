@@ -1,0 +1,46 @@
+dataset,model,query,designs,columns,rows_compared,equal
+main_full,full,q1_one_hop_previous_single,A vs B,all,100,yes
+main_full,full,q3_current_state_all,A vs B,all,1000,yes
+main_full,full,q3_current_state_all,B vs C,all,1000,yes
+main_full,full,q4_previous_value_all,A vs B,all,1000,yes
+main_sparse,sparse,q1_one_hop_previous_single,A vs B,all,5,yes
+main_sparse,sparse,q3_current_state_all,A vs B,all,1000,yes
+main_sparse,sparse,q3_current_state_all,B vs C,all,1000,yes
+main_sparse,sparse,q4_previous_value_all,A vs B,all,1000,yes
+main_sparse,sparse,q5_last_and_previous_known_all,A vs B,current_* only,100000,yes
+sweep_full_h1,full,q1_one_hop_previous_single,A vs B,all,1,yes
+sweep_full_h1,full,q3_current_state_all,A vs B,all,100,yes
+sweep_full_h1,full,q3_current_state_all,B vs C,all,100,yes
+sweep_full_h1,full,q4_previous_value_all,A vs B,all,100,yes
+sweep_full_h10,full,q1_one_hop_previous_single,A vs B,all,10,yes
+sweep_full_h10,full,q3_current_state_all,A vs B,all,100,yes
+sweep_full_h10,full,q3_current_state_all,B vs C,all,100,yes
+sweep_full_h10,full,q4_previous_value_all,A vs B,all,100,yes
+sweep_full_h100,full,q1_one_hop_previous_single,A vs B,all,100,yes
+sweep_full_h100,full,q3_current_state_all,A vs B,all,100,yes
+sweep_full_h100,full,q3_current_state_all,B vs C,all,100,yes
+sweep_full_h100,full,q4_previous_value_all,A vs B,all,100,yes
+sweep_full_h1000,full,q1_one_hop_previous_single,A vs B,all,1000,yes
+sweep_full_h1000,full,q3_current_state_all,A vs B,all,100,yes
+sweep_full_h1000,full,q3_current_state_all,B vs C,all,100,yes
+sweep_full_h1000,full,q4_previous_value_all,A vs B,all,100,yes
+sweep_sparse_h1,sparse,q1_one_hop_previous_single,A vs B,all,1,yes
+sweep_sparse_h1,sparse,q3_current_state_all,A vs B,all,100,yes
+sweep_sparse_h1,sparse,q3_current_state_all,B vs C,all,100,yes
+sweep_sparse_h1,sparse,q4_previous_value_all,A vs B,all,100,yes
+sweep_sparse_h1,sparse,q5_last_and_previous_known_all,A vs B,current_* only,100,yes
+sweep_sparse_h10,sparse,q1_one_hop_previous_single,A vs B,all,2,yes
+sweep_sparse_h10,sparse,q3_current_state_all,A vs B,all,100,yes
+sweep_sparse_h10,sparse,q3_current_state_all,B vs C,all,100,yes
+sweep_sparse_h10,sparse,q4_previous_value_all,A vs B,all,100,yes
+sweep_sparse_h10,sparse,q5_last_and_previous_known_all,A vs B,current_* only,1000,yes
+sweep_sparse_h100,sparse,q1_one_hop_previous_single,A vs B,all,3,yes
+sweep_sparse_h100,sparse,q3_current_state_all,A vs B,all,100,yes
+sweep_sparse_h100,sparse,q3_current_state_all,B vs C,all,100,yes
+sweep_sparse_h100,sparse,q4_previous_value_all,A vs B,all,100,yes
+sweep_sparse_h100,sparse,q5_last_and_previous_known_all,A vs B,current_* only,10000,yes
+sweep_sparse_h1000,sparse,q1_one_hop_previous_single,A vs B,all,49,yes
+sweep_sparse_h1000,sparse,q3_current_state_all,A vs B,all,100,yes
+sweep_sparse_h1000,sparse,q3_current_state_all,B vs C,all,100,yes
+sweep_sparse_h1000,sparse,q4_previous_value_all,A vs B,all,100,yes
+sweep_sparse_h1000,sparse,q5_last_and_previous_known_all,A vs B,current_* only,100000,yes

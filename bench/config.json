@@ -1,0 +1,26 @@
+{
+  "_comment": "All benchmark parameters. Synthetic data at demonstration scale. Change nothing else to re-run.",
+  "seed": 20261113,
+  "n_entities": 1000,
+  "h_events": 100,
+  "k_attributes": 67,
+  "event_models": ["full", "sparse"],
+  "changed_attributes_per_event": {"min": 1, "max": 5},
+  "payload": {
+    "deflate_level": 6
+  },
+  "storage": {
+    "parquet_compressions": ["snappy", "zstd"],
+    "parquet_row_group_size": 10000
+  },
+  "queries": {
+    "runs": 20,
+    "warmup_runs": 3
+  },
+  "scaling": {
+    "n_entities": 100,
+    "h_values": [1, 10, 100, 1000],
+    "runs": 10,
+    "warmup_runs": 2
+  }
+}
