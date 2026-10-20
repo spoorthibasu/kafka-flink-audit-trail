@@ -197,7 +197,9 @@ def section(cfg, pcfg, env, kafka, iceberg):
       "replicas is the sum over brokers. Replication traffic is derived, not measured: one-copy bytes x "
       "(replication factor - 1).")
     w("- Producer latency: time from each send() call to its acknowledgement callback, acks=all, Kafka client 3.4.0 "
-      "defaults otherwise; nearest-rank p50, p95 and p99 over all events of a run, then the median over runs.")
+      "defaults otherwise; nearest-rank p50, p95 and p99 over all events of a run, then the median over runs. Events are "
+      "sent back to back with no pacing, so the time includes each record's wait in the producer's buffer behind earlier "
+      "records; it is latency at the producer's maximum send rate, not for an isolated event.")
     w("- Flink: parallelism %d, checkpoint every %d ms, minimum pause %d ms, exactly-once, noWatermarks, the "
       "reference job's settings. Throughput = events / (time the source operator's numRecordsOut, summed over "
       "subtasks, first equals the event count - the job's RUNNING timestamp), both from the Flink REST API, polled "
@@ -244,13 +246,14 @@ def section(cfg, pcfg, env, kafka, iceberg):
         rows = [r for r in iceberg if r["model"] == model]
         w("#### %s model" % model.upper())
         w("")
-        w(b.md_table(["Design", "State", "Snapshots", "Metadata bytes", "Manifest files", "Manifests in current snapshot",
-                      "Data files in current snapshot", "Data files on disk", "Rows", "History unchanged"],
+        w(b.md_table(["Design", "State", "Snapshots", "Metadata bytes", "Metadata JSON files", "Manifest lists",
+                      "Manifest files", "Manifests in current snapshot", "Data files in current snapshot",
+                      "Data files on disk", "Rows", "History unchanged"],
                      [[DESIGN_NAMES[r["schema"]], r["state"].replace("_", " "), r["snapshots_median"],
-                       r["metadata_total_bytes_median"], r["manifest_files_median"],
-                       r["manifests_in_current_snapshot_median"], r["data_files_in_current_snapshot_median"],
-                       r["data_files_on_disk_median"], r["rows_median"], r["history_digest_matches_in_all_runs"]]
-                      for r in rows]))
+                       r["metadata_total_bytes_median"], r["metadata_json_files_median"], r["manifest_list_files_median"],
+                       r["manifest_files_median"], r["manifests_in_current_snapshot_median"],
+                       r["data_files_in_current_snapshot_median"], r["data_files_on_disk_median"], r["rows_median"],
+                       r["history_digest_matches_in_all_runs"]] for r in rows]))
         w("")
     w("Files: `pipeline_kafka.csv`, `pipeline_iceberg.csv` (medians), `%s`, `%s` (every run), "
       "`pipeline_environment.json`." % (KAFKA_RUNS, ICEBERG_RUNS))
