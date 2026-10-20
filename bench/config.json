@@ -20,6 +20,26 @@
   "attribute_sweep": {
     "k_values": [10, 25, 67, 150]
   },
+  "pipeline": {
+      "models": [
+          "full",
+          "sparse"
+      ],
+      "compressions": [
+          "none",
+          "zstd"
+      ],
+      "runs": 5,
+      "partitions": 3,
+      "replication_factor": 3,
+      "parallelism": 3,
+      "checkpoint_interval_ms": 60000,
+      "min_pause_ms": 30000,
+      "iceberg_commits": 20,
+      "poll_ms": 100,
+      "rest_port": 18081,
+      "bootstrap": "localhost:19092,localhost:29092,localhost:39092"
+  },
   "scaling": {
     "n_entities": 100,
     "h_values": [1, 10, 100, 1000],
