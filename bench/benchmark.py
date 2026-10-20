@@ -621,6 +621,9 @@ def write_summary(out_dir, env, attrs, schema_rows, payload_rows, storage_rows, 
     w("Synthetic data at demonstration scale. Every number below was measured by `bench/benchmark.py` "
       "from `%s`; regenerate everything with `make bench-full`." % env["config_file"])
     w("")
+    w("`make bench-full` reproduces field counts, payload sizes and storage sizes exactly; "
+      "latencies vary between runs; the ratios between designs are the stable result.")
+    w("")
     w("## Environment")
     w("")
     w(md_table(["Item", "Value"], [

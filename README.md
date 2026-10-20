@@ -107,6 +107,7 @@ make trino-down
 `make bench-full` regenerates everything under `results/` from `bench/config.json`:
 `results/SUMMARY.md` holds the tables, the CSV files hold every measured value, and
 `results/environment.json` records the machine, the DuckDB version and the wall time.
+`make bench-full` reproduces field counts, payload sizes and storage sizes exactly; latencies vary between runs; the ratios between designs are the stable result.
 The data is synthetic, generated from the seed in the config at demonstration scale
 (N entities, H events each, K attributes, default K=67). It compares three designs:
 

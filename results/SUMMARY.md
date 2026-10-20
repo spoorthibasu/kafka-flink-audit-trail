@@ -2,6 +2,8 @@
 
 Synthetic data at demonstration scale. Every number below was measured by `bench/benchmark.py` from `bench/config.json`; regenerate everything with `make bench-full`.
 
+`make bench-full` reproduces field counts, payload sizes and storage sizes exactly; latencies vary between runs; the ratios between designs are the stable result.
+
 ## Environment
 
 | Item | Value |
