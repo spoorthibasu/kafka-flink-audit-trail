@@ -414,3 +414,45 @@ Bytes scanned times the price, per 1,000 runs of the query. "With minimum" bills
 | sparse | q5_last_and_previous_known_all | B | 6,883,681 | 10,485,760 | 0.0313033569909748621284961700439453125 | 0.0476837158203125 |
 
 Files: `resources.csv`, `cost.csv`, `prices.json`, `resources_environment.json`.
+
+## Generality sweep over attribute count
+
+Measured by `bench/sweep_attributes.py` from `bench/config.json` on 2026-10-20T19:49:43Z: FULL model (every event carries every attribute), seed 20261113, N=1000, H=100, K in [10, 25, 67, 150]. Machine: Apple M3, 8 logical CPUs. DuckDB 1.4.5, threads=8. Wall time 105.6 s. Field counts, Avro bytes and Parquet bytes reproduce exactly; latencies vary between runs.
+
+- Attributes beyond the 67 in `bench/generate_schemas.py` are string columns named attribute_<i>.
+- Avro bytes: fastavro schemaless datum per event, no Confluent framing; deflate is raw DEFLATE at zlib level 6 per event. Mean is the exact mean over all events.
+- Parquet bytes: DuckDB writer, ROW_GROUP_SIZE 10000, sorted by customer_id, event_timestamp, event_sequence.
+- Latency: p50 (nearest rank) of 20 timed `CREATE OR REPLACE TEMP TABLE ... AS <query>` runs after 3 warm-up runs over the snappy file, the protocol of the latency table above.
+- Ratio is A divided by B. A ratio that does not terminate shows its first ten decimals followed by "..."; the digits shown are exact, not rounded.
+- At K=67 the Avro totals and Parquet sizes equal the committed payload.csv and storage.csv values (10 checks).
+
+### Schema and payload
+
+| K | Fields A | Fields B | Ratio | Avro mean A | Avro mean B | Ratio | Avro deflate mean A | Avro deflate mean B | Ratio |
+|---|---|---|---|---|---|---|---|---|---|
+| 10 | 23 | 13 | 1.7692307692... | 334.69852 | 176.28437 | 1.8986284490... | 200.1021 | 155.31714 | 1.2883452528... |
+| 25 | 53 | 28 | 1.8928571428... | 812.9553 | 416.5356 | 1.9517066488... | 373.66542 | 313.38097 | 1.1923679347... |
+| 67 | 137 | 70 | 1.9571428571... | 1898.37837 | 961.7623 | 1.9738540073... | 789.62005 | 684.32461 | 1.1538676798... |
+| 150 | 303 | 153 | 1.9803921568... | 4542.88803 | 2290.24712 | 1.9835798461... | 1758.05445 | 1538.54977 | 1.1426698598... |
+
+Medians, per event: K=10 uncompressed 336 / 176, deflate 200 / 155; K=25 uncompressed 816 / 416, deflate 374 / 314; K=67 uncompressed 1906 / 962, deflate 790 / 684; K=150 uncompressed 4564 / 2291, deflate 1760 / 1539 (A / B).
+
+### Storage
+
+| K | Parquet snappy A | Parquet snappy B | Ratio | Parquet zstd A | Parquet zstd B | Ratio | zstd C |
+|---|---|---|---|---|---|---|---|
+| 10 | 13,090,706 | 6,788,079 | 1.9284846272... | 7,851,524 | 4,003,824 | 1.9610062779... | 108,634 |
+| 25 | 15,628,489 | 8,052,620 | 1.9407955423... | 10,782,703 | 5,469,977 | 1.9712519814... | 268,053 |
+| 67 | 16,163,283 | 8,299,637 | 1.9474686664... | 11,142,258 | 5,642,494 | 1.9747044480... | 625,076 |
+| 150 | 21,329,802 | 10,850,602 | 1.9657713000... | 14,899,350 | 7,509,705 | 1.9840126875... | 1,509,249 |
+
+### Latency, p50 ms
+
+| K | q1 one hop A | q1 one hop B | Ratio | q3 current state A | q3 current state B | Ratio | q3 current state C |
+|---|---|---|---|---|---|---|---|
+| 10 | 0.961 | 0.859 | 1.1187427240... | 16.252 | 15.053 | 1.0796518966... | 1.026 |
+| 25 | 1.471 | 0.998 | 1.4739478957... | 28.021 | 25.585 | 1.0952120383... | 2.329 |
+| 67 | 2.037 | 1.367 | 1.4901243599... | 59.728 | 54.716 | 1.0916002631... | 5.342 |
+| 150 | 4.035 | 2.091 | 1.9296987087... | 134.922 | 131.431 | 1.0265614657... | 12.487 |
+
+Files: `sweep_attributes.csv`, `sweep_attributes_environment.json`.
