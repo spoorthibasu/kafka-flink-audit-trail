@@ -944,3 +944,45 @@ On the zstd Parquet file, measured as in the resources stage: a fresh in-memory 
 | all entities | LAG | 9,390,113 | 2174.108625 | 3206.710542 | 13758.115295999998 | 19710.07825700001 | 396,386,631 | 10 of 137 | 77 of 77 |
 
 Files in results/wikimedia: capture.csv, capture_gaps.csv, capture_connections.csv, ordering.csv, reconstruction_counts.csv, reconstruction_fields.csv, mismatch_classes.csv, mismatch_events.csv, lineage.csv, parent_check.csv, size_events.csv, size_prior_state_share.csv, size_parquet.csv, field_distributions.csv, query_cost.csv, reconstruction.sql, environment.json.
+
+## Sort order of the audit-trail Parquet file
+
+Measured by `bench/sort_order.py` from `bench/config.json` on 2026-10-23T10:41:11Z: design B (audit trail), seed 20261113, N=1000, H=100, K=67, FULL and SPARSE models. Machine: Apple M3, 8 logical CPUs. DuckDB 1.4.5, threads=8. Wall time 95.9 s. File bytes reproduce exactly when the rewrite check says so; latency and CPU time vary between runs.
+
+- Every file is written by DuckDB's Parquet writer from the same rows with ROW_GROUP_SIZE 10000; only the ORDER BY of the COPY differs (column order_by in sort_order.csv). The customer_id, event_timestamp, event_sequence file is the main benchmark's file: its sizes equal storage.csv for design B (4 checks).
+- The generator emits each entity's rows in event order. "customer_id, then hash order within an entity" is ORDER BY customer_id, hash(event_timestamp, event_sequence): a customer_id sort over rows that are not in event order, added beside the two requested orders.
+- Identical to full sort: the snappy file's SHA-256 equals that of the customer_id, event_timestamp, event_sequence file. Rewrite identical: the same COPY run a second time produced a byte-identical snappy file.
+- In the FULL and SPARSE models the customer_id file is byte-identical to the customer_id, event_timestamp, event_sequence file, so the two read the same bytes and their latency and CPU differences below are run-to-run variation.
+- Out-of-order rows: adjacent rows of one entity, in file order, whose (event_timestamp, event_sequence) is lower than the row before.
+- p50 ms: 20 timed runs after 3 warm-up runs on one connection, the protocol of the latency table above. CPU ms and bytes scanned: the protocol and definitions of the resource-use section above (median of 20 runs, each on a fresh in-memory database; bytes scanned derived from parquet_metadata(), not observed). The queries read the snappy file. Every file returned the same rows for every query.
+
+### Files
+
+| Model | Sort order | Parquet snappy bytes | Parquet zstd bytes | Identical to full sort | Rewrite identical | Out-of-order rows | Entities with out-of-order rows | Row groups |
+|---|---|---|---|---|---|---|---|---|
+| full | customer_id | 8,299,637 | 5,642,494 | yes | yes | 0 | 0 | 9 x 10240 + 1 x 7840 |
+| full | customer_id, event_timestamp, event_sequence | 8,299,637 | 5,642,494 | yes | yes | 0 | 0 | 9 x 10240 + 1 x 7840 |
+| full | customer_id, then hash order within an entity | 13,284,164 | 10,089,011 | no | yes | 49,558 | 1,000 | 9 x 10240 + 1 x 7840 |
+| sparse | customer_id | 7,593,772 | 5,027,397 | yes | yes | 0 | 0 | 9 x 10240 + 1 x 7840 |
+| sparse | customer_id, event_timestamp, event_sequence | 7,593,772 | 5,027,397 | yes | yes | 0 | 0 | 9 x 10240 + 1 x 7840 |
+| sparse | customer_id, then hash order within an entity | 7,676,752 | 5,260,406 | no | yes | 49,558 | 1,000 | 9 x 10240 + 1 x 7840 |
+
+### Queries
+
+| Model | Query | Sort order | p50 ms | CPU ms | Bytes scanned | Columns read | Row groups read | Rows returned |
+|---|---|---|---|---|---|---|---|---|
+| full | q1_one_hop_previous_single | customer_id | 1.335 | 0.98418849999999995 | 56,100 | 4 of 70 | 1 of 10 | 100 |
+| full | q1_one_hop_previous_single | customer_id, event_timestamp, event_sequence | 1.297 | 0.83791899999999995 | 56,100 | 4 of 70 | 1 of 10 | 100 |
+| full | q1_one_hop_previous_single | customer_id, then hash order within an entity | 1.316 | 0.9627095 | 72,306 | 4 of 70 | 1 of 10 | 100 |
+| full | q3_current_state_all | customer_id | 55.225 | 238.042146 | 7,590,968 | 70 of 70 | 10 of 10 | 1,000 |
+| full | q3_current_state_all | customer_id, event_timestamp, event_sequence | 55.234 | 241.764714000000035 | 7,590,968 | 70 of 70 | 10 of 10 | 1,000 |
+| full | q3_current_state_all | customer_id, then hash order within an entity | 60.768 | 258.975099999999985 | 12,573,329 | 70 of 70 | 10 of 10 | 1,000 |
+| sparse | q1_one_hop_previous_single | customer_id | 1.323 | 1.01976949999999985 | 55,559 | 4 of 70 | 1 of 10 | 5 |
+| sparse | q1_one_hop_previous_single | customer_id, event_timestamp, event_sequence | 1.296 | 1.0115199999999998 | 55,559 | 4 of 70 | 1 of 10 | 5 |
+| sparse | q1_one_hop_previous_single | customer_id, then hash order within an entity | 1.312 | 1.0587279999999997 | 63,803 | 4 of 70 | 1 of 10 | 5 |
+| sparse | q3_current_state_all | customer_id | 183.681 | 977.41107499999995 | 6,883,681 | 70 of 70 | 10 of 10 | 1,000 |
+| sparse | q3_current_state_all | customer_id, event_timestamp, event_sequence | 187.812 | 978.85621250000005 | 6,883,681 | 70 of 70 | 10 of 10 | 1,000 |
+| sparse | q3_current_state_all | customer_id, then hash order within an entity | 195.299 | 1002.0860819999999 | 6,965,127 | 70 of 70 | 10 of 10 | 1,000 |
+
+Files: `sort_order.csv`, `sort_order_environment.json`.
+
