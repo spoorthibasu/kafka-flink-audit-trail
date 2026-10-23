@@ -69,6 +69,7 @@ def reconstruction_sql(pairs, source="events", where=""):
     w = window()
     lines = ["SELECT", "  " + ",\n  ".join(load.ENTITY + load.ORDER_BY) + ",",
              "  page_change_kind,",
+             "  row_number() %s AS position," % w,
              "  LAG(meta__topic) %s AS previous_meta__topic," % w,
              "  LAG(meta__offset) %s AS previous_meta__offset," % w,
              "  LAG(meta__dt) %s AS previous_meta__dt," % w,
@@ -146,8 +147,8 @@ def evaluate(con, parquet, gaps, buckets, log=print):
     con.execute("CREATE OR REPLACE TEMP TABLE gaps (topic VARCHAR, after_dt VARCHAR, next_dt VARCHAR)")
     for g in gaps:
         con.execute("INSERT INTO gaps VALUES (?, ?, ?)", [g["topic"], g["after_dt"], g["next_dt"]])
-    con.execute("CREATE OR REPLACE TEMP TABLE revs AS SELECT DISTINCT wiki_id, page__page_id, revision__rev_id, meta__dt "
-                "FROM events")
+    con.execute("CREATE OR REPLACE TEMP TABLE revs AS SELECT wiki_id, page__page_id, revision__rev_id, "
+                "row_number() %s AS position FROM events" % window())
     field_counts = {cur: dict.fromkeys(OUTCOMES, 0) for _, cur in pairs}
     classes, event_classes = {}, {}
     events = {"events": 0, "with_predecessor": 0, "eligible": 0, "excluded_no_predecessor": 0,
@@ -174,7 +175,7 @@ def evaluate(con, parquet, gaps, buckets, log=print):
                     "EXISTS (SELECT 1 FROM revs v WHERE v.wiki_id = q.wiki_id AND v.page__page_id <> q.page__page_id "
                     "AND v.revision__rev_id = q.prior_state__revision__rev_id) AS prior_rev_on_other_page, "
                     "EXISTS (SELECT 1 FROM revs v WHERE v.wiki_id = q.wiki_id AND v.page__page_id = q.page__page_id "
-                    "AND v.revision__rev_id = q.prior_state__revision__rev_id AND v.meta__dt > q.meta__dt) "
+                    "AND v.revision__rev_id = q.prior_state__revision__rev_id AND v.position > q.position) "
                     "AS prior_rev_ordered_after "
                     "FROM (%s) q" % reconstruction_sql(pairs, where=where))
         n, pred, elig = con.execute("SELECT count(*), count(*) FILTER (WHERE has_predecessor), "
@@ -272,3 +273,57 @@ def topics(con):
                     "compared_pages_in_both_topics": r[2], "rev_id_equal_pages_in_both_topics": r[3],
                     "cross_topic_pairs": r[6], "cross_topic_compared": r[4], "cross_topic_rev_id_equal": r[5]})
     return both, out
+
+
+SENSITIVITY = [
+    ("receive time: meta.dt", ("meta__dt",)),
+    ("event time first: dt, rev_id (primary)", ("dt", "revision__rev_id")),
+    ("sequence first: rev_id, dt", ("revision__rev_id", "dt")),
+]
+
+
+def revision_mismatches(con, key, gaps=()):
+    """Events whose prior_state.revision.rev_id differs from LAG(revision.rev_id) under
+    an ordering that starts with key (completed with the rest of load.ORDER_BY), by
+    cause: merge or re-keying, ordering (before the LAG row or after the event under
+    this ordering), missed event (newer or older than the LAG revision). Events whose
+    interval since their predecessor overlaps an offset gap are left out, as in evaluate()."""
+    order = key + tuple(c for c in load.ORDER_BY if c not in key)
+    w = window(order)
+    con.execute("CREATE OR REPLACE TEMP TABLE rm_gaps (after_dt VARCHAR, next_dt VARCHAR)")
+    for g in gaps:
+        con.execute("INSERT INTO rm_gaps VALUES (?, ?)", [g["after_dt"], g["next_dt"]])
+    loss_free = ("NOT EXISTS (SELECT 1 FROM rm_gaps g WHERE g.after_dt <= greatest(meta__dt, lag_dt) "
+                 "AND g.next_dt >= least(meta__dt, lag_dt))")
+    con.execute("CREATE OR REPLACE TEMP TABLE pos AS SELECT wiki_id, page__page_id, revision__rev_id, "
+                "row_number() %s AS position FROM events" % w)
+    totals = con.execute(
+        "SELECT count(*) FILTER (WHERE prior_rev IS NOT NULL AND lag_rev IS NOT NULL), "
+        "count(*) FILTER (WHERE prior_rev = lag_rev) FROM (SELECT meta__dt, prior_state__revision__rev_id AS prior_rev, "
+        "LAG(revision__rev_id) %s AS lag_rev, LAG(meta__dt) %s AS lag_dt FROM events) WHERE lag_dt IS NULL OR %s"
+        % (w, w, loss_free)).fetchone()
+    rows = con.execute(
+        "SELECT cause, detail, page_change_kind, previous_kind, cross_topic, count(*), "
+        "list([wiki_id, CAST(page__page_id AS VARCHAR), CAST(revision__rev_id AS VARCHAR)] "
+        "ORDER BY wiki_id, page__page_id, revision__rev_id)[1:5] FROM ("
+        "SELECT q.*, CASE WHEN other_page THEN 'merge or re-keying' WHEN this_page IS NOT NULL THEN 'ordering' "
+        "ELSE 'missed event' END AS cause, "
+        "CASE WHEN other_page THEN 'prior revision captured under another page_id' "
+        "WHEN this_page IS NOT NULL AND this_page > q.position THEN 'prior revision ordered after this event' "
+        "WHEN this_page IS NOT NULL THEN 'prior revision ordered before the LAG row' "
+        "WHEN prior_rev > lag_rev THEN 'prior revision newer than the LAG revision, not captured' "
+        "ELSE 'prior revision older than the LAG revision, not captured' END AS detail FROM ("
+        "SELECT m.*, (SELECT max(p.position) FROM pos p WHERE p.wiki_id = m.wiki_id AND p.page__page_id = m.page__page_id "
+        "AND p.revision__rev_id = m.prior_rev) AS this_page, "
+        "EXISTS (SELECT 1 FROM pos p WHERE p.wiki_id = m.wiki_id AND p.page__page_id <> m.page__page_id "
+        "AND p.revision__rev_id = m.prior_rev) AS other_page FROM ("
+        "SELECT wiki_id, page__page_id, revision__rev_id, page_change_kind, prior_state__revision__rev_id AS prior_rev, "
+        "row_number() %s AS position, LAG(revision__rev_id) %s AS lag_rev, LAG(page_change_kind) %s AS previous_kind, "
+        "LAG(meta__topic) %s <> meta__topic AS cross_topic, meta__dt, LAG(meta__dt) %s AS lag_dt FROM events) m "
+        "WHERE prior_rev IS NOT NULL AND lag_rev IS NOT NULL AND prior_rev <> lag_rev AND %s) q) "
+        "GROUP BY ALL ORDER BY 6 DESC" % (w, w, w, w, w, loss_free)).fetchall()
+    con.execute("DROP TABLE pos")
+    return {"compared": totals[0], "equal": totals[1], "differ": totals[0] - totals[1]}, [
+        {"cause": c, "detail": d, "page_change_kind": k, "previous_kind": pk, "cross_topic": ct, "events": n,
+         "examples_wiki_page_rev": "; ".join(":".join(x) for x in ex)} for c, d, k, pk, ct, n, ex in rows]
+

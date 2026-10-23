@@ -343,6 +343,7 @@ def expected(written, gaps):
             {"cause": "visibility change", "detail": "this event is a visibility_change",
              "field": "prior_state.revision.is_comment_visible", "outcome": "omitted_changed", "count": 2},
         ],
+        "revision_mismatches_primary": {"missed event": 3, "ordering": 6, "merge or re-keying": 2},
         "parent_check_differ": 0,
         "ordering_tie_groups_dt_rev_id": 0,
     }

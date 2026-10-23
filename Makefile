@@ -68,7 +68,7 @@ WIKIMEDIA_DATA ?= $(HOME)/audit-trail-bench-data/wikimedia
 WIKIMEDIA_CAPTURES ?= $(WIKIMEDIA_DATA)/capture-earliest-to-2026-10-20T00Z $(WIKIMEDIA_DATA)/capture-2026-10-20T00Z-2026-10-23T02Z
 wikimedia-study:
 	@$(PYTHON) study/wikimedia/study.py $(foreach c,$(WIKIMEDIA_CAPTURES),--capture $(c)) \
-		--work $(WIKIMEDIA_DATA)/work --out results/wikimedia --summary results/SUMMARY.md
+		--work $(WIKIMEDIA_DATA)/work --out results/wikimedia --summary results/SUMMARY.md --api-sample 50
 
 wikimedia-smoke:
 	@rm -rf results-smoke-wikimedia

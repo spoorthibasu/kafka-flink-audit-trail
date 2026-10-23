@@ -34,6 +34,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(REPO, "bench"))
+import api_checks  # noqa: E402
 import distributions  # noqa: E402
 import load  # noqa: E402
 import query_cost  # noqa: E402
@@ -66,6 +67,13 @@ def fmt(v):
     if hasattr(v, "as_tuple"):  # Decimal from the profiler, written exactly
         return exact(Fraction(v))
     return v
+
+
+def tally(values):
+    counts = {}
+    for v in values:
+        counts[v] = counts.get(v, 0) + 1
+    return ", ".join("%s %d" % kv for kv in sorted(counts.items()))
 
 
 def rate(num, den):
@@ -157,6 +165,9 @@ def main():
     ap.add_argument("--buckets", type=int, default=16)
     ap.add_argument("--processes", type=int, default=None)
     ap.add_argument("--expect")
+    ap.add_argument("--api-sample", type=int, default=0,
+                    help="check this many sampled events of each kind against the MediaWiki API (network)")
+    ap.add_argument("--api-seed", type=int, default=20261113)
     args = ap.parse_args()
     t_start = time.perf_counter()
 
@@ -244,6 +255,30 @@ def main():
     for t in ties:
         order_rows.append(dict(t, **{k: v for k, v in by_label[t["ordering"]].items() if k != "ordering"}))
     write_csv(os.path.join(args.out, "ordering.csv"), order_rows)
+    sens_rows, mismatch_rows = [], []
+    for label, key in reconstruct.SENSITIVITY:
+        totals, rows_k = reconstruct.revision_mismatches(con, key, gaps)
+        by_cause = {}
+        for x in rows_k:
+            by_cause[(x["cause"], x["detail"])] = by_cause.get((x["cause"], x["detail"]), 0) + x["events"]
+        sens_rows.append(dict({"ordering": label, "order_by": ", ".join(key + tuple(c for c in load.ORDER_BY if c not in key))},
+                              **totals, **{"%s: %s" % k: v for k, v in sorted(by_cause.items())}))
+        if key == load.ORDER_BY[:2]:
+            mismatch_rows = rows_k
+    write_csv(os.path.join(args.out, "ordering_sensitivity.csv"), sens_rows)
+    write_csv(os.path.join(args.out, "revision_mismatches.csv"), mismatch_rows,
+              ["cause", "detail", "page_change_kind", "previous_kind", "cross_topic", "events", "examples_wiki_page_rev"])
+    redirect_rows, revision_rows, api_info = [], [], {}
+    if args.api_sample:
+        log("step 4: MediaWiki API checks, %d events each" % args.api_sample)
+        api = api_checks.Api(log=log)
+        n_redirect, redirect_rows = api_checks.check_redirects(con, api, args.api_sample, args.api_seed, log)
+        n_missed, revision_rows = api_checks.check_revisions(con, api, args.api_sample, args.api_seed, log)
+        api_info = {"api_checked_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "api_requests": api.requests,
+                    "api_seed": args.api_seed, "redirect_candidates": n_redirect, "missed_revision_candidates": n_missed}
+        env.update(api_info)
+        write_csv(os.path.join(args.out, "api_redirect_check.csv"), redirect_rows)
+        write_csv(os.path.join(args.out, "api_revision_check.csv"), revision_rows)
     log("step 4: %d eligible events, %d mismatch classes" % (ev["eligible"], len(classes)))
 
     # Step 5
@@ -279,7 +314,8 @@ def main():
                "rows": rows, "ties": ties, "counts": counts, "kinds_count": kinds_count, "field_rows": field_rows,
                "class_rows": class_rows, "event_classes": event_classes, "parents": parents, "order_rows": order_rows,
                "size_ev": size_ev, "shares": shares, "pq_rows": pq_rows, "dist": dist, "kinds": kinds, "qc": qc,
-               "env": env, "lineage": lineage}
+               "env": env, "lineage": lineage, "sens_rows": sens_rows, "mismatch_rows": mismatch_rows,
+               "redirect_rows": redirect_rows, "revision_rows": revision_rows, "api_info": api_info}
     if args.summary:
         if not os.path.exists(args.summary):
             with open(args.summary, "w") as fh:
@@ -388,6 +424,15 @@ def summary_section(r, args):
     w("")
     w("Pages with events in both the eqiad and the codfw topic: %s." % fmt_bytes(c["pages_in_both_topics"]))
     w("")
+    w("Ordering sensitivity: revision mismatches (prior_state.revision.rev_id differs from LAG(revision.rev_id)) "
+      "on the same data under three keys, each completed with the remaining key columns, over events with a "
+      "predecessor in a loss-free interval. The primary analysis uses event time first.")
+    w("")
+    causes = sorted({k for x in r["sens_rows"] for k in x if ": " in k})
+    w(md_table(["Ordering", "Compared", "Equal", "Mismatched"] + [k[0].upper() + k[1:] for k in causes],
+               [[x["ordering"], fmt_bytes(x["compared"]), fmt_bytes(x["equal"]), fmt_bytes(x["differ"])] +
+                [fmt_bytes(x.get(k, 0)) for k in causes] for x in r["sens_rows"]]))
+    w("")
     w("### Reconstruction with LAG")
     w("")
     w("The query is the article's LAG form (`reconstruction.sql`): one LAG per prior_state field over the "
@@ -432,6 +477,46 @@ def summary_section(r, args):
                [[x["causes"], x["mismatching_field_groups"], fmt_bytes(x["events"]), x["examples_wiki_page_rev"]]
                 for x in sorted(r["event_classes"], key=lambda x: -x["events"])]))
     w("")
+    w("Revision mismatches under the primary key, by cause, event kind, the predecessor's kind and whether the "
+      "predecessor is in the other datacenter topic (revision_mismatches.csv):")
+    w("")
+    w(md_table(["Cause", "Detail", "Kind", "Previous kind", "Cross-topic", "Events", "Examples"],
+               [[x["cause"], x["detail"], x["page_change_kind"], x["previous_kind"], fmt(x["cross_topic"]),
+                 fmt_bytes(x["events"]), x["examples_wiki_page_rev"]] for x in r["mismatch_rows"]]))
+    w("")
+    if r["api_info"]:
+        a = r["api_info"]
+        w("#### Checks against the MediaWiki API")
+        w("")
+        w("On %s, %s requests to Wikimedia's public Action API, one at a time with the study's User-Agent "
+          "(`api_checks.py`). Samples are drawn with Python's random.Random(%d) from the sorted candidate "
+          "identifiers. Revision content read to decide redirect status was discarded." % (
+              a["api_checked_utc"], fmt_bytes(a["api_requests"]), a["api_seed"]))
+        w("")
+        w("is_redirect: %s sampled of %s events where prior_state.page omits is_redirect while LAG shows a change. "
+          "Each event's previous revision and own revision were read and classified as redirect or not from their "
+          "content (the wiki's redirect magic word and a [[link]] for wikitext; a \"redirect\" key for Wikibase "
+          "entities)." % (len(r["redirect_rows"]), fmt_bytes(a["redirect_candidates"])))
+        w("")
+        groups = {}
+        for x in r["redirect_rows"]:
+            groups.setdefault(x["verdict"], []).append("%s:%s:%s" % (x["wiki_id"], x["page_id"], x["rev_id"]))
+        w(md_table(["Verdict", "Events", "Identifiers (wiki_id:page_id:rev_id)"],
+                   [[k, len(v), "; ".join(v)] for k, v in sorted(groups.items())]))
+        w("")
+        w("Revisions no captured event carries: %s sampled of %s events under the primary key whose "
+          "prior_state.revision.rev_id has no captured event. Imported means the page has import log entries and the "
+          "revision has a higher ID but an older timestamp than the previous captured revision." % (
+              len(r["revision_rows"]), fmt_bytes(a["missed_revision_candidates"])))
+        w("")
+        groups = {}
+        for x in r["revision_rows"]:
+            groups.setdefault(x["category"], []).append(x)
+        w(md_table(["Category", "Events", "Log entries at the revision's timestamp", "Identifiers (wiki_id:page_id:rev_id > missing rev_id)"],
+                   [[k, len(v), tally(x["log_at_revision_timestamp"] or "none" for x in v),
+                     "; ".join("%s:%s:%s > %s" % (x["wiki_id"], x["page_id"], x["rev_id"], x["missing_prior_rev_id"]) for x in v)]
+                    for k, v in sorted(groups.items())]))
+        w("")
     w("prior_state.revision.rev_id against revision.rev_parent_id:")
     w("")
     w(md_table(["page_change_kind", "Events", "Equal", "Differ", "Only prior_state", "Only rev_parent_id", "Neither"],
@@ -512,6 +597,10 @@ def check_expected(path, r):
            "ordering_tie_groups_dt_rev_id": next(o["tie_groups"] for o in r["order_rows"]
                                                  if o["ordering"] == "dt, revision.rev_id")}
     errors = ["%s: expected %s, got %s" % (k, exp[k], v) for k, v in got.items() if exp[k] != v]
+    for cause, n in exp["revision_mismatches_primary"].items():
+        found = sum(x["events"] for x in r["mismatch_rows"] if x["cause"] == cause)
+        if found != n:
+            errors.append("revision mismatches with cause %r under the primary key: expected %d, got %d" % (cause, n, found))
     for cause, n in exp["event_causes"].items():
         found = sum(x["events"] for x in r["event_classes"] if cause in x["causes"].split(", "))
         if found != n:

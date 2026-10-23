@@ -37,6 +37,7 @@ reconstruct.py      step 4: prior_state against LAG; mismatch classes
 size.py             step 5: JSON and Avro bytes; Parquet bytes
 distributions.py    step 6: prior_state presence and string lengths
 query_cost.py       step 7: stored prior_state versus LAG
+api_checks.py       samples checked against the public MediaWiki API (redirect status, missing revisions)
 study.py            runs steps 3 to 7; writes results/wikimedia and the SUMMARY section
 synthetic.py        a small synthetic capture with planted mismatches, for CI
 aws/cli-policy.json least-privilege IAM policy for running a capture on EC2
@@ -88,12 +89,26 @@ caffeinate -is python3 study/wikimedia/capture.py --start earliest \
     --end-offsets eqiad=1141361946,codfw=839004750 --rate 1000 \
     --out ~/audit-trail-bench-data/wikimedia/capture-earliest-to-2026-10-20T00Z
 
-# 3. Steps 3 to 7 over both parts.
+# 3. Steps 3 to 7 over both parts, with 50 sampled events of each kind checked
+#    against the MediaWiki API.
 python3 study/wikimedia/study.py \
     --capture ~/audit-trail-bench-data/wikimedia/capture-earliest-to-2026-10-20T00Z \
     --capture ~/audit-trail-bench-data/wikimedia/capture-2026-10-20T00Z-2026-10-23T02Z \
-    --work ~/audit-trail-bench-data/wikimedia/work --out results/wikimedia --summary results/SUMMARY.md
+    --work ~/audit-trail-bench-data/wikimedia/work --out results/wikimedia --summary results/SUMMARY.md \
+    --api-sample 50
 ```
+
+The API checks read Wikimedia's public Action API one request at a time, at most one
+per second, with the same User-Agent. They answer two questions about sampled events:
+
+- Where `prior_state.page` omits `is_redirect` but LAG shows it changed, was the page a
+  redirect at the previous revision? The check reads that revision's content and
+  discards it.
+- Where `prior_state.revision.rev_id` names a revision that no captured event carries,
+  does the revision exist, or was it deleted, suppressed or imported?
+
+Their answers can change after the capture, for example when a revision is deleted
+later, so the results record the date of the check.
 
 The commands above are the ones that produced the committed results. On a new capture,
 use new dates and offsets: retention moves on continuously.
