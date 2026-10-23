@@ -260,10 +260,18 @@ class Run:
         log("started %s for %s (%d events expected)" % (app, props["topic"], expected))
         self.wait_app(app, "RUNNING", timeout_s=1800)
         running_ms = now_ms()
-        deadline = time.time() + 6 * 3600
+        deadline = time.time() + 12 * 3600
         total = 0
+        polls = 0
         while True:
             time.sleep(30)
+            polls += 1
+            if polls % 60 == 0:
+                try:
+                    self.spend()
+                except RuntimeError:
+                    aws("kinesisanalyticsv2", "stop-application", "--application-name", app, "--force", region=self.region)
+                    raise
             try:
                 md = self.iceberg_metadata(table)
             except RuntimeError as e:
