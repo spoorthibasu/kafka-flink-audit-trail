@@ -7,8 +7,8 @@ query out; evaluate() runs it per hash bucket of the entity key, which only spli
 work, since every window partition falls inside one bucket.
 
 An event is compared when its predecessor (the previous captured event of the same
-entity) exists and no offset gap of either topic falls between the predecessor's
-meta.dt and the event's own. For each field, the outcome is one of:
+entity) exists and no offset gap of either topic falls between the two events' meta.dt
+values (in either order). For each field, the outcome is one of:
 
   match            prior_state has the field and LAG returns the same value
   differ           both present, values differ
@@ -166,8 +166,9 @@ def evaluate(con, parquet, gaps, buckets, log=print):
         where = "hash(%s) %% %d = %d" % (ent, buckets, b) if buckets > 1 else ""
         con.execute("CREATE OR REPLACE TEMP TABLE r AS SELECT *, "
                     "previous_meta__offset IS NOT NULL AS has_predecessor, "
-                    "previous_meta__offset IS NOT NULL AND NOT EXISTS (SELECT 1 FROM gaps g WHERE g.after_dt <= q.meta__dt "
-                    "AND g.next_dt >= q.previous_meta__dt) AS eligible, "
+                    "previous_meta__offset IS NOT NULL AND NOT EXISTS (SELECT 1 FROM gaps g "
+                    "WHERE g.after_dt <= greatest(q.meta__dt, q.previous_meta__dt) "
+                    "AND g.next_dt >= least(q.meta__dt, q.previous_meta__dt)) AS eligible, "
                     "EXISTS (SELECT 1 FROM revs v WHERE v.wiki_id = q.wiki_id AND v.page__page_id = q.page__page_id "
                     "AND v.revision__rev_id = q.prior_state__revision__rev_id) AS prior_rev_on_this_page, "
                     "EXISTS (SELECT 1 FROM revs v WHERE v.wiki_id = q.wiki_id AND v.page__page_id <> q.page__page_id "

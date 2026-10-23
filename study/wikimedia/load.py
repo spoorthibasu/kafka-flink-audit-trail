@@ -20,12 +20,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import schema  # noqa: E402
 
 ENTITY = ("wiki_id", "page__page_id")
-# Event time, then the revision ID, as the article's (event_timestamp, event_sequence).
-# Topic and offset only make the order total when both are tied.
-ORDER_BY = ("meta__dt", "revision__rev_id", "meta__topic", "meta__offset")
+# The article's (event_timestamp, event_sequence): dt, which the schema defines as the
+# event time, then the database revision ID. meta.dt (when Wikimedia's system received
+# the event), topic and offset only make the order total when both are tied.
+ORDER_BY = ("dt", "revision__rev_id", "meta__dt", "meta__topic", "meta__offset")
 EXTRA_META = [("topic", "VARCHAR"), ("partition", "BIGINT"), ("offset", "BIGINT"),
               ("key", 'STRUCT("wiki_id" VARCHAR, "page_id" BIGINT)')]
 ORDERINGS = [
+    ("dt, revision.rev_id", ("dt", "revision__rev_id")),
     ("meta.dt", ("meta__dt",)),
     ("dt", ("dt",)),
     ("revision.rev_id", ("revision__rev_id",)),

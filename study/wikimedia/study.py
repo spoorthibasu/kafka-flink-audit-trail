@@ -368,12 +368,13 @@ def summary_section(r, args):
     w("")
     w("### Ordering key")
     w("")
-    w("Entity key (wiki_id, page.page_id). Ordering key `%s`: event time (meta.dt, millisecond precision, set "
-      "when the event is produced) and then the revision ID, the article's (event_timestamp, event_sequence). "
-      "rev_id is assigned by the wiki's database in commit order, so it breaks equal timestamps the way "
-      "event_sequence does; Kafka offsets order events only within one datacenter topic, so they only make the "
-      "order total when both are tied. Tied events below are events sharing their entity and every column of the "
-      "candidate. \"Equal\" counts events whose LAG(revision.rev_id) under that ordering equals "
+    w("Entity key (wiki_id, page.page_id). Ordering key `%s`. The schema defines `dt` as the event time, "
+      "\"when the event occurred\", in whole seconds, and `meta.dt` as the time Wikimedia's system received the "
+      "event. `revision.rev_id` is the database revision ID, assigned by the wiki in commit order. So (dt, rev_id) "
+      "is the article's (event_timestamp, event_sequence); meta.dt, then the Kafka topic and offset, only make the "
+      "order total where both are tied. Kafka offsets alone order events only within one datacenter topic. Tied "
+      "events below share their entity and every column of the candidate. \"Equal\" counts events whose "
+      "LAG(revision.rev_id) under that ordering, completed with the remaining key columns, equals "
       "prior_state.revision.rev_id, out of events with both." % ", ".join(env["order_by"]))
     w("")
     w(md_table(["Ordering", "Tie groups", "Tied events", "Equal / compared", "Pages in both topics: equal / compared",
@@ -508,8 +509,8 @@ def check_expected(path, r):
            "pages_in_both_topics": c["pages_in_both_topics"],
            "gaps": sum(len(t["gaps"]) for t in r["combined"].values()),
            "parent_check_differ": sum(p["differ"] for p in r["parents"]),
-           "ordering_tie_groups_meta_dt_rev_id": next(o["tie_groups"] for o in r["order_rows"]
-                                                      if o["ordering"] == "meta.dt, revision.rev_id")}
+           "ordering_tie_groups_dt_rev_id": next(o["tie_groups"] for o in r["order_rows"]
+                                                 if o["ordering"] == "dt, revision.rev_id")}
     errors = ["%s: expected %s, got %s" % (k, exp[k], v) for k, v in got.items() if exp[k] != v]
     for cause, n in exp["event_causes"].items():
         found = sum(x["events"] for x in r["event_classes"] if cause in x["causes"].split(", "))

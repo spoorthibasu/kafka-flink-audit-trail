@@ -10,7 +10,7 @@ and comments are generated strings. Planted on purpose:
 
   missed event        an edit whose event is not written; the next edit's prior_state
                       names it
-  ordering            two consecutive edits whose meta.dt values are swapped
+  ordering            two consecutive edits whose dt and meta.dt values are swapped
   merge or re-keying  an edit written under another page's page_id
   delete and undelete a delete then an undelete; the undelete drops page.revision_count
   visibility change   a visibility_change that hides the latest revision's comment
@@ -223,7 +223,7 @@ def main():
     world = World(args.seed)
     events = run(world, plan(world, args.background_pages))
     events.sort(key=lambda e: e["_ms"])
-    # Ordering swaps: exchange meta.dt of a planted edit and the page's next event.
+    # Ordering swaps: exchange dt and meta.dt of a planted edit and the page's next event.
     by_page = {}
     for e in events:
         by_page.setdefault((e["wiki_id"], e["page"]["page_id"]), []).append(e)
@@ -231,6 +231,7 @@ def main():
         for a, b in zip(evs, evs[1:]):
             if a.get("_swap"):
                 a["meta"]["dt"], b["meta"]["dt"] = b["meta"]["dt"], a["meta"]["dt"]
+                a["dt"], b["dt"] = b["dt"], a["dt"]
     # Datacenter switch for the middle stretch, then offsets; three eqiad offsets lost.
     switch = (START_MS + int(2.7 * 3600e3), START_MS + int(3.6 * 3600e3))
     gap_at = START_MS + int(4.5 * 3600e3)
@@ -307,13 +308,14 @@ def expected(written, gaps):
     pages = {}
     for e in written:
         pages.setdefault((e["wiki_id"], e["page"]["page_id"]), []).append(e)
-    key = lambda e: (e["meta"]["dt"], e["revision"]["rev_id"], e["meta"]["topic"], e["meta"]["offset"])
+    key = lambda e: (e["dt"], e["revision"]["rev_id"], e["meta"]["dt"], e["meta"]["topic"], e["meta"]["offset"])
     no_pred = loss = drift = 0
     for evs in pages.values():
         evs.sort(key=key)
         no_pred += 1
         for a, b in zip(evs, evs[1:]):
-            if any(g["after_dt"] <= b["meta"]["dt"] and g["next_dt"] >= a["meta"]["dt"] for g in gaps):
+            lo, hi = sorted((a["meta"]["dt"], b["meta"]["dt"]))
+            if any(g["after_dt"] <= hi and g["next_dt"] >= lo for g in gaps):
                 loss += 1
                 continue
             pr = b.get("prior_state", {}).get("revision")
@@ -342,7 +344,7 @@ def expected(written, gaps):
              "field": "prior_state.revision.is_comment_visible", "outcome": "omitted_changed", "count": 2},
         ],
         "parent_check_differ": 0,
-        "ordering_tie_groups_meta_dt_rev_id": 0,
+        "ordering_tie_groups_dt_rev_id": 0,
     }
 
 
