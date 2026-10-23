@@ -1,0 +1,4 @@
+ordering,order_by,compared,equal,differ,"missed event: prior revision newer than the LAG revision, not captured","missed event: prior revision older than the LAG revision, not captured",ordering: prior revision ordered after this event,ordering: prior revision ordered before the LAG row,merge or re-keying: prior revision captured under another page_id
+receive time: meta.dt,"meta__dt, dt, revision__rev_id, meta__topic, meta__offset",3160332,3146296,14036,4707,1162,2844,5323,
+"event time first: dt, rev_id (primary)","dt, revision__rev_id, meta__dt, meta__topic, meta__offset",3160644,3155922,4722,4714,2,,6,
+"sequence first: rev_id, dt","revision__rev_id, dt, meta__dt, meta__topic, meta__offset",3160665,3155915,4750,4722,4,,23,1

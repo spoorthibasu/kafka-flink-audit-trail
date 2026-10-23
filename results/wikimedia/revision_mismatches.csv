@@ -1,0 +1,17 @@
+cause,detail,page_change_kind,previous_kind,cross_topic,events,examples_wiki_page_rev
+missed event,"prior revision newer than the LAG revision, not captured",edit,edit,false,3290,afwiki:424455:3024535; arwiki:251734:77047210; arwiki:276175:77026031; arwiki:385567:77038751; arwiki:1461813:77001900
+missed event,"prior revision newer than the LAG revision, not captured",edit,edit,true,1037,afwiki:392174:3035334; arwiki:8483:76986962; arwiki:350577:77032530; arwiki:1690920:76985130; arwiki:1870192:76986278
+missed event,"prior revision newer than the LAG revision, not captured",edit,create,false,279,abwiki:57617:175752; abwiki:57702:175895; arwiki:10540293:77002721; arwiki:10545843:77047857; arzwiki:2336925:13279529
+missed event,"prior revision newer than the LAG revision, not captured",move,edit,false,39,bhwiki:101774:807470; bswiki:538724:3935956; bswiki:538727:3935957; commonswiki:125334850:1288491603; commonswiki:128602692:1288491126
+missed event,"prior revision newer than the LAG revision, not captured",edit,create,true,34,arwiki:10538390:77015470; arzwiki:2337391:13287932; arzwiki:2337395:13287933; arzwiki:2337406:13287942; commonswiki:201730435:1288083580
+missed event,"prior revision newer than the LAG revision, not captured",edit,move,false,15,commonswiki:12147617:1290246692; commonswiki:201891782:1288899197; commonswiki:201891786:1288899236; commonswiki:201915596:1288568634; commonswiki:202022139:1289089966
+missed event,"prior revision newer than the LAG revision, not captured",move,create,false,7,commonswiki:202009409:1288978034; commonswiki:202027257:1289150142; siwiki:197325:801988; siwiki:197326:802243; siwiki:197327:802241
+ordering,prior revision ordered before the LAG row,move,move,false,4,cewiki:534202:26609998; cewiki:1920380:26609999; enwiki:38774416:1380755126; hewiki:2585305:44102519
+missed event,"prior revision newer than the LAG revision, not captured",edit,visibility_change,false,3,enwiki:171752:1381027168; enwiki:5367300:1380664237; ptwiki:4503116:73254678
+missed event,"prior revision newer than the LAG revision, not captured",edit,undelete,false,3,bgwiki:363686:13057027; commonswiki:201986183:1288846807; eswiki:2469329:175904306
+missed event,"prior revision newer than the LAG revision, not captured",edit,move,true,2,commonswiki:200517916:1289765540; fawiki:501582:44789164
+missed event,"prior revision newer than the LAG revision, not captured",move,edit,true,2,enwiki:84483275:1380558914; zhwiki:9634691:95110746
+missed event,"prior revision older than the LAG revision, not captured",move,move,false,2,dewiki:14008465:271503045; hewiki:2562527:44077014
+ordering,prior revision ordered before the LAG row,edit,delete,false,2,eswiki:11602061:175861895; eswiki:11624194:175882105
+missed event,"prior revision newer than the LAG revision, not captured",edit,visibility_change,true,2,enwiki:1805149:1381234794; ruwiki:10855425:155638023
+missed event,"prior revision newer than the LAG revision, not captured",edit,undelete,true,1,enwiki:48080939:1380965741

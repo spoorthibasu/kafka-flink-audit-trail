@@ -1,0 +1,64 @@
+capture,kind,utc,ts_ms,reason,events_on_connection,resume_id_sent
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:06:44Z,1792721204121,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""timestamp"":1},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""timestamp"":1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T02:11:56Z,1792721516184,IncompleteRead: IncompleteRead(0 bytes read),312061,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:11:57Z,1792721517188,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1135990618},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839181086}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T02:14:32Z,1792721672950,IncompleteRead: IncompleteRead(0 bytes read),156767,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:14:33Z,1792721673961,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1136048741},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839279730}]"
+capture-earliest-to-2026-10-20T00Z,stopped_on_signal,2026-10-23T02:15:46Z,1792721746337,,,
+capture-earliest-to-2026-10-20T00Z,restart_from_checkpoint,2026-10-23T02:15:54Z,1792721754668,,,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:15:54Z,1792721754668,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1136077894},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T02:27:25Z,1792722445046,IncompleteRead: IncompleteRead(0 bytes read),690376,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:27:26Z,1792722446052,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1136768270},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T02:34:15Z,1792722855554,IncompleteRead: IncompleteRead(0 bytes read),410514,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:34:16Z,1792722856560,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1137178784},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T02:46:35Z,1792723595224,IncompleteRead: IncompleteRead(0 bytes read),739672,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:46:36Z,1792723596234,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1137918456},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T02:58:45Z,1792724325342,IncompleteRead: IncompleteRead(0 bytes read),730119,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T02:58:46Z,1792724326346,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1138648575},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:09:37Z,1792724977913,IncompleteRead: IncompleteRead(0 bytes read),652569,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:09:38Z,1792724978925,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1139301144},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:09:40Z,1792724980495,server closed the stream,0,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:09:42Z,1792724982496,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1139301144},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:14:40Z,1792725280625,IncompleteRead: IncompleteRead(0 bytes read),302715,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:14:41Z,1792725281632,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1139603859},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:24:37Z,1792725877279,IncompleteRead: IncompleteRead(0 bytes read),596610,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:24:38Z,1792725878282,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1140200468},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:31:09Z,1792726269280,IncompleteRead: IncompleteRead(0 bytes read),387260,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:31:10Z,1792726270293,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1140587728},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:34:18Z,1792726458582,IncompleteRead: IncompleteRead(0 bytes read),194029,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:34:19Z,1792726459587,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1140781757},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:35:43Z,1792726543701,IncompleteRead: IncompleteRead(0 bytes read),85127,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:35:44Z,1792726544705,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1140866884},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-earliest-to-2026-10-20T00Z,disconnected,2026-10-23T03:41:36Z,1792726896795,IncompleteRead: IncompleteRead(0 bytes read),353090,
+capture-earliest-to-2026-10-20T00Z,connected,2026-10-23T03:41:37Z,1792726897802,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141219974},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T02:00:53Z,1792720853958,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""timestamp"":1792454400000},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""timestamp"":1792454400000}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T02:05:09Z,1792721109971,IncompleteRead: IncompleteRead(0 bytes read),256009,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T02:05:10Z,1792721110977,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141463068},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839159637}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T02:05:12Z,1792721112481,server closed the stream,0,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T02:05:14Z,1792721114487,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141463068},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839159637}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,restart_from_checkpoint,2026-10-23T03:44:23Z,1792727063193,,,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T03:44:23Z,1792727063194,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141491259},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839205444}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T03:49:13Z,1792727353676,IncompleteRead: IncompleteRead(0 bytes read),290490,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T03:49:14Z,1792727354679,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141598794},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839388399}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T03:52:10Z,1792727530696,IncompleteRead: IncompleteRead(0 bytes read),177019,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T03:52:11Z,1792727531702,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141669996},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839494216}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T03:54:27Z,1792727667457,IncompleteRead: IncompleteRead(0 bytes read),136762,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T03:54:28Z,1792727668463,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141726576},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839574398}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:00:27Z,1792728027679,IncompleteRead: IncompleteRead(0 bytes read),360218,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:00:28Z,1792728028685,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1141878755},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":839782437}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:07:46Z,1792728466784,IncompleteRead: IncompleteRead(0 bytes read),439103,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:07:47Z,1792728467790,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1142305925},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:12:37Z,1792728757426,IncompleteRead: IncompleteRead(0 bytes read),290649,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:12:38Z,1792728758432,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1142596574},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:13:22Z,1792728802009,IncompleteRead: IncompleteRead(0 bytes read),44601,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:13:23Z,1792728803014,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1142641175},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:16:48Z,1792729008803,IncompleteRead: IncompleteRead(0 bytes read),190359,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:16:49Z,1792729009809,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1142831533},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:19:24Z,1792729164752,IncompleteRead: IncompleteRead(0 bytes read),172386,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:19:25Z,1792729165758,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1143003919},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:26:54Z,1792729614158,IncompleteRead: IncompleteRead(0 bytes read),449405,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:26:55Z,1792729615164,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1143453324},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:30:43Z,1792729843749,IncompleteRead: IncompleteRead(0 bytes read),229593,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:30:44Z,1792729844761,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1143682917},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"
+capture-2026-10-20T00Z-2026-10-23T02Z,disconnected,2026-10-23T04:39:12Z,1792730352936,IncompleteRead: IncompleteRead(0 bytes read),509175,
+capture-2026-10-20T00Z-2026-10-23T02Z,connected,2026-10-23T04:39:13Z,1792730353947,,,"[{""topic"":""eqiad.mediawiki.page_change.v1"",""partition"":0,""offset"":1144192092},{""topic"":""codfw.mediawiki.page_change.v1"",""partition"":0,""offset"":-1}]"

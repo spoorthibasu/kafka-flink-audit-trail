@@ -1,0 +1,61 @@
+{
+  "started_utc": "2026-10-23T05:15:07Z",
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.9.6",
+    "cpu_count": 8,
+    "cpu": "Apple M3",
+    "memory_bytes": 17179869184,
+    "git_commit": "6f1fa006979eaca944efd239557aa68b12712972"
+  },
+  "duckdb": "1.4.5",
+  "schema_url": "https://schema.wikimedia.org/repositories/primary/jsonschema/mediawiki/page/change/1.12.0",
+  "avro_schema": "study/wikimedia/schema/page_change_1.12.0.avsc",
+  "avro_schema_sha256": "6781cbe210318f7d8e261cedb760e3b6ce70cd6e735ef2b3d7e6c1b599bab5b5",
+  "captures": [
+    "capture-earliest-to-2026-10-20T00Z",
+    "capture-2026-10-20T00Z-2026-10-23T02Z"
+  ],
+  "runs": 20,
+  "warmup_runs_per_run": 3,
+  "entity": [
+    "wiki_id",
+    "page__page_id"
+  ],
+  "order_by": [
+    "dt",
+    "revision__rev_id",
+    "meta__dt",
+    "meta__topic",
+    "meta__offset"
+  ],
+  "slot_roles": [
+    "content_body",
+    "content_format",
+    "content_model",
+    "content_sha1",
+    "content_size",
+    "origin_rev_id",
+    "slot_role"
+  ],
+  "columns": 137,
+  "schema_versions": {
+    "/mediawiki/page/change/1.12.0": 9390113
+  },
+  "api_checked_utc": "2026-10-23T05:21:41Z",
+  "api_requests": 208,
+  "api_seed": 20261113,
+  "redirect_candidates": 10195,
+  "missed_revision_candidates": 4716,
+  "json_keys_outside_schema": {
+    "event.meta.topic": 9390113,
+    "event.meta.partition": 9390113,
+    "event.meta.offset": 9390113,
+    "event.meta.key": 9390113
+  },
+  "json_explicit_nulls": {},
+  "json_received_equals_compact": 9390113,
+  "wall_seconds": 1332.8,
+  "finished_utc": "2026-10-23T05:37:19Z"
+}

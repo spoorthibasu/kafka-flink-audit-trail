@@ -1,0 +1,51 @@
+wiki_id,page_id,rev_id,missing_prior_rev_id,lag_rev_id,prior_newer_than_lag,id_time_inverted,found,page_id_now,on_other_page_now,texthidden,userhidden,commenthidden,suppressed,page_log_types,log_at_revision_timestamp,category,created_by
+commonswiki,4557893,1288439528,1288439387,1288429507,true,false,true,4557893,false,false,false,false,false,upload,upload/revert,exists,upload/revert
+commonswiki,18106770,1288940815,1288940751,1288940498,true,false,true,18106770,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,46205814,1290015719,1290015708,1290005965,true,false,true,46205814,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,154021331,1288604802,1288269538,1288268972,true,false,true,154021331,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,165746800,1288266974,1288266963,1288265436,true,false,true,165746800,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,199454752,1289772176,1289761819,1289640832,true,false,true,199454752,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,200688038,1288047791,1288046773,1288032318,true,false,true,200688038,false,false,false,false,false,move upload,upload/overwrite,exists,upload/overwrite
+commonswiki,200948239,1288255600,1288150643,1288150555,true,false,true,200948239,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201245859,1287870152,1287870129,1287769623,true,false,true,201245859,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201677743,1288350534,1288350523,1288316434,true,false,true,201677743,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201679307,1288530178,1288530157,1288446282,true,false,true,201679307,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201747276,1288178018,1288178006,1288139435,true,false,true,201747276,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201774257,1289189166,1289187596,1288787117,true,false,true,201774257,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201792599,1288416132,1288416118,1288405529,true,false,true,201792599,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201862113,1288040031,1288035940,1288029441,true,false,true,201862113,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201862673,1288192948,1288192926,1288178089,true,false,true,201862673,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201864466,1289328269,1288160681,1288043666,true,false,true,201864466,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201906319,1288460471,1288291112,1288290840,true,false,true,201906319,false,false,false,false,false,delete upload,upload/overwrite,exists,upload/overwrite
+commonswiki,201946794,1289574481,1288494595,1288458384,true,false,true,201946794,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,202125313,1290412130,1290412114,1290312279,true,false,true,202125313,false,false,false,false,false,upload,upload/overwrite,exists,upload/overwrite
+commonswiki,202129599,1290382832,1290382823,1290376307,true,false,true,202129599,false,false,false,false,false,upload,,exists,no log entry at its timestamp
+dewiki,636245,271428924,271428903,271428753,true,false,true,636245,false,false,false,false,false,protect review,protect/protect,exists,protect/protect
+dewiki,14005553,271414536,271409842,271408481,true,false,true,14005553,false,false,false,false,false,create import,import/upload,imported,import/upload
+dewiki,14007320,271468555,271468549,271468548,true,false,true,14007320,false,false,false,false,false,import move,,exists,no log entry at its timestamp
+enwiki,291228,1381499363,1381495597,1381474093,true,false,true,291228,false,false,false,false,false,delete protect,,exists,no log entry at its timestamp
+enwiki,1097898,1381116732,1381116677,1381095348,true,false,true,1097898,false,false,false,false,false,protect,protect/protect,exists,protect/protect
+enwiki,1624675,1381445416,1381441120,1381434467,true,false,true,1624675,false,false,false,false,false,delete protect,,exists,no log entry at its timestamp
+enwiki,7426803,1380948278,1380948275,1380916525,true,false,true,7426803,false,false,false,false,false,delete upload,upload/overwrite,exists,upload/overwrite
+enwiki,23558504,1380642952,1380642948,1380579503,true,false,true,23558504,false,false,false,false,false,delete patrol protect,protect/protect,exists,protect/protect
+enwiki,65278063,1381379119,1381379081,1381347578,true,false,true,65278063,false,false,false,false,false,create protect review stable,protect/protect,exists,protect/protect
+enwiki,75285719,1381076601,1381076598,1381076221,true,false,true,75285719,false,false,false,false,false,protect,,exists,no log entry at its timestamp
+enwiki,80546130,1380992562,1380377282,1380200279,true,false,true,80546130,false,false,false,false,false,create,,exists,no log entry at its timestamp
+enwiki,84527561,1380639143,1380639141,1380602450,true,false,true,84527561,false,false,false,false,false,create upload,upload/overwrite,exists,upload/overwrite
+enwiki,84528481,1380638126,1380638121,1380602538,true,false,true,84528481,false,false,false,false,false,create upload,upload/overwrite,exists,upload/overwrite
+enwiki,84528597,1380637991,1380637987,1380602433,true,false,true,84528597,false,false,false,false,false,create upload,upload/overwrite,exists,upload/overwrite
+enwiki,84529545,1380637937,1380637934,1380602383,true,false,true,84529545,false,false,false,false,false,create upload,upload/overwrite,exists,upload/overwrite
+enwiki,84559029,1381093165,1381093162,1381061326,true,false,true,84559029,false,false,false,false,false,create upload,upload/overwrite,exists,upload/overwrite
+enwiki,84585988,1381508229,1381508224,1381319624,true,false,true,84585988,false,false,false,false,false,create upload,upload/overwrite,exists,upload/overwrite
+enwiki,84590914,1381507880,1381507877,1381474417,true,false,true,84590914,false,false,false,false,false,create upload,upload/overwrite,exists,upload/overwrite
+frwiki,12647457,240528164,240360156,240358936,true,false,true,12647457,false,false,false,false,false,create delete move patrol protect,,exists,no log entry at its timestamp
+itwiki,4923,152934229,152934228,152934224,true,false,true,4923,false,false,false,false,false,delete patrol protect,protect/protect,exists,protect/protect
+jawiki,4371391,111459236,111459235,111450158,true,false,true,4371391,false,false,false,false,false,create patrol protect,,exists,no log entry at its timestamp
+kowiki,4118494,42666569,42664265,42658477,true,false,true,4118494,false,false,false,false,false,create,,exists,no log entry at its timestamp
+mlwikivoyage,557,9061,2534,2533,true,false,true,557,false,false,false,false,false,import,import/upload,imported,import/upload
+mlwikivoyage,615,9098,3559,3558,true,false,true,615,false,false,false,false,false,import,,exists,no log entry at its timestamp
+mlwikivoyage,815,9186,6608,6607,true,false,true,815,false,false,false,false,false,import,import/upload,imported,import/upload
+mlwikivoyage,840,9206,6887,6886,true,false,true,840,false,false,false,false,false,import,import/upload,imported,import/upload
+mlwikivoyage,938,9263,8303,8302,true,false,true,938,false,false,false,false,false,import,import/upload,imported,import/upload
+ruwiki,11630392,155637664,155637369,155609814,true,false,true,11630392,false,false,false,false,false,create,,exists,no log entry at its timestamp
+viwiki,19846325,75649867,75649296,75649138,true,false,true,19846325,false,false,false,false,false,create delete patrol protect,protect/protect,exists,protect/protect
