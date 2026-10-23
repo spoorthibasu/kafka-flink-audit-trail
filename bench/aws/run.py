@@ -284,7 +284,9 @@ class Run:
         stopped_ms = now_ms()
         if total != expected:
             raise RuntimeError("table %s holds %d records, expected %d" % (table, total, expected))
-        json.dump(md, open(os.path.join(self.out, "iceberg_metadata_%s_after_flink.json" % table), "w"), indent=1)
+        # The bucket name stays out of the results: S3 paths keep their shape with a placeholder.
+        with open(os.path.join(self.out, "iceberg_metadata_%s_after_flink.json" % table), "w") as fh:
+            fh.write(json.dumps(md, indent=1).replace(self.base["bucket"], "<run-bucket>"))
         for s in md["snapshots"]:
             sm = s["summary"]
             append_csv(os.path.join(self.out, "iceberg_snapshots.csv"), {
