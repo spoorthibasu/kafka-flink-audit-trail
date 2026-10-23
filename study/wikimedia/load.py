@@ -160,11 +160,12 @@ def ordering_ties(con, parquet_path):
         k = ", ".join(key)
         nulls = con.execute("SELECT count(*) FROM read_parquet('%s') WHERE %s"
                             % (parquet_path, " OR ".join("%s IS NULL" % c for c in key))).fetchone()[0]
-        groups, events = con.execute(
-            "SELECT count(*), coalesce(sum(n), 0) FROM (SELECT count(*) AS n FROM read_parquet('%s') "
+        groups, events, examples = con.execute(
+            "SELECT count(*), coalesce(sum(n), 0), list(ex ORDER BY ex)[1:5] FROM (SELECT count(*) AS n, "
+            "wiki_id || ':' || page__page_id || ':' || min(revision__rev_id) AS ex FROM read_parquet('%s') "
             "GROUP BY %s, %s HAVING count(*) > 1)" % (parquet_path, ent, k)).fetchone()
-        out.append({"ordering": label, "columns": " ,".join(key).replace(" ,", ", "), "rows_with_null_key": nulls,
-                    "tie_groups": groups, "tied_events": int(events)})
+        out.append({"ordering": label, "columns": ", ".join(key), "rows_with_null_key": nulls,
+                    "tie_groups": groups, "tied_events": int(events), "tie_examples": "; ".join(examples or [])})
     return out
 
 

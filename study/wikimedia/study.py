@@ -168,6 +168,8 @@ def main():
     ap.add_argument("--api-sample", type=int, default=0,
                     help="check this many sampled events of each kind against the MediaWiki API (network)")
     ap.add_argument("--api-seed", type=int, default=20261113)
+    ap.add_argument("--reuse-parquet", action="store_true",
+                    help="keep an existing <work>/events.parquet if its rows match the manifests")
     args = ap.parse_args()
     t_start = time.perf_counter()
 
@@ -197,8 +199,14 @@ def main():
     con = duckdb.connect()
     con.execute("SET temp_directory = '%s'" % args.work)
     parquet = os.path.join(args.work, "events.parquet")
-    log("step 3: loading %d files" % len(load.event_files(manifests)))
-    cols, roles = load.load(con, manifests, avro, parquet, args.work)
+    if args.reuse_parquet and os.path.exists(parquet):
+        log("step 3: reusing %s" % parquet)
+        cols = [c for (c,) in con.execute("SELECT column_name FROM (DESCRIBE SELECT * FROM read_parquet('%s'))"
+                                          % parquet).fetchall()]
+        roles = sorted({c.split("__")[3] for c in cols if c.startswith("revision__content_slots__")})
+    else:
+        log("step 3: loading %d files" % len(load.event_files(manifests)))
+        cols, roles = load.load(con, manifests, avro, parquet, args.work)
     rows = load.check_loaded(con, parquet, manifests)
     env["slot_roles"] = roles
     env["columns"] = len(cols)
@@ -235,6 +243,9 @@ def main():
             totals[k] += fc[k]
         field_rows.append(field_row("prior_state." + cur.replace("__", "."), fc))
     field_rows.append(field_row("all fields", totals))
+    counters = ("revision__editor__edit_count", "revision__editor__edit_global_count")
+    rest = {k: totals[k] - sum(field_counts[c][k] for c in counters) for k in totals}
+    field_rows.append(field_row("all fields except revision.editor.edit_count and edit_global_count", rest))
     write_csv(os.path.join(args.out, "reconstruction_fields.csv"), field_rows)
     class_rows = [{"cause": k[0], "detail": k[1], "field_group": k[2], "field": "prior_state." + k[3].replace("__", "."),
                    "outcome": k[4], "count": v["count"], "prior_greater": v["prior_greater"], "prior_less": v["prior_less"],
@@ -422,6 +433,11 @@ def summary_section(r, args):
                  "%s / %s" % (fmt_bytes(o["cross_topic_rev_id_equal"]), fmt_bytes(o["cross_topic_compared"]))]
                 for o in r["order_rows"]]))
     w("")
+    primary = next(o for o in r["order_rows"] if o["ordering"] == "dt, revision.rev_id")
+    w("The primary key leaves %s tie group(s) of %s events%s; meta.dt orders them." % (
+        fmt_bytes(primary["tie_groups"]), fmt_bytes(primary["tied_events"]),
+        (" (" + primary["tie_examples"] + ", wiki_id:page_id:rev_id)") if primary["tie_examples"] else ""))
+    w("")
     w("Pages with events in both the eqiad and the codfw topic: %s." % fmt_bytes(c["pages_in_both_topics"]))
     w("")
     w("Ordering sensitivity: revision mismatches (prior_state.revision.rev_id differs from LAG(revision.rev_id)) "
@@ -471,6 +487,18 @@ def summary_section(r, args):
                [[k[0], k[1], fmt_bytes(v["count"]), len(v["fields"]), "; ".join(v["examples"])]
                 for k, v in sorted(agg.items(), key=lambda kv: (kv[0][0], -kv[1]["count"]))]))
     w("")
+    ed = {x["field"]: x for x in r["class_rows"] if x["detail"] == "editor record changed between the two events"
+          and x["outcome"] == "differ"}
+    if "prior_state.revision.editor.edit_count" in ed:
+        a, b2 = ed["prior_state.revision.editor.edit_count"], ed.get("prior_state.revision.editor.edit_global_count")
+        w("Editor record: where prior_state and LAG describe the same revision, prior_state's "
+          "revision.editor.edit_count is the larger in %s of %s differing events and the smaller in %s%s. "
+          "prior_state carries the previous revision's editor as that user's record stood when the later event "
+          "was produced; LAG returns it as the earlier event carried it." % (
+              fmt_bytes(a["prior_greater"]), fmt_bytes(a["count"]), fmt_bytes(a["prior_less"]),
+              ("; edit_global_count %s of %s and %s" % (fmt_bytes(b2["prior_greater"]), fmt_bytes(b2["count"]),
+                                                        fmt_bytes(b2["prior_less"]))) if b2 else ""))
+        w("")
     w("Per event: causes of its mismatched fields and the field groups involved.")
     w("")
     w(md_table(["Causes", "Field groups", "Events", "Examples"],
@@ -484,6 +512,11 @@ def summary_section(r, args):
                [[x["cause"], x["detail"], x["page_change_kind"], x["previous_kind"], fmt(x["cross_topic"]),
                  fmt_bytes(x["events"]), x["examples_wiki_page_rev"]] for x in r["mismatch_rows"]]))
     w("")
+    gaps_total = sum(len(t["gaps"]) for t in r["combined"].values())
+    if not gaps_total:
+        w("The capture has no offset gaps, so \"missed event\" here means the stream holds no page_change event "
+          "for that revision, not an event the capture lost.")
+        w("")
     if r["api_info"]:
         a = r["api_info"]
         w("#### Checks against the MediaWiki API")
@@ -500,9 +533,11 @@ def summary_section(r, args):
         w("")
         groups = {}
         for x in r["redirect_rows"]:
-            groups.setdefault(x["verdict"], []).append("%s:%s:%s" % (x["wiki_id"], x["page_id"], x["rev_id"]))
-        w(md_table(["Verdict", "Events", "Identifiers (wiki_id:page_id:rev_id)"],
-                   [[k, len(v), "; ".join(v)] for k, v in sorted(groups.items())]))
+            why = "" if x["verdict"] != "ambiguous" else (x["previous_revision_read_as"] if x["previous_revision_redirect_api"] is None
+                                                          else x["event_revision_read_as"])
+            groups.setdefault((x["verdict"], why), []).append("%s:%s:%s" % (x["wiki_id"], x["page_id"], x["rev_id"]))
+        w(md_table(["Verdict", "Reason", "Events", "Identifiers (wiki_id:page_id:rev_id)"],
+                   [[k[0], k[1], len(v), "; ".join(v)] for k, v in sorted(groups.items())]))
         w("")
         w("Revisions no captured event carries: %s sampled of %s events under the primary key whose "
           "prior_state.revision.rev_id has no captured event. Imported means the page has import log entries and the "
@@ -511,11 +546,12 @@ def summary_section(r, args):
         w("")
         groups = {}
         for x in r["revision_rows"]:
-            groups.setdefault(x["category"], []).append(x)
-        w(md_table(["Category", "Events", "Log entries at the revision's timestamp", "Identifiers (wiki_id:page_id:rev_id > missing rev_id)"],
-                   [[k, len(v), tally(x["log_at_revision_timestamp"] or "none" for x in v),
+            groups.setdefault((x["category"], x["created_by"]), []).append(x)
+        w(md_table(["Category", "Created by (log entry at the revision's timestamp)", "Events",
+                    "Identifiers (wiki_id:page_id:rev_id > revision with no event)"],
+                   [[k[0], k[1], len(v),
                      "; ".join("%s:%s:%s > %s" % (x["wiki_id"], x["page_id"], x["rev_id"], x["missing_prior_rev_id"]) for x in v)]
-                    for k, v in sorted(groups.items())]))
+                    for k, v in sorted(groups.items(), key=lambda kv: (kv[0][0], -len(kv[1]), kv[0][1]))]))
         w("")
     w("prior_state.revision.rev_id against revision.rev_parent_id:")
     w("")

@@ -98,6 +98,9 @@ python3 study/wikimedia/study.py \
     --api-sample 50
 ```
 
+`--reuse-parquet` keeps an existing `<work>/events.parquet` when its row count and
+offsets match the manifests, which skips the load on a rerun.
+
 The API checks read Wikimedia's public Action API one request at a time, at most one
 per second, with the same User-Agent. They answer two questions about sampled events:
 

@@ -16,9 +16,13 @@ Two checks, each on a seeded random sample of event identifiers:
   revision   events whose prior_state.revision.rev_id no captured event carries. The
              revision is looked up by ID: missing (badrevids, which is what deleted
              revisions also return to anonymous readers), content or editor hidden
-             (revision deletion), suppressed, attached to another page_id now, and the
-             page's import, delete and merge log entries, and any log entry at the
-             revision's own timestamp.
+             (revision deletion), suppressed, attached to another page_id now, the page's
+             log entry types, and the log entry at the revision's own timestamp, which
+             names the action that created it (an upload, a protection change, an
+             import). imported: an import log entry at that timestamp, or import log
+             entries on the page and a revision ID higher than the previous captured
+             revision's with an older timestamp, the inversion an import of old
+             revisions produces because IDs are assigned at import time.
 
 The API is used politely: one request at a time, at most one per --pause seconds, the
 study's User-Agent, maxlag=5, and Retry-After honoured. Revision content read for the
@@ -111,8 +115,12 @@ class Api(object):
 
 def is_redirect(api, domain, rev):
     """True, False or None (cannot tell) from a revision's content."""
-    if not rev.get("found") or rev.get("texthidden") or rev.get("content") is None:
-        return None, "content not readable"
+    if not rev.get("found"):
+        return None, "revision not found"
+    if rev.get("texthidden"):
+        return None, "content hidden"
+    if rev.get("content") is None:
+        return None, "no content returned"
     model, text = rev["contentmodel"], rev["content"]
     if model == "wikitext":
         words = api.redirect_words(domain)
@@ -179,9 +187,8 @@ def missed_candidates(con):
 
 
 def check_revisions(con, api, n, seed, log=print):
-    """Imported: the page has import log entries and the revision's ID is higher than
-    the previous captured revision's while its timestamp is older, the inversion an
-    import produces because IDs are assigned at import time."""
+    """Categories as in the module docstring; created_by is the log entry at the
+    revision's timestamp."""
     cands = missed_candidates(con)
     sample = sorted(random.Random(seed).sample(cands, min(n, len(cands))))
     rows = []
@@ -198,10 +205,11 @@ def check_revisions(con, api, n, seed, log=print):
             category = "suppressed"
         elif r.get("texthidden") or r.get("userhidden") or r.get("commenthidden"):
             category = "revision deleted: parts hidden"
-        elif "import" in types and inverted:
+        elif any(t.startswith("import/") for t in at_ts) or ("import" in types and inverted):
             category = "imported"
         else:
             category = "exists"
+        created_by = " ".join(at_ts) or "no log entry at its timestamp"
         rows.append({"wiki_id": wiki, "page_id": page, "rev_id": rev, "missing_prior_rev_id": prior_rev,
                      "lag_rev_id": prev_rev, "prior_newer_than_lag": prior_rev > prev_rev,
                      "id_time_inverted": inverted, "found": r.get("found", False),
@@ -210,6 +218,6 @@ def check_revisions(con, api, n, seed, log=print):
                      "texthidden": r.get("texthidden", ""), "userhidden": r.get("userhidden", ""),
                      "commenthidden": r.get("commenthidden", ""), "suppressed": r.get("suppressed", ""),
                      "page_log_types": " ".join(types), "log_at_revision_timestamp": " ".join(at_ts),
-                     "category": category})
+                     "category": category, "created_by": created_by})
         log("  revision %s:%s:%s prior %s -> %s %s" % (wiki, page, rev, prior_rev, category, " ".join(at_ts)))
     return len(cands), rows
