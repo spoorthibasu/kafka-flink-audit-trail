@@ -986,3 +986,46 @@ Measured by `bench/sort_order.py` from `bench/config.json` on 2026-10-23T10:41:1
 
 Files: `sort_order.csv`, `sort_order_environment.json`.
 
+## Engine scan bytes in the sql-matrix setup
+
+Measured by `ci/engine_scan_bytes.py --engines spark,trino` on 2026-10-23T10:43:03Z, in the setup of `ci/run_sql_matrix.py`: each golden case's input.csv (3 or 4 rows) is loaded as customer_profile_changes, then every sql/ file the engine claims runs against it. Engines: Spark 4.0.4, Trino 483. Every query ran 2 times and the counter was the same each time.
+
+- Trino: `physicalInputBytes` from the client's final query statistics. The table lives in Trino's memory connector, so the counter is the size of the in-memory pages the table scan produced, not bytes read from storage.
+- Spark: `inputBytes` (the task metric inputMetrics.bytesRead) summed over the stages of every job the query ran, read from the SparkContext status store. The view is a DataFrame built from Python rows, so the scan is an in-memory RDD scan and no input bytes are recorded.
+- sql/duckdb/ files claim DuckDB only and are not run here; DuckDB is not part of this measurement.
+
+| SQL file | Golden case | Engine | Counter | Input bytes | Rows returned | Matches golden | Scan operator |
+|---|---|---|---|---|---|---|---|
+| sql/dedup.sql | case1_full_state | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/dedup.sql | case1_full_state | Trino | physicalInputBytes | 196 | 3 | yes | table scan, catalog memory |
+| sql/dedup.sql | case2_sparse | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/dedup.sql | case2_sparse | Trino | physicalInputBytes | 174 | 3 | yes | table scan, catalog memory |
+| sql/dedup.sql | case3_duplicate | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/dedup.sql | case3_duplicate | Trino | physicalInputBytes | 261 | 3 | yes | table scan, catalog memory |
+| sql/lag_history.sql | case1_full_state | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/lag_history.sql | case1_full_state | Trino | physicalInputBytes | 196 | 3 | yes | table scan, catalog memory |
+| sql/lag_history.sql | case2_sparse | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/lag_history.sql | case2_sparse | Trino | physicalInputBytes | 174 | 3 | yes | table scan, catalog memory |
+| sql/lag_history.sql | case3_duplicate | Spark | inputBytes (stage sum) | 0 | 4 | yes | Scan ExistingRDD |
+| sql/lag_history.sql | case3_duplicate | Trino | physicalInputBytes | 261 | 4 | yes | table scan, catalog memory |
+| sql/latest_state.sql | case1_full_state | Spark | inputBytes (stage sum) | 0 | 1 | yes | Scan ExistingRDD |
+| sql/latest_state.sql | case1_full_state | Trino | physicalInputBytes | 196 | 1 | yes | table scan, catalog memory |
+| sql/latest_state.sql | case2_sparse | Spark | inputBytes (stage sum) | 0 | 1 | yes | Scan ExistingRDD |
+| sql/latest_state.sql | case2_sparse | Trino | physicalInputBytes | 174 | 1 | yes | table scan, catalog memory |
+| sql/latest_state.sql | case3_duplicate | Spark | inputBytes (stage sum) | 0 | 1 | yes | Scan ExistingRDD |
+| sql/latest_state.sql | case3_duplicate | Trino | physicalInputBytes | 261 | 1 | yes | table scan, catalog memory |
+| sql/sparse_current_value.sql | case1_full_state | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/sparse_current_value.sql | case1_full_state | Trino | physicalInputBytes | 196 | 3 | yes | table scan, catalog memory |
+| sql/sparse_current_value.sql | case2_sparse | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/sparse_current_value.sql | case2_sparse | Trino | physicalInputBytes | 174 | 3 | yes | table scan, catalog memory |
+| sql/sparse_current_value.sql | case3_duplicate | Spark | inputBytes (stage sum) | 0 | 4 | yes | Scan ExistingRDD |
+| sql/sparse_current_value.sql | case3_duplicate | Trino | physicalInputBytes | 261 | 4 | yes | table scan, catalog memory |
+| sql/sparse_previous_value.sql | case1_full_state | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/sparse_previous_value.sql | case1_full_state | Trino | physicalInputBytes | 196 | 3 | yes | table scan, catalog memory |
+| sql/sparse_previous_value.sql | case2_sparse | Spark | inputBytes (stage sum) | 0 | 3 | yes | Scan ExistingRDD |
+| sql/sparse_previous_value.sql | case2_sparse | Trino | physicalInputBytes | 174 | 3 | yes | table scan, catalog memory |
+| sql/sparse_previous_value.sql | case3_duplicate | Spark | inputBytes (stage sum) | 0 | 4 | yes | Scan ExistingRDD |
+| sql/sparse_previous_value.sql | case3_duplicate | Trino | physicalInputBytes | 261 | 4 | yes | table scan, catalog memory |
+
+Files: `engine_scan_bytes.csv`.
+
