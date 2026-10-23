@@ -149,6 +149,46 @@ data. They are in `results/wikimedia/` and the "Wikimedia field study" section o
 `make wikimedia-smoke` runs the same steps on a synthetic capture with planted
 mismatches; CI runs it too.
 
+## AWS scale run
+
+`infra/` and `bench/aws/` run designs A and B through Amazon MSK, Amazon Managed Service for
+Apache Flink and Iceberg on S3 with the Glue Data Catalog, at 1,000,000 entities x 100
+events (100,000,000 events per design), then query A, B and C with Athena engine version
+3. The events are synthetic, from the bench-full generator with the same seed and
+attribute list. The results are in `results/aws/` and the "AWS scale run" section of
+`results/SUMMARY.md`.
+
+**Cost warning.** This creates billed resources in your AWS account. `infra/COST_ESTIMATE.md`
+estimates 71.50 USD for the whole run from on-demand us-east-1 prices, and lists what each
+stage costs per hour while it exists (up to 2.92 USD per hour while a Flink application
+runs). Nothing stops on its own: tear down as `infra/TEARDOWN.md` describes, and keep the
+budget from `infra/budget` until the charges have posted.
+
+Rerun, from a machine with the AWS CLI, Terraform, JDK 17, Maven and `bench/requirements.txt`:
+
+1. In the IAM console, create `infra/iam/role-boundary-policy.json` as the policy
+   `audit-trail-bench-boundary`, and attach `infra/iam/cli-run-policy-infra.json` and
+   `infra/iam/cli-run-policy-services.json` (with your own bucket name in place of
+   `ARCHIVE_BUCKET_NAME`, or without that statement) to the IAM user the CLI uses.
+2. `TF_VAR_alert_email=<address> terraform -chdir=infra/budget apply -var budget_usd=<amount>`
+3. `terraform -chdir=infra/base apply`, then
+   `python3 bench/aws/run.py --config bench/aws/config.aws.json setup` and `generate`.
+4. `(cd bench/aws/flink-app && mvn -q -B package)`, then `terraform -chdir=infra/stream apply`.
+5. `python3 bench/aws/run.py --config bench/aws/config.aws.json pipeline`, `environment`,
+   then `terraform -chdir=infra/stream destroy`.
+6. With the same `--config`: `load-c`, `equivalence`, `stats after_commits`, `expire`,
+   `stats after_expiration`, `compact`, `stats after_compaction`, `expire`,
+   `stats after_compaction_and_expiration`, `athena-timing`.
+7. `terraform -chdir=infra/base destroy`; once Cost Explorer shows the charges,
+   `python3 bench/aws/report.py costs --start <first day> --end <day after the last>`,
+   `python3 bench/aws/report.py summary`, `terraform -chdir=infra/budget destroy`, and
+   `python3 bench/aws/teardown_check.py --out results/aws/teardown_listing.txt --archive-bucket <name>`.
+
+`bench/aws/config.aws-smoke.json` runs the same steps at the bench-full scale (1,000
+entities) first; its files go to `results/aws/smoke/`. Nothing in CI touches AWS: the
+`aws-offline` job checks the step files against `benchmark.generate()`, runs the Flink
+application's unit tests, validates the Terraform and regenerates the estimate.
+
 ## Layout
 
 ```
@@ -199,6 +239,18 @@ study/wikimedia/
   capture.py                            Wikimedia EventStreams capture with offset resume
   study.py                              steps 3 to 7: Parquet, LAG versus prior_state, size, cost
   README.md                             data handling and the commands to capture again
+
+infra/
+  budget/, base/, stream/               Terraform for the AWS scale run, applied in that order
+  iam/                                  the IAM policies the CLI user and the run's roles need
+  estimate.py, COST_ESTIMATE.md         the cost estimate from Price List prices
+  TEARDOWN.md                           what is destroyed when, and how teardown is proved
+
+bench/aws/
+  generate_steps.py                     the bench-full generator, written as per-event-index step files
+  flink-app/                            the Managed Flink job and the runner tools (own Maven build)
+  run.py                                drives the run: runner, Flink, Athena, CloudWatch, Budgets
+  report.py                             summary CSVs and the SUMMARY.md section
 ```
 
 Events go over the wire as JSON so the pipeline runs without a schema registry. The
