@@ -163,3 +163,42 @@ jobs:
         with:
           name: pipeline-smoke-results
           path: results-smoke-pipeline
+
+  aws-offline:
+    name: AWS scale run code without AWS (generator check, Flink app tests, Terraform validate, estimate)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.0
+      - name: Install benchmark dependencies
+        run: pip install -r bench/requirements.txt
+      - name: Step files equal benchmark.generate() output
+        run: python3 bench/aws/check_generate_steps.py
+      - name: Scripts compile
+        run: python3 -m py_compile bench/aws/*.py infra/estimate.py
+      - name: Policies are valid JSON
+        run: for f in infra/iam/*.json; do python3 -m json.tool "$f" > /dev/null; done
+      - name: Flink application unit tests and jar
+        run: mvn -q -B -f bench/aws/flink-app/pom.xml verify
+      - name: Terraform format and validate
+        run: |
+          terraform fmt -check -recursive infra
+          for r in budget base stream; do
+            terraform -chdir=infra/$r init -backend=false -input=false > /dev/null
+            terraform -chdir=infra/$r validate
+          done
+      - name: Cost estimate regenerates unchanged
+        run: |
+          python3 infra/estimate.py --out "$RUNNER_TEMP/COST_ESTIMATE.md"
+          diff infra/COST_ESTIMATE.md "$RUNNER_TEMP/COST_ESTIMATE.md"
