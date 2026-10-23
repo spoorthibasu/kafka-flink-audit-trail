@@ -1029,3 +1029,26 @@ Measured by `ci/engine_scan_bytes.py --engines spark,trino` on 2026-10-23T10:43:
 
 Files: `engine_scan_bytes.csv`.
 
+## Engine documentation for LAST_VALUE with IGNORE NULLS, fetched by script
+
+Fetched by `bench/engine_docs_fetch.py` on 2026-10-23T10:43:45Z. Each syntax line is the page's own text, copied by the script; the page's SHA-256 is in engine_docs_fetched.csv. "none" means no line on the page gives a LAST_VALUE signature. The section "Engine documentation for LAST_VALUE with IGNORE NULLS" holds the hand copy of 2026-10-20 and is unchanged. Text lines are the page's text split where the HTML breaks lines, so a sentence can span two lines.
+
+| Engine | URL as served | Documented version | Syntax line on the page |
+|---|---|---|---|
+| DuckDB | https://duckdb.org/docs/2.0/sql/functions/window_functions | version selector shows "2.0 LTS" | `last_value(expr[ ORDER BY ordering][ IGNORE NULLS])` |
+| DuckDB | https://duckdb.org/docs/1.4/sql/functions/window_functions | page reads "This page is for DuckDB 1.4 (LTS)." | `last_value(expr[ ORDER BY ordering][ IGNORE NULLS])` |
+| Spark SQL | https://spark.apache.org/docs/latest/sql-ref-syntax-qry-select-window.html | page title reads "Window Functions - Spark 4.2.0 Documentation" | `window_function [ nulls_option ] OVER` |
+| Trino | https://trino.io/docs/current/functions/window.html | page title ends "Trino 484 Documentation" | `last_value(x) → [same as input]` |
+| Trino | https://trino.io/docs/current/sql/select.html | page title ends "Trino 484 Documentation" | none |
+| Athena | https://docs.aws.amazon.com/athena/latest/ug/engine-versions-reference-0003.html | page title reads "Athena engine version 3 - Amazon Athena" | none |
+| Athena | https://docs.aws.amazon.com/athena/latest/ug/functions-env3.html | page title reads "Athena engine version 3 functions - Amazon Athena" | none |
+
+- DuckDB, https://duckdb.org/docs/2.0/sql/functions/window_functions: redirect: https://duckdb.org/docs/lts/sql/functions/window_functions -> https://duckdb.org/docs/2.0/sql/functions/window_functions.html (meta refresh) ; https://duckdb.org/docs/2.0/sql/functions/window_functions.html -> https://duckdb.org/docs/2.0/sql/functions/window_functions (HTTP 308); lines mentioning LAST_VALUE or IGNORE NULLS: last_value(expr[ ORDER BY ordering][ IGNORE NULLS]) || last_value(column).
+- DuckDB, https://duckdb.org/docs/1.4/sql/functions/window_functions: lines mentioning LAST_VALUE or IGNORE NULLS: last_value(expr[ ORDER BY ordering][ IGNORE NULLS]) || last_value(column).
+- Spark SQL, https://spark.apache.org/docs/latest/sql-ref-syntax-qry-select-window.html: lines mentioning LAST_VALUE or IGNORE NULLS: window_function [ nulls_option ] OVER || Note: Only LAG | LEAD | NTH_VALUE | FIRST_VALUE | LAST_VALUE can be used with IGNORE NULLS. || LAST_VALUE(v) IGNORE NULLS OVER w last_value.
+- Trino, https://trino.io/docs/current/functions/window.html: lines mentioning LAST_VALUE or IGNORE NULLS: By default, null values are respected. If IGNORE NULLS is specified, all rows where || x is null are excluded from the calculation. If IGNORE NULLS is specified and x || last_value(x) → [same as input].
+- Trino, https://trino.io/docs/current/sql/select.html: SELECT page searched for IGNORE NULLS.
+- Athena, https://docs.aws.amazon.com/athena/latest/ug/engine-versions-reference-0003.html: lines mentioning LAST_VALUE or IGNORE NULLS: IGNORE NULLS cannot be used with non-value window functions || Cause: IGNORE NULLS can now be || first_value, last_value, nth_value,; links to https://trino.io/docs/current/functions/window.html#value-functions.
+- Athena, https://docs.aws.amazon.com/athena/latest/ug/functions-env3.html: links to https://trino.io/docs/current/functions/window.html.
+
+Files: `engine_docs_fetched.csv`.
