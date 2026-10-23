@@ -540,8 +540,9 @@ def summary_section(r, args):
                    [[k[0], k[1], len(v), "; ".join(v)] for k, v in sorted(groups.items())]))
         w("")
         w("Revisions no captured event carries: %s sampled of %s events under the primary key whose "
-          "prior_state.revision.rev_id has no captured event. Imported means the page has import log entries and the "
-          "revision has a higher ID but an older timestamp than the previous captured revision." % (
+          "prior_state.revision.rev_id has no captured event. Imported means an import log entry at the revision's "
+          "own timestamp, or import log entries on the page and a revision ID higher than the previous captured "
+          "revision's with an older timestamp." % (
               len(r["revision_rows"]), fmt_bytes(a["missed_revision_candidates"])))
         w("")
         groups = {}
