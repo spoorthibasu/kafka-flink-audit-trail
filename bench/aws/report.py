@@ -23,7 +23,8 @@ Definitions:
 - Checkpoint duration: checkpointDuration of every "Completed checkpoint" line of the job,
   up to and including the checkpoint whose commit made every event visible.
 - Athena runtime: TotalExecutionTimeInMillis (and EngineExecutionTimeInMillis) of the timed
-  runs; cost per query: DataScannedInBytes rounded up to the next MB, 10 MB minimum, at the
+  runs. Every SELECT writes its result rows to the workgroup's S3 result location, as any
+  Athena query does, and the runtime includes that write; cost per query: DataScannedInBytes rounded up to the next MB, 10 MB minimum, at the
   price per TB in infra/prices.json (MB = 2^20 bytes, TB = 2^40 bytes).
 """
 import argparse
@@ -249,6 +250,10 @@ def summary(results, summary_path):
           env["kafka_version"], env["msk_broker_type"], cfg["aws"]["replication_factor"], env["flink_runtime"],
           cfg["aws"]["flink_parallelism"], env["athena_engine"], env["kafka_version"]))
     w("")
+    w("Managed Flink rejected parallelism above %s for this account (CreateApplication: the account needs AWS "
+      "verification for higher KPU limits), so both applications run at %s with one KPU per slot plus the "
+      "orchestration KPU." % (cfg["aws"]["flink_parallelism"], cfg["aws"]["flink_parallelism"]))
+    w("")
     w("Definitions are in `bench/aws/report.py`. Raw rows: `producer_runs.csv`, `topic_log_bytes.csv`, "
       "`msk_metrics.csv`, `flink_runs.csv`, `flink_checkpoints.csv`, `flink_job_states.csv`, "
       "`iceberg_snapshots.csv`, `iceberg_stats.csv`, `iceberg_history.csv`, `athena_runs.csv`, `equivalence.csv`, "
@@ -261,30 +266,65 @@ def summary(results, summary_path):
     w("")
     w("### Producer and Kafka")
     w("")
-    w(table(["Design", "Compression", "Events", "p50 ms", "p95 ms", "p99 ms", "Log bytes, one copy", "Bytes per event",
-             "Log bytes, all replicas", "Replication bytes in (CloudWatch)", "Replication bytes out (CloudWatch)"],
+    w("Producer latency is send() to acknowledgement for every event of the run, sent back to back with no pacing "
+      "(acks=all, Kafka client %s defaults otherwise), so it includes each record's wait in the producer's buffer. "
+      "Log bytes come from describeLogDirs once every replica matched its leader. Replication bytes from CloudWatch "
+      "sum ReplicationBytesInPerSec (and ...OutPerSec) over the three brokers, one-minute averages times 60, from the "
+      "minute the run started to the minute after the log bytes settled; the derived column is one copy times "
+      "(replication factor - 1)." % (k[0]["kafka_client_version"] if k else ""))
+    w("")
+    w(table(["Design", "Compression", "Events", "p50 ms", "p95 ms", "p99 ms", "Max ms", "Log bytes, one copy",
+             "Bytes per event", "Log bytes, all replicas", "Replication bytes in (CloudWatch)",
+             "Replication bytes out (CloudWatch)", "Replication bytes (derived)"],
             [[r["design"], r["compression"], r["events"], r["producer_latency_p50_ms"], r["producer_latency_p95_ms"],
-              r["producer_latency_p99_ms"], r["topic_log_bytes_one_copy"], r["topic_log_bytes_per_event_one_copy"],
-              r["topic_log_bytes_all_replicas"], r["replication_bytes_in_cloudwatch"], r["replication_bytes_out_cloudwatch"]]
+              r["producer_latency_p99_ms"], r["producer_latency_max_ms"], r["topic_log_bytes_one_copy"],
+              r["topic_log_bytes_per_event_one_copy"], r["topic_log_bytes_all_replicas"],
+              r["replication_bytes_in_cloudwatch"], r["replication_bytes_out_cloudwatch"], r["replication_bytes_derived"]]
              for r in k]))
     w("")
     w("### Flink")
     w("")
+    w("Each application read its zstd topic from the earliest offset after the topic held every event. End-to-end "
+      "throughput is events over the time from the job's switch to RUNNING (JobManager log) to the commit of the first "
+      "Iceberg snapshot holding every event; sustained throughput is the records committed between the first and the "
+      "second-to-last data commit over the time between them. Checkpoint durations are the checkpointDuration of every "
+      "\"Completed checkpoint\" line of the job up to the checkpoint that made every event visible, nearest-rank.")
+    w("")
     w(table(["Design", "Events", "KPU", "End-to-end events/s", "Sustained events/s", "Data commits", "Checkpoints",
-             "Checkpoint p50 ms", "Checkpoint p95 ms"],
+             "Checkpoint p50 ms", "Checkpoint p95 ms", "Checkpoint max ms"],
             [[r["design"], r["events"], r["kpu"], r["end_to_end_throughput_events_per_s"],
               r["sustained_throughput_events_per_s"], r["data_commits"], r["checkpoints_counted"],
-              r["checkpoint_duration_p50_ms"], r["checkpoint_duration_p95_ms"]] for r in f]))
+              r["checkpoint_duration_p50_ms"], r["checkpoint_duration_p95_ms"], r["checkpoint_duration_max_ms"]] for r in f]))
     w("")
     w("### Iceberg on S3")
     w("")
-    w(table(["Table", "State", "Snapshots", "Metadata bytes", "Manifests", "Data files in snapshot", "Data files on S3",
-             "Data bytes on S3", "Rows", "History unchanged"],
+    w("Expiration is expireSnapshots with retainLast 1; compaction is the Flink rewriteDataFiles action with Iceberg's "
+      "defaults, both run from the runner against the Glue catalog. Bytes and file counts are listed from the table's "
+      "metadata/ and data/ prefixes on S3. History unchanged compares, in Athena, the row count, the distinct "
+      "(customer_id, event_sequence) count and a checksum over LAG(email) and the previous known email at every row "
+      "with the same three values after the Flink commits.")
+    w("")
+    w(table(["Table", "State", "Snapshots", "Metadata bytes on S3", "Manifest files on S3", "Manifests in snapshot",
+             "Data files in snapshot", "Data files on S3", "Data bytes on S3", "Rows", "History unchanged"],
             [[r["table"], r["state"].replace("_", " "), r["snapshots"], r["metadata_total_bytes"], r["manifest_files"],
-              r["data_files_in_current_snapshot"], r["data_files_on_s3"], r["data_bytes_on_s3"], r["rows"],
-              r["history_same_as_after_commits"]] for r in i]))
+              r["manifests_in_current_snapshot"], r["data_files_in_current_snapshot"], r["data_files_on_s3"],
+              r["data_bytes_on_s3"], r["rows"], r["history_same_as_after_commits"]] for r in i]))
+    final = {r["table"]: r for r in i if r["state"] == "after_compaction_and_expiration"}
+    if final:
+        w("")
+        w("After compaction and expiration, %s." % "; ".join(
+            "%s keeps %d data files on S3 that its snapshot no longer references" % (
+                t, int(r["data_files_on_s3"]) - int(r["data_files_in_current_snapshot"])) for t, r in sorted(final.items())))
+        w("Expiration deletes a replaced data file only when it expires the snapshot that replaced it, and retainLast 1 "
+          "keeps the compaction snapshot.")
     w("")
     w("### Athena engine version 3")
+    w("")
+    w("Bytes scanned is Athena's DataScannedInBytes, the same on every run of a query. p50 and p95 are nearest-rank "
+      "over the timed runs of TotalExecutionTimeInMillis; the engine columns are EngineExecutionTimeInMillis. Each "
+      "SELECT writes its result rows to the workgroup's S3 result location, and the runtime includes that write. "
+      "Cost per query is the bytes scanned, rounded up to the next MB with a 10 MB minimum, at the price in "
+      "`infra/prices.json`.")
     w("")
     w(table(["Query", "Design", "Runs", "Bytes scanned", "p50 ms", "p95 ms", "Engine p50 ms", "Engine p95 ms",
              "Cost per query USD"],

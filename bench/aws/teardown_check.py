@@ -52,7 +52,8 @@ def main():
             note(check, "STILL PRESENT")
             leftovers.append(check)
         elif any(s in err for s in not_found):
-            note(check, "not found (%s)" % err.strip().splitlines()[-1][:120])
+            lines = [l for l in err.strip().splitlines() if "error occurred" in l] or err.strip().splitlines()[-1:]
+            note(check, "not found (%s)" % lines[0].replace("aws: [ERROR]: ", "")[:120])
         else:
             note(check, "ERROR: %s" % err.strip()[:200])
             leftovers.append(check)
