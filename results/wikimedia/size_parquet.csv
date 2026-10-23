@@ -1,0 +1,5 @@
+columns,compression,column_count,prior_state_columns,rows,row_groups,bytes
+with prior_state,snappy,137,42,9390113,77,3657288238
+with prior_state,zstd,137,42,9390113,77,2233983082
+without prior_state,snappy,95,0,9390113,77,2550155668
+without prior_state,zstd,95,0,9390113,77,1531397463

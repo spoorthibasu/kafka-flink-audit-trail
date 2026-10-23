@@ -1,0 +1,4 @@
+duckdb==1.4.5
+fastavro==1.12.2
+cramjam==2.11.0
+PyYAML==6.0.3

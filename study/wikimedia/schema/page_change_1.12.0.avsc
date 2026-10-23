@@ -1,0 +1,1220 @@
+{
+  "type": "record",
+  "name": "page_change",
+  "fields": [
+    {
+      "name": "_schema",
+      "json_name": "$schema",
+      "type": "string"
+    },
+    {
+      "name": "changelog_kind",
+      "json_name": "changelog_kind",
+      "type": "string"
+    },
+    {
+      "name": "comment",
+      "json_name": "comment",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "created_redirect_page",
+      "json_name": "created_redirect_page",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "page_change__created_redirect_page",
+          "fields": [
+            {
+              "name": "is_redirect",
+              "json_name": "is_redirect",
+              "type": [
+                "null",
+                "boolean"
+              ],
+              "default": null
+            },
+            {
+              "name": "namespace_id",
+              "json_name": "namespace_id",
+              "type": [
+                "null",
+                "long"
+              ],
+              "default": null
+            },
+            {
+              "name": "namespace_is_content",
+              "json_name": "namespace_is_content",
+              "type": [
+                "null",
+                "boolean"
+              ],
+              "default": null
+            },
+            {
+              "name": "page_id",
+              "json_name": "page_id",
+              "type": "long"
+            },
+            {
+              "name": "page_title",
+              "json_name": "page_title",
+              "type": "string"
+            },
+            {
+              "name": "revision_count",
+              "json_name": "revision_count",
+              "type": [
+                "null",
+                "long"
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "dt",
+      "json_name": "dt",
+      "type": "string"
+    },
+    {
+      "name": "meta",
+      "json_name": "meta",
+      "type": {
+        "type": "record",
+        "name": "page_change__meta",
+        "fields": [
+          {
+            "name": "domain",
+            "json_name": "domain",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "dt",
+            "json_name": "dt",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "id",
+            "json_name": "id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "request_id",
+            "json_name": "request_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "stream",
+            "json_name": "stream",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "json_name": "uri",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "page",
+      "json_name": "page",
+      "type": {
+        "type": "record",
+        "name": "page_change__page",
+        "fields": [
+          {
+            "name": "is_redirect",
+            "json_name": "is_redirect",
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "default": null
+          },
+          {
+            "name": "namespace_id",
+            "json_name": "namespace_id",
+            "type": [
+              "null",
+              "long"
+            ],
+            "default": null
+          },
+          {
+            "name": "namespace_is_content",
+            "json_name": "namespace_is_content",
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "default": null
+          },
+          {
+            "name": "page_id",
+            "json_name": "page_id",
+            "type": "long"
+          },
+          {
+            "name": "page_title",
+            "json_name": "page_title",
+            "type": "string"
+          },
+          {
+            "name": "redirect_page_link",
+            "json_name": "redirect_page_link",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "page_change__page__redirect_page_link",
+                "fields": [
+                  {
+                    "name": "interwiki_prefix",
+                    "json_name": "interwiki_prefix",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_redirect",
+                    "json_name": "is_redirect",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "namespace_id",
+                    "json_name": "namespace_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "namespace_is_content",
+                    "json_name": "namespace_is_content",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "page_id",
+                    "json_name": "page_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "page_title",
+                    "json_name": "page_title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wikibase_concept_uri",
+                    "json_name": "wikibase_concept_uri",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wikibase_item_id",
+                    "json_name": "wikibase_item_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wikibase_wiki_id",
+                    "json_name": "wikibase_wiki_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "revision_count",
+            "json_name": "revision_count",
+            "type": [
+              "null",
+              "long"
+            ],
+            "default": null
+          },
+          {
+            "name": "wikibase_concept_uri",
+            "json_name": "wikibase_concept_uri",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "wikibase_item_id",
+            "json_name": "wikibase_item_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "wikibase_wiki_id",
+            "json_name": "wikibase_wiki_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "page_change_kind",
+      "json_name": "page_change_kind",
+      "type": "string"
+    },
+    {
+      "name": "performer",
+      "json_name": "performer",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "page_change__performer",
+          "fields": [
+            {
+              "name": "edit_count",
+              "json_name": "edit_count",
+              "type": [
+                "null",
+                "long"
+              ],
+              "default": null
+            },
+            {
+              "name": "edit_global_count",
+              "json_name": "edit_global_count",
+              "type": [
+                "null",
+                "long"
+              ],
+              "default": null
+            },
+            {
+              "name": "first_edit_dt",
+              "json_name": "first_edit_dt",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
+              "name": "groups",
+              "json_name": "groups",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": "string"
+                }
+              ],
+              "default": null
+            },
+            {
+              "name": "is_bot",
+              "json_name": "is_bot",
+              "type": [
+                "null",
+                "boolean"
+              ],
+              "default": null
+            },
+            {
+              "name": "is_system",
+              "json_name": "is_system",
+              "type": [
+                "null",
+                "boolean"
+              ],
+              "default": null
+            },
+            {
+              "name": "is_temp",
+              "json_name": "is_temp",
+              "type": [
+                "null",
+                "boolean"
+              ],
+              "default": null
+            },
+            {
+              "name": "registration_dt",
+              "json_name": "registration_dt",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
+              "name": "user_central_id",
+              "json_name": "user_central_id",
+              "type": [
+                "null",
+                "long"
+              ],
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "json_name": "user_id",
+              "type": [
+                "null",
+                "long"
+              ],
+              "default": null
+            },
+            {
+              "name": "user_text",
+              "json_name": "user_text",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
+              "name": "wiki_id",
+              "json_name": "wiki_id",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "prior_state",
+      "json_name": "prior_state",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "page_change__prior_state",
+          "fields": [
+            {
+              "name": "page",
+              "json_name": "page",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "page_change__prior_state__page",
+                  "fields": [
+                    {
+                      "name": "is_redirect",
+                      "json_name": "is_redirect",
+                      "type": [
+                        "null",
+                        "boolean"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "namespace_id",
+                      "json_name": "namespace_id",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "namespace_is_content",
+                      "json_name": "namespace_is_content",
+                      "type": [
+                        "null",
+                        "boolean"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "page_id",
+                      "json_name": "page_id",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "page_title",
+                      "json_name": "page_title",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "revision_count",
+                      "json_name": "revision_count",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "default": null
+            },
+            {
+              "name": "revision",
+              "json_name": "revision",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "page_change__prior_state__revision",
+                  "fields": [
+                    {
+                      "name": "comment",
+                      "json_name": "comment",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "content_slots",
+                      "json_name": "content_slots",
+                      "type": [
+                        "null",
+                        {
+                          "type": "map",
+                          "values": {
+                            "type": "record",
+                            "name": "page_change__prior_state__revision__content_slots__value",
+                            "fields": [
+                              {
+                                "name": "content_body",
+                                "json_name": "content_body",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "default": null
+                              },
+                              {
+                                "name": "content_format",
+                                "json_name": "content_format",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "default": null
+                              },
+                              {
+                                "name": "content_model",
+                                "json_name": "content_model",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "default": null
+                              },
+                              {
+                                "name": "content_sha1",
+                                "json_name": "content_sha1",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "default": null
+                              },
+                              {
+                                "name": "content_size",
+                                "json_name": "content_size",
+                                "type": [
+                                  "null",
+                                  "long"
+                                ],
+                                "default": null
+                              },
+                              {
+                                "name": "origin_rev_id",
+                                "json_name": "origin_rev_id",
+                                "type": [
+                                  "null",
+                                  "long"
+                                ],
+                                "default": null
+                              },
+                              {
+                                "name": "slot_role",
+                                "json_name": "slot_role",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "default": null
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "editor",
+                      "json_name": "editor",
+                      "type": [
+                        "null",
+                        {
+                          "type": "record",
+                          "name": "page_change__prior_state__revision__editor",
+                          "fields": [
+                            {
+                              "name": "edit_count",
+                              "json_name": "edit_count",
+                              "type": [
+                                "null",
+                                "long"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "edit_global_count",
+                              "json_name": "edit_global_count",
+                              "type": [
+                                "null",
+                                "long"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "first_edit_dt",
+                              "json_name": "first_edit_dt",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "groups",
+                              "json_name": "groups",
+                              "type": [
+                                "null",
+                                {
+                                  "type": "array",
+                                  "items": "string"
+                                }
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "is_bot",
+                              "json_name": "is_bot",
+                              "type": [
+                                "null",
+                                "boolean"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "is_system",
+                              "json_name": "is_system",
+                              "type": [
+                                "null",
+                                "boolean"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "is_temp",
+                              "json_name": "is_temp",
+                              "type": [
+                                "null",
+                                "boolean"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "registration_dt",
+                              "json_name": "registration_dt",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "user_central_id",
+                              "json_name": "user_central_id",
+                              "type": [
+                                "null",
+                                "long"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "user_id",
+                              "json_name": "user_id",
+                              "type": [
+                                "null",
+                                "long"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "user_text",
+                              "json_name": "user_text",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "wiki_id",
+                              "json_name": "wiki_id",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null
+                            }
+                          ]
+                        }
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "is_comment_visible",
+                      "json_name": "is_comment_visible",
+                      "type": [
+                        "null",
+                        "boolean"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "is_content_visible",
+                      "json_name": "is_content_visible",
+                      "type": [
+                        "null",
+                        "boolean"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "is_editor_visible",
+                      "json_name": "is_editor_visible",
+                      "type": [
+                        "null",
+                        "boolean"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "is_minor_edit",
+                      "json_name": "is_minor_edit",
+                      "type": [
+                        "null",
+                        "boolean"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "rev_dt",
+                      "json_name": "rev_dt",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "rev_id",
+                      "json_name": "rev_id",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "rev_parent_id",
+                      "json_name": "rev_parent_id",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "rev_sha1",
+                      "json_name": "rev_sha1",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "rev_size",
+                      "json_name": "rev_size",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "revision",
+      "json_name": "revision",
+      "type": {
+        "type": "record",
+        "name": "page_change__revision",
+        "fields": [
+          {
+            "name": "comment",
+            "json_name": "comment",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "content_slots",
+            "json_name": "content_slots",
+            "type": [
+              "null",
+              {
+                "type": "map",
+                "values": {
+                  "type": "record",
+                  "name": "page_change__revision__content_slots__value",
+                  "fields": [
+                    {
+                      "name": "content_body",
+                      "json_name": "content_body",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "content_format",
+                      "json_name": "content_format",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "content_model",
+                      "json_name": "content_model",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "content_sha1",
+                      "json_name": "content_sha1",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "content_size",
+                      "json_name": "content_size",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "origin_rev_id",
+                      "json_name": "origin_rev_id",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "slot_role",
+                      "json_name": "slot_role",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    }
+                  ]
+                }
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "editor",
+            "json_name": "editor",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "page_change__revision__editor",
+                "fields": [
+                  {
+                    "name": "edit_count",
+                    "json_name": "edit_count",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "edit_global_count",
+                    "json_name": "edit_global_count",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "first_edit_dt",
+                    "json_name": "first_edit_dt",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "groups",
+                    "json_name": "groups",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_bot",
+                    "json_name": "is_bot",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_system",
+                    "json_name": "is_system",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_temp",
+                    "json_name": "is_temp",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "registration_dt",
+                    "json_name": "registration_dt",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "user_central_id",
+                    "json_name": "user_central_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "user_id",
+                    "json_name": "user_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "user_text",
+                    "json_name": "user_text",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wiki_id",
+                    "json_name": "wiki_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "is_comment_visible",
+            "json_name": "is_comment_visible",
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "default": null
+          },
+          {
+            "name": "is_content_visible",
+            "json_name": "is_content_visible",
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "default": null
+          },
+          {
+            "name": "is_editor_visible",
+            "json_name": "is_editor_visible",
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "default": null
+          },
+          {
+            "name": "is_minor_edit",
+            "json_name": "is_minor_edit",
+            "type": [
+              "null",
+              "boolean"
+            ],
+            "default": null
+          },
+          {
+            "name": "rev_dt",
+            "json_name": "rev_dt",
+            "type": "string"
+          },
+          {
+            "name": "rev_id",
+            "json_name": "rev_id",
+            "type": "long"
+          },
+          {
+            "name": "rev_parent_id",
+            "json_name": "rev_parent_id",
+            "type": [
+              "null",
+              "long"
+            ],
+            "default": null
+          },
+          {
+            "name": "rev_sha1",
+            "json_name": "rev_sha1",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "rev_size",
+            "json_name": "rev_size",
+            "type": [
+              "null",
+              "long"
+            ],
+            "default": null
+          },
+          {
+            "name": "revert",
+            "json_name": "revert",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "page_change__revision__revert",
+                "fields": [
+                  {
+                    "name": "is_exact",
+                    "json_name": "is_exact",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "method",
+                    "json_name": "method",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "rev_original_dt",
+                    "json_name": "rev_original_dt",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "rev_original_id",
+                    "json_name": "rev_original_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "rev_reverted_newest_id",
+                    "json_name": "rev_reverted_newest_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "rev_reverted_oldest_id",
+                    "json_name": "rev_reverted_oldest_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            ],
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "wiki_id",
+      "json_name": "wiki_id",
+      "type": "string"
+    }
+  ],
+  "doc": "Derived by study/wikimedia/schema.py from https://schema.wikimedia.org/repositories/primary/jsonschema/mediawiki/page/change/1.12.0 (/mediawiki/page/change/1.12.0)"
+}

@@ -1,0 +1,31 @@
+causes,mismatching_field_groups,events,examples_wiki_page_rev
+delete and undelete,page,188,abstractwiki:6296:21989; abstractwiki:6297:23113; abstractwiki:6302:22004; abstractwiki:6303:22005; abstractwiki:6305:22007
+delete and undelete,"revision, revision.editor",36,bhwiki:101717:806991; commonswiki:201986183:1288846186; commonswiki:202066950:1289695913; dewiki:14004230:271476565; dewiki:14006008:271425678
+delete and undelete,"page, revision, revision.content_slots, revision.editor",34,commonswiki:152249359:1246798449; commonswiki:163690183:1021864695; commonswiki:183024555:1158788944; commonswiki:201522958:1285745310; dewiki:13738836:263214064
+delete and undelete,"revision, revision.content_slots",14,commonswiki:201990638:1288789649; commonswiki:201990663:1288789991; commonswiki:201990796:1288401980; commonswiki:201990815:1288791447; commonswiki:201990866:1288791911
+delete and undelete,"revision, revision.content_slots, revision.editor",9,commonswiki:201692496:1287371423; commonswiki:201706817:1287532728; eswiki:7266504:175892137; eswiki:7266504:88661217; jawiki:5309446:111461907
+delete and undelete,"page, revision, revision.editor",4,commonswiki:160091909:1289532998; commonswiki:201986183:1288773037; eswiktionary:372317:6319715; kowiki:4289071:42670992
+delete and undelete,"page, revision, revision.content_slots",3,eswiki:2469329:171424902; eswiki:2469329:171765767; ptwiki:6435196:65151137
+delete and undelete,"page, revision",1,enwiki:74999434:1380883157
+"delete and undelete, other","page, revision.editor",137,arwiki:10540174:77039297; arwiki:10540959:77001336; arwiki:10542489:77027090; arwiki:6979355:77042918; arwiki:9775011:76994405
+"delete and undelete, other","revision, revision.content_slots, revision.editor",52,bnwiki:1665140:9209972; bnwiki:1665365:9213583; bnwiki:1665378:9213584; commonswiki:178350381:1289738836; enwiki:74999434:1380883157
+"delete and undelete, other","revision, revision.editor",4,metawiki:13584314:31182692; metawiki:13584315:31182693; metawiki:13586194:31193749; plwikiquote:74473:650754
+missed event,"revision, revision.editor",3939,abwiki:57617:175752; abwiki:57702:175895; afwiki:392174:3035334; afwiki:424455:3024535; arwiki:10401070:77007316
+missed event,"revision, revision.content_slots, revision.editor",745,arwiki:10515844:77004177; arwiki:10531093:77015592; arwiki:10536516:77019716; arwiki:10538281:76989548; arwiki:10538303:77015473
+missed event,"page, revision, revision.editor",21,dewiki:13922983:271327956; dewiki:14008465:271503045; enwiki:2175606:1381109798; enwiki:24775388:1380776782; enwiki:32274283:1380776644
+missed event,"page, revision, revision.content_slots, revision.editor",8,commonswiki:24760202:1289129735; enwiki:53744976:1380534015; enwiki:81177375:1380548883; enwiki:84502953:1380199373; fawiki:7057220:44793487
+missed event,revision,3,commonswiki:201915596:1288568634; commonswiki:202022139:1289089966; dewiki:14007742:271480676
+ordering,"page, revision, revision.editor",3,cewiki:1920380:26609999; enwiki:38774416:1380755126; hewiki:2585305:44102519
+ordering,"page, revision, revision.content_slots, revision.editor",2,eswiki:11602061:175861895; eswiki:11624194:175882105
+ordering,"page, revision",1,cewiki:534202:26609998
+other,revision.editor,3035754,abstractwiki:1191:24204; abstractwiki:1191:24258; abstractwiki:1206:24201; abstractwiki:1262:24412; abstractwiki:1262:24441
+other,"page, revision.editor",6472,abwiki:57520:175616; afwiki:124439:2986329; afwiki:14894:2999724; afwiki:474773:3035391; afwiki:479858:3035389
+other,page,3609,anwiki:271770:2483632; arwiki:10540429:76996202; arwiki:10542045:77047108; arwiki:10542342:77024087; bewiki:817091:5219604
+other,"revision, revision.editor",24,commonswiki:1037956:1289961816; commonswiki:76740501:1287826130; elwiki:243424:11888130; elwiki:731199:11888161; elwiki:9216:11888508
+other,revision,1,enwiki:34745517:1381207584
+"other, page move","page, revision.editor",68,arwiki:10375740:77027134; arwiki:10376319:77037400; arwiki:10376321:77027128; arwiki:10461831:77034671; arwiki:10523097:77027118
+"other, visibility change","revision, revision.editor",1073,arwiki:10541479:77007485; bewiki:111679:5221227; bewiki:11597:5222550; bewiki:141600:5220727; bewiki:141600:5222558
+page move,"revision, revision.content_slots",18,commonswiki:11194573:1288791131; commonswiki:11194637:1289039229; commonswiki:11194656:1289042335; commonswiki:11394628:1289042671; commonswiki:11424014:1289043501
+page move,page,16,commonswiki:202110445:1290103639; commonswiki:202132040:1290385837; commonswiki:202132058:1290390151; enwiki:48237951:1381085496; enwiki:66900605:1380527508
+visibility change,revision,3,ruwiki:5110592:155688338; ruwiki:9308081:155658905; ukwiki:1967972:48996942
+visibility change,"revision, revision.content_slots, revision.editor",1,ruwiki:138838:155609777

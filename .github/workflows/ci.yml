@@ -82,6 +82,32 @@ jobs:
           name: bench-smoke-results
           path: results-smoke
 
+  wikimedia-smoke:
+    name: Wikimedia field study steps on a synthetic capture
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install study dependencies
+        run: pip install -r study/wikimedia/requirements.txt
+      - name: Steps 3 to 7 on a synthetic capture, planted counts checked
+        run: make wikimedia-smoke
+      - name: Results as job summary
+        if: always()
+        run: cat results-smoke-wikimedia/SUMMARY.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: wikimedia-smoke-results
+          path: |
+            results-smoke-wikimedia/*.csv
+            results-smoke-wikimedia/*.json
+            results-smoke-wikimedia/*.sql
+            results-smoke-wikimedia/SUMMARY.md
+
   crash-restart:
     name: Flink to Iceberg job fails, restarts from the last checkpoint, counts match
     runs-on: ubuntu-24.04

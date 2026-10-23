@@ -1,0 +1,7 @@
+page_change_kind,events,equal,differ,prior_only,parent_only,neither
+create,1069941,0,0,0,1069941,0
+delete,96000,0,0,0,96000,0
+edit,8187754,8187753,0,0,1,0
+move,34612,34606,6,0,0,0
+undelete,611,0,0,0,611,0
+visibility_change,1195,0,0,0,1195,0

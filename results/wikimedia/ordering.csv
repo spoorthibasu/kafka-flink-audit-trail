@@ -1,0 +1,8 @@
+ordering,columns,rows_with_null_key,tie_groups,tied_events,tie_examples,order_by,compared,rev_id_equal,compared_pages_in_both_topics,rev_id_equal_pages_in_both_topics,cross_topic_pairs,cross_topic_compared,cross_topic_rev_id_equal
+"dt, revision.rev_id","dt, revision__rev_id",0,1,2,jawiki:5309446:111461907,"dt, revision__rev_id, meta__dt, meta__topic, meta__offset",3160644,3155922,612514,610760,147208,145587,144509
+meta.dt,meta__dt,0,18,36,commonswiki:201653219:1288311714; commonswiki:201908647:1288303397; commonswiki:202036840:1289232574; enwiki:59575098:1381051931; wikidatawiki:110165531:2558609221,"meta__dt, dt, revision__rev_id, meta__topic, meta__offset",3160332,3146296,612487,607592,147197,145571,143989
+dt,dt,0,142694,297581,abstractwiki:6222:24342; abstractwiki:6222:24346; abstractwiki:6222:24350; abstractwiki:6222:24353; abstractwiki:6241:24336,"dt, revision__rev_id, meta__dt, meta__topic, meta__offset",3160644,3155922,612514,610760,147208,145587,144509
+revision.rev_id,revision__rev_id,0,26277,52774,abstractwiki:6296:21989; abstractwiki:6297:23113; abstractwiki:6302:22004; abstractwiki:6303:22005; abstractwiki:6305:22007,"revision__rev_id, dt, meta__dt, meta__topic, meta__offset",3160665,3155915,612517,610760,147210,145589,144510
+"meta.dt, revision.rev_id","meta__dt, revision__rev_id",0,0,0,,"meta__dt, revision__rev_id, dt, meta__topic, meta__offset",3160332,3146296,612487,607592,147197,145571,143989
+"revision.rev_id, meta.dt","revision__rev_id, meta__dt",0,0,0,,"revision__rev_id, meta__dt, dt, meta__topic, meta__offset",3160665,3155915,612517,610760,147210,145589,144510
+"Kafka topic, offset","meta__topic, meta__offset",0,0,0,,"meta__topic, meta__offset, dt, revision__rev_id, meta__dt",3137188,3026345,589343,487667,113240,88851,23952
