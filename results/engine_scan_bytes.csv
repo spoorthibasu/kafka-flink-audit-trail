@@ -1,0 +1,31 @@
+engine,engine_version,sql_file,golden_case,input_rows,rows_returned,matches_golden,counter_name,input_bytes,runs,spark_input_records,spark_stages,spark_skipped_stages,spark_scan_operators,trino_processed_rows
+Spark,4.0.4,sql/dedup.sql,case1_full_state,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/lag_history.sql,case1_full_state,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/latest_state.sql,case1_full_state,3,1,yes,inputBytes (stage sum),0,2,0,3,0,Scan ExistingRDD,
+Spark,4.0.4,sql/sparse_current_value.sql,case1_full_state,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/sparse_previous_value.sql,case1_full_state,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/dedup.sql,case2_sparse,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/lag_history.sql,case2_sparse,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/latest_state.sql,case2_sparse,3,1,yes,inputBytes (stage sum),0,2,0,3,0,Scan ExistingRDD,
+Spark,4.0.4,sql/sparse_current_value.sql,case2_sparse,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/sparse_previous_value.sql,case2_sparse,3,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/dedup.sql,case3_duplicate,4,3,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/lag_history.sql,case3_duplicate,4,4,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/latest_state.sql,case3_duplicate,4,1,yes,inputBytes (stage sum),0,2,0,3,0,Scan ExistingRDD,
+Spark,4.0.4,sql/sparse_current_value.sql,case3_duplicate,4,4,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Spark,4.0.4,sql/sparse_previous_value.sql,case3_duplicate,4,4,yes,inputBytes (stage sum),0,2,0,6,0,Scan ExistingRDD,
+Trino,483,sql/dedup.sql,case1_full_state,3,3,yes,physicalInputBytes,196,2,,,,,3
+Trino,483,sql/lag_history.sql,case1_full_state,3,3,yes,physicalInputBytes,196,2,,,,,3
+Trino,483,sql/latest_state.sql,case1_full_state,3,1,yes,physicalInputBytes,196,2,,,,,3
+Trino,483,sql/sparse_current_value.sql,case1_full_state,3,3,yes,physicalInputBytes,196,2,,,,,3
+Trino,483,sql/sparse_previous_value.sql,case1_full_state,3,3,yes,physicalInputBytes,196,2,,,,,3
+Trino,483,sql/dedup.sql,case2_sparse,3,3,yes,physicalInputBytes,174,2,,,,,3
+Trino,483,sql/lag_history.sql,case2_sparse,3,3,yes,physicalInputBytes,174,2,,,,,3
+Trino,483,sql/latest_state.sql,case2_sparse,3,1,yes,physicalInputBytes,174,2,,,,,3
+Trino,483,sql/sparse_current_value.sql,case2_sparse,3,3,yes,physicalInputBytes,174,2,,,,,3
+Trino,483,sql/sparse_previous_value.sql,case2_sparse,3,3,yes,physicalInputBytes,174,2,,,,,3
+Trino,483,sql/dedup.sql,case3_duplicate,4,3,yes,physicalInputBytes,261,2,,,,,4
+Trino,483,sql/lag_history.sql,case3_duplicate,4,4,yes,physicalInputBytes,261,2,,,,,4
+Trino,483,sql/latest_state.sql,case3_duplicate,4,1,yes,physicalInputBytes,261,2,,,,,4
+Trino,483,sql/sparse_current_value.sql,case3_duplicate,4,4,yes,physicalInputBytes,261,2,,,,,4
+Trino,483,sql/sparse_previous_value.sql,case3_duplicate,4,4,yes,physicalInputBytes,261,2,,,,,4

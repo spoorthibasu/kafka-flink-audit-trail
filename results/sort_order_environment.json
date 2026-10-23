@@ -1,0 +1,86 @@
+{
+  "started_utc": "2026-10-23T10:41:11Z",
+  "config_file": "bench/config.json",
+  "config": {
+    "_comment": "All benchmark parameters. Synthetic data at demonstration scale. Change nothing else to re-run.",
+    "seed": 20261113,
+    "n_entities": 1000,
+    "h_events": 100,
+    "k_attributes": 67,
+    "event_models": [
+      "full",
+      "sparse"
+    ],
+    "changed_attributes_per_event": {
+      "min": 1,
+      "max": 5
+    },
+    "payload": {
+      "deflate_level": 6
+    },
+    "storage": {
+      "parquet_compressions": [
+        "snappy",
+        "zstd"
+      ],
+      "parquet_row_group_size": 10000
+    },
+    "queries": {
+      "runs": 20,
+      "warmup_runs": 3
+    },
+    "attribute_sweep": {
+      "k_values": [
+        10,
+        25,
+        67,
+        150
+      ]
+    },
+    "pipeline": {
+      "models": [
+        "full",
+        "sparse"
+      ],
+      "compressions": [
+        "none",
+        "zstd"
+      ],
+      "runs": 5,
+      "partitions": 3,
+      "replication_factor": 3,
+      "parallelism": 3,
+      "checkpoint_interval_ms": 60000,
+      "min_pause_ms": 30000,
+      "iceberg_commits": 20,
+      "poll_ms": 100,
+      "rest_port": 18081,
+      "bootstrap": "localhost:19092,localhost:29092,localhost:39092"
+    },
+    "scaling": {
+      "n_entities": 100,
+      "h_values": [
+        1,
+        10,
+        100,
+        1000
+      ],
+      "runs": 10,
+      "warmup_runs": 2
+    }
+  },
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.9.6",
+    "cpu_count": 8,
+    "cpu": "Apple M3",
+    "memory_bytes": 17179869184,
+    "git_commit": "1595aa2b1588bf78b41bec0635738cc366407d47"
+  },
+  "duckdb": "1.4.5",
+  "duckdb_threads": 8,
+  "storage_checks": 4,
+  "wall_seconds": 95.9,
+  "finished_utc": "2026-10-23T10:42:46Z"
+}
