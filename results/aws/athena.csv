@@ -1,0 +1,9 @@
+label,query,design,runs,data_scanned_bytes,total_execution_p50_ms,total_execution_p95_ms,engine_execution_p50_ms,engine_execution_p95_ms,billed_bytes_per_query,cost_per_query_usd,engine_version
+full,q1_one_hop_previous_single,A,10,491273707,3067,4553,2865,4345,491782144,0.00223636627197265625,Athena engine version 3
+full,q1_one_hop_previous_single,B,10,524696325,2769,3961,2624,3750,525336576,0.00238895416259765625,Athena engine version 3
+full,q2_three_changes_back_single,B,10,524696325,2529,3851,2339,3628,525336576,0.00238895416259765625,Athena engine version 3
+full,q3_current_state_all,A,10,60224568330,30166,32484,29980,32256,60224962560,0.27387142181396484375,Athena engine version 3
+full,q3_current_state_all,B,10,60175997153,29817,40658,29648,40489,60176728064,0.27365207672119140625,Athena engine version 3
+full,q3_current_state_all,C,10,597471193,16836,19006,16672,18777,597688320,0.0027179718017578125,Athena engine version 3
+full,q4_previous_value_all,A,10,2559908559,5558,11470,5410,11291,2560622592,0.0116443634033203125,Athena engine version 3
+full,q4_previous_value_all,B,10,1545859430,6696,9266,6512,8894,1546649600,0.00703334808349609375,Athena engine version 3

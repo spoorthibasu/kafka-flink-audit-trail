@@ -1,0 +1,3 @@
+label,design,application,topic,events,parallelism,parallelism_per_kpu,checkpoint_interval_ms,min_pause_ms,start_call_epoch_ms,application_running_seen_epoch_ms,all_records_seen_epoch_ms,stopped_epoch_ms
+smoke,A,audit-trail-bench-a,smoke-a-zstd,100000,4,1,60000,30000,1792761436553,1792761612333,1792761675528,1792761728731
+smoke,B,audit-trail-bench-b,smoke-b-zstd,100000,4,1,60000,30000,1792761797042,1792761966311,1792762029237,1792762082637

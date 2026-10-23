@@ -1,0 +1,928 @@
+{
+ "format-version": 2,
+ "table-uuid": "1b02b6fa-b5bc-4164-a03c-3d096c8462f6",
+ "location": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a",
+ "last-sequence-number": 1,
+ "last-updated-ms": 1792761649500,
+ "last-column-id": 137,
+ "current-schema-id": 0,
+ "schemas": [
+  {
+   "type": "struct",
+   "schema-id": 0,
+   "fields": [
+    {
+     "id": 1,
+     "name": "customer_id",
+     "required": true,
+     "type": "string"
+    },
+    {
+     "id": 2,
+     "name": "event_timestamp",
+     "required": true,
+     "type": "timestamp"
+    },
+    {
+     "id": 3,
+     "name": "event_sequence",
+     "required": true,
+     "type": "long"
+    },
+    {
+     "id": 4,
+     "name": "email",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 5,
+     "name": "previous_email",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 6,
+     "name": "phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 7,
+     "name": "previous_phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 8,
+     "name": "secondary_phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 9,
+     "name": "previous_secondary_phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 10,
+     "name": "first_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 11,
+     "name": "previous_first_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 12,
+     "name": "last_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 13,
+     "name": "previous_last_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 14,
+     "name": "display_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 15,
+     "name": "previous_display_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 16,
+     "name": "address_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 17,
+     "name": "previous_address_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 18,
+     "name": "address_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 19,
+     "name": "previous_address_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 20,
+     "name": "city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 21,
+     "name": "previous_city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 22,
+     "name": "state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 23,
+     "name": "previous_state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 24,
+     "name": "postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 25,
+     "name": "previous_postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 26,
+     "name": "country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 27,
+     "name": "previous_country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 28,
+     "name": "billing_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 29,
+     "name": "previous_billing_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 30,
+     "name": "billing_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 31,
+     "name": "previous_billing_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 32,
+     "name": "billing_city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 33,
+     "name": "previous_billing_city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 34,
+     "name": "billing_state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 35,
+     "name": "previous_billing_state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 36,
+     "name": "billing_postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 37,
+     "name": "previous_billing_postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 38,
+     "name": "billing_country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 39,
+     "name": "previous_billing_country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 40,
+     "name": "company",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 41,
+     "name": "previous_company",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 42,
+     "name": "job_title",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 43,
+     "name": "previous_job_title",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 44,
+     "name": "department",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 45,
+     "name": "previous_department",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 46,
+     "name": "timezone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 47,
+     "name": "previous_timezone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 48,
+     "name": "locale",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 49,
+     "name": "previous_locale",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 50,
+     "name": "preferred_language",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 51,
+     "name": "previous_preferred_language",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 52,
+     "name": "currency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 53,
+     "name": "previous_currency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 54,
+     "name": "account_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 55,
+     "name": "previous_account_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 56,
+     "name": "account_status",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 57,
+     "name": "previous_account_status",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 58,
+     "name": "loyalty_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 59,
+     "name": "previous_loyalty_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 60,
+     "name": "loyalty_points",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 61,
+     "name": "previous_loyalty_points",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 62,
+     "name": "credit_limit",
+     "required": false,
+     "type": "double"
+    },
+    {
+     "id": 63,
+     "name": "previous_credit_limit",
+     "required": false,
+     "type": "double"
+    },
+    {
+     "id": 64,
+     "name": "payment_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 65,
+     "name": "previous_payment_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 66,
+     "name": "card_last_four",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 67,
+     "name": "previous_card_last_four",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 68,
+     "name": "card_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 69,
+     "name": "previous_card_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 70,
+     "name": "billing_cycle_day",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 71,
+     "name": "previous_billing_cycle_day",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 72,
+     "name": "tax_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 73,
+     "name": "previous_tax_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 74,
+     "name": "tax_exempt",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 75,
+     "name": "previous_tax_exempt",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 76,
+     "name": "marketing_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 77,
+     "name": "previous_marketing_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 78,
+     "name": "sms_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 79,
+     "name": "previous_sms_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 80,
+     "name": "email_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 81,
+     "name": "previous_email_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 82,
+     "name": "push_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 83,
+     "name": "previous_push_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 84,
+     "name": "newsletter_frequency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 85,
+     "name": "previous_newsletter_frequency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 86,
+     "name": "contact_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 87,
+     "name": "previous_contact_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 88,
+     "name": "referral_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 89,
+     "name": "previous_referral_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 90,
+     "name": "referred_by",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 91,
+     "name": "previous_referred_by",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 92,
+     "name": "segment",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 93,
+     "name": "previous_segment",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 94,
+     "name": "lifecycle_stage",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 95,
+     "name": "previous_lifecycle_stage",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 96,
+     "name": "lead_source",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 97,
+     "name": "previous_lead_source",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 98,
+     "name": "utm_campaign",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 99,
+     "name": "previous_utm_campaign",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 100,
+     "name": "preferred_store_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 101,
+     "name": "previous_preferred_store_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 102,
+     "name": "default_shipping_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 103,
+     "name": "previous_default_shipping_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 104,
+     "name": "gift_wrap_default",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 105,
+     "name": "previous_gift_wrap_default",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 106,
+     "name": "avatar_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 107,
+     "name": "previous_avatar_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 108,
+     "name": "bio",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 109,
+     "name": "previous_bio",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 110,
+     "name": "website",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 111,
+     "name": "previous_website",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 112,
+     "name": "twitter_handle",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 113,
+     "name": "previous_twitter_handle",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 114,
+     "name": "linkedin_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 115,
+     "name": "previous_linkedin_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 116,
+     "name": "date_of_birth",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 117,
+     "name": "previous_date_of_birth",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 118,
+     "name": "gender",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 119,
+     "name": "previous_gender",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 120,
+     "name": "household_size",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 121,
+     "name": "previous_household_size",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 122,
+     "name": "annual_income_band",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 123,
+     "name": "previous_annual_income_band",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 124,
+     "name": "interests",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 125,
+     "name": "previous_interests",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 126,
+     "name": "favorite_category",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 127,
+     "name": "previous_favorite_category",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 128,
+     "name": "preferred_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 129,
+     "name": "previous_preferred_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 130,
+     "name": "shoe_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 131,
+     "name": "previous_shoe_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 132,
+     "name": "shirt_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 133,
+     "name": "previous_shirt_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 134,
+     "name": "dietary_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 135,
+     "name": "previous_dietary_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 136,
+     "name": "marital_status",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 137,
+     "name": "previous_marital_status",
+     "required": false,
+     "type": "string"
+    }
+   ]
+  }
+ ],
+ "default-spec-id": 0,
+ "partition-specs": [
+  {
+   "spec-id": 0,
+   "fields": [
+    {
+     "name": "event_timestamp_day",
+     "transform": "day",
+     "source-id": 2,
+     "field-id": 1000
+    }
+   ]
+  }
+ ],
+ "last-partition-id": 1000,
+ "default-sort-order-id": 1,
+ "sort-orders": [
+  {
+   "order-id": 0,
+   "fields": []
+  },
+  {
+   "order-id": 1,
+   "fields": [
+    {
+     "transform": "identity",
+     "source-id": 1,
+     "direction": "asc",
+     "null-order": "nulls-first"
+    }
+   ]
+  }
+ ],
+ "properties": {
+  "write.parquet.compression-codec": "zstd"
+ },
+ "current-snapshot-id": 7881866500442620061,
+ "refs": {
+  "main": {
+   "snapshot-id": 7881866500442620061,
+   "type": "branch"
+  }
+ },
+ "snapshots": [
+  {
+   "sequence-number": 1,
+   "snapshot-id": 7881866500442620061,
+   "timestamp-ms": 1792761649500,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "1",
+    "added-data-files": "4",
+    "added-records": "100000",
+    "added-files-size": "14303053",
+    "changed-partition-count": "1",
+    "total-records": "100000",
+    "total-files-size": "14303053",
+    "total-data-files": "4",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-7881866500442620061-1-00ca278c-803e-49c4-84f6-c76b8395affa.avro",
+   "schema-id": 0
+  }
+ ],
+ "statistics": [],
+ "partition-statistics": [],
+ "snapshot-log": [
+  {
+   "timestamp-ms": 1792761649500,
+   "snapshot-id": 7881866500442620061
+  }
+ ],
+ "metadata-log": [
+  {
+   "timestamp-ms": 1792761431392,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00000-7ecb73aa-f91d-4fac-abfd-39291746eb7a.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792761432049,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00001-65612eec-f018-4c17-9300-59703873752f.metadata.json"
+  }
+ ]
+}

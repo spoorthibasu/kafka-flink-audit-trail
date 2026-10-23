@@ -1,0 +1,59 @@
+{
+  "label": "smoke",
+  "config_file": "bench/aws/config.aws-smoke.json",
+  "config": {
+    "_comment": "AWS smoke run at the bench-full scale (N = 1,000 entities, H = 100): checks the pipeline and the equivalence queries end to end before the full run. Synthetic data; not reported as a measurement.",
+    "seed": 20261113,
+    "n_entities": 1000,
+    "h_events": 100,
+    "k_attributes": 67,
+    "event_models": [
+      "full"
+    ],
+    "changed_attributes_per_event": {
+      "min": 1,
+      "max": 5
+    },
+    "payload": {
+      "deflate_level": 6
+    },
+    "aws": {
+      "label": "smoke",
+      "designs": [
+        "A",
+        "B"
+      ],
+      "compressions": [
+        "zstd",
+        "none"
+      ],
+      "none_entities": 1000,
+      "partitions": 12,
+      "replication_factor": 3,
+      "flink_parallelism": 4,
+      "flink_parallelism_per_kpu": 1,
+      "checkpoint_interval_ms": 60000,
+      "min_pause_ms": 30000,
+      "athena_runs": 2,
+      "athena_warmup_runs": 0,
+      "compaction_parallelism": 8
+    }
+  },
+  "region": "us-east-1",
+  "code_sha256": "f444a44669a786cd978351f7b969ed3d8ee5f13ffecf291f700cda3d714bbeb5",
+  "runner_instance_type": "m8id.2xlarge",
+  "kafka_version": "3.9.x.kraft",
+  "msk_broker_type": "kafka.m7g.large",
+  "msk_brokers": 3,
+  "flink_runtime": "FLINK-1_20",
+  "flink_jar_key_suffix": "audit-trail-aws-5b8738bf97aafa74e2e34258379b0c2f.jar",
+  "athena_engine": "Athena engine version 3",
+  "written_utc": "2026-10-23T13:34:14.623124+00:00",
+  "runner": [
+    "openjdk version \"17.0.20.1\" 2026-08-18 LTS",
+    "Python 3.11.16",
+    "8",
+    "MemTotal:       32313756 kB",
+    "Model name:                              Intel(R) Xeon(R) 6975P-C"
+  ]
+}
