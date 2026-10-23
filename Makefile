@@ -1,7 +1,7 @@
 # Kafka, Flink, and Iceberg audit-trail example.
 # Everything below needs only JDK 11+ and Maven, except the targets that say Docker,
 # and the Python benchmark, which needs bench/requirements.txt.
-.PHONY: help test demo bench bench-full bench-smoke bench-resources bench-sweep bench-pipeline engine-docs kafka3-up kafka3-down sql-matrix trino-up trino-down crash-test loop build run produce up down
+.PHONY: help test demo bench bench-full bench-smoke bench-resources bench-sweep bench-pipeline engine-docs wikimedia-study wikimedia-smoke kafka3-up kafka3-down sql-matrix trino-up trino-down crash-test loop build run produce up down
 
 PYTHON ?= python3
 
@@ -15,6 +15,8 @@ help:
 	@echo "make bench-sweep - only the attribute-count sweep (K = 10, 25, 67, 150); adds its files to results/"
 	@echo "make bench-pipeline - Kafka, Flink and Iceberg measurements for both schemas (needs 'make kafka3-up'; about an hour)"
 	@echo "make engine-docs - write results/engine_docs.csv and its SUMMARY section"
+	@echo "make wikimedia-study - Wikimedia field study steps 3 to 7 on WIKIMEDIA_CAPTURES (see study/wikimedia/README.md)"
+	@echo "make wikimedia-smoke - the same steps on a synthetic capture, with planted counts checked"
 	@echo "make kafka3-up   - start a three-broker Kafka for bench-pipeline (Docker); make kafka3-down stops it"
 	@echo "make sql-matrix  - run every sql/ file on DuckDB, Spark and Trino against the golden outputs (needs 'make trino-up')"
 	@echo "make trino-up    - start a local Trino (Docker) for sql-matrix; make trino-down stops it"
@@ -59,6 +61,21 @@ bench-pipeline:
 
 engine-docs:
 	@$(PYTHON) bench/engine_docs.py --out results
+
+# Wikimedia field study on captured public data; capture first with study/wikimedia/capture.py.
+# pip install -r study/wikimedia/requirements.txt first.
+WIKIMEDIA_DATA ?= $(HOME)/audit-trail-bench-data/wikimedia
+WIKIMEDIA_CAPTURES ?= $(WIKIMEDIA_DATA)/capture-earliest-to-2026-10-20T00Z $(WIKIMEDIA_DATA)/capture-2026-10-20T00Z-2026-10-23T02Z
+wikimedia-study:
+	@$(PYTHON) study/wikimedia/study.py $(foreach c,$(WIKIMEDIA_CAPTURES),--capture $(c)) \
+		--work $(WIKIMEDIA_DATA)/work --out results/wikimedia --summary results/SUMMARY.md
+
+wikimedia-smoke:
+	@rm -rf results-smoke-wikimedia
+	@$(PYTHON) study/wikimedia/synthetic.py --out results-smoke-wikimedia/capture
+	@$(PYTHON) study/wikimedia/study.py --capture results-smoke-wikimedia/capture --work results-smoke-wikimedia/work \
+		--out results-smoke-wikimedia --summary results-smoke-wikimedia/SUMMARY.md --runs 3 --warmup 1 --buckets 2 \
+		--expect results-smoke-wikimedia/capture/expected.json
 
 kafka3-up:
 	docker compose -f docker-compose.kafka3.yml up -d

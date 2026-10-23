@@ -136,6 +136,19 @@ make bench-full      # about ten minutes on a laptop; results/SUMMARY.md
 make bench-smoke     # tiny configuration, seconds; checks the script runs
 ```
 
+## Wikimedia field study
+
+`study/wikimedia/` tests the article's claim on production data. Wikimedia's public
+`mediawiki.page_change.v1` stream embeds a `prior_state` block in each event, which is
+the previous-value pattern. The study captures the stream and loads it into Parquet. It
+then reconstructs every `prior_state` field with the article's LAG query, classifies
+every mismatch by cause, and measures what `prior_state` costs in JSON, Avro and Parquet
+bytes and in query time. The results come from public Wikimedia data, not synthetic
+data. They are in `results/wikimedia/` and the "Wikimedia field study" section of
+`results/SUMMARY.md`. `study/wikimedia/README.md` gives the capture commands.
+`make wikimedia-smoke` runs the same steps on a synthetic capture with planted
+mismatches; CI runs it too.
+
 ## Layout
 
 ```
@@ -181,6 +194,11 @@ ci/
 
 docs/
   AUDIT.md                              the repository audited against the article
+
+study/wikimedia/
+  capture.py                            Wikimedia EventStreams capture with offset resume
+  study.py                              steps 3 to 7: Parquet, LAG versus prior_state, size, cost
+  README.md                             data handling and the commands to capture again
 ```
 
 Events go over the wire as JSON so the pipeline runs without a schema registry. The
