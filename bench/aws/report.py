@@ -85,10 +85,13 @@ def kafka(results):
     for p in rows(results, "producer_runs.csv"):
         l = lb[p["topic"]]
         rf = int(l["replication_factor"])
-        integ = {}
+        integ, per_broker = {}, {}
         for m in metrics:
             if m["topic"] == p["topic"]:
-                integ[m["metric"]] = integ.get(m["metric"], Fraction(0)) + Fraction(m["average_per_second"]) * 60
+                v = Fraction(m["average_per_second"]) * 60
+                integ[m["metric"]] = integ.get(m["metric"], Fraction(0)) + v
+                key = (m["metric"], m["broker_id"])
+                per_broker[key] = per_broker.get(key, Fraction(0)) + v
         events = int(p["events"])
         out.append({
             "label": p["label"], "design": p["design"], "compression": p["compression"], "events": events,
@@ -109,6 +112,13 @@ def kafka(results):
             "replication_bytes_out_cloudwatch": ex(integ["ReplicationBytesOutPerSec"]) if "ReplicationBytesOutPerSec" in integ else "",
             "client_bytes_in_cloudwatch": ex(integ["BytesInPerSec"]) if "BytesInPerSec" in integ else "",
             "replication_bytes_derived": int(l["topic_log_bytes_one_copy"]) * (rf - 1),
+            "replication_bytes_in_per_broker_cloudwatch": ";".join(
+                "%s=%s" % (b, ex(v)) for (mm, b), v in sorted(per_broker.items()) if mm == "ReplicationBytesInPerSec"),
+            "replication_bytes_out_per_broker_cloudwatch": ";".join(
+                "%s=%s" % (b, ex(v)) for (mm, b), v in sorted(per_broker.items()) if mm == "ReplicationBytesOutPerSec"),
+            "cloudwatch_window_minutes": (int(next(m["window_end_epoch_ms"] for m in metrics if m["topic"] == p["topic"]))
+                                          - int(next(m["window_start_epoch_ms"] for m in metrics if m["topic"] == p["topic"])))
+                                         // 60000 if any(m["topic"] == p["topic"] for m in metrics) else "",
         })
     return out
 
@@ -166,7 +176,7 @@ def iceberg(results):
                                "manifest_list_files", "manifest_list_bytes", "manifest_files", "manifest_bytes",
                                "other_metadata_files", "other_metadata_bytes", "metadata_total_bytes",
                                "manifests_in_current_snapshot", "data_files_in_current_snapshot", "data_files_on_s3",
-                               "data_bytes_on_s3", "rows")}
+                               "data_bytes_on_s3", "current_snapshot_files_size", "rows")}
         r.update({"history_rows": h.get("row_count", ""), "history_distinct_customer_sequence": h.get("distinct_customer_sequence", ""),
                   "history_checksum": h.get("history_checksum", ""),
                   "history_same_as_after_commits": "" if same == "" else ("yes" if same else "no")})
@@ -193,7 +203,9 @@ def athena_summary(results):
         out.append({"label": rs[0]["label"], "query": k[0], "design": k[1], "runs": len(rs),
                     "data_scanned_bytes": scanned[0] if len(scanned) == 1 else "%d to %d" % (scanned[0], scanned[-1]),
                     "total_execution_p50_ms": rank(total, 50), "total_execution_p95_ms": rank(total, 95),
+                    "total_execution_p99_ms": rank(total, 99),
                     "engine_execution_p50_ms": rank(engine, 50), "engine_execution_p95_ms": rank(engine, 95),
+                    "engine_execution_p99_ms": rank(engine, 99),
                     "billed_bytes_per_query": ath.billed_bytes(scanned[-1]),
                     "cost_per_query_usd": ex(costs[0]) if len(set(costs)) == 1 else "%s to %s" % (ex(min(costs)), ex(max(costs))),
                     "engine_version": rs[0]["engine_version"]})
@@ -315,8 +327,22 @@ def summary(results, summary_path):
         w("After compaction and expiration, %s." % "; ".join(
             "%s keeps %d data files on S3 that its snapshot no longer references" % (
                 t, int(r["data_files_on_s3"]) - int(r["data_files_in_current_snapshot"])) for t, r in sorted(final.items())))
-        w("Expiration deletes a replaced data file only when it expires the snapshot that replaced it, and retainLast 1 "
-          "keeps the compaction snapshot.")
+        comp = {r["table"]: r for r in i if r["state"] == "after_compaction"}
+        w("The files left over are the pre-compaction data files, by count and by bytes: %s. The second expiration "
+          "removed %s, and no data files. It ran with expireOlderThan(now + 1 ms) and retainLast(1), which keeps "
+          "only the newest snapshot, the compaction snapshot. Iceberg 1.10.1's incremental cleanup "
+          "(core IncrementalFileCleanup, used when no snapshot ID or branch is named) deletes a data file only when "
+          "the snapshot recorded on its DELETED manifest entry has expired; here that is the compaction snapshot, "
+          "which was kept. Orphan-file removal was not run." % (
+              "; ".join("%s %d files and %d bytes on S3 outside the snapshot, against %s files and %s bytes after the "
+                        "Flink commits" % (t, int(r["data_files_on_s3"]) - int(r["data_files_in_current_snapshot"]),
+                                           int(r["data_bytes_on_s3"]) - int(r["current_snapshot_files_size"]),
+                                           base_r["data_files_on_s3"], base_r["data_bytes_on_s3"])
+                        for t, r in sorted(final.items())
+                        for base_r in [next(x for x in i if x["table"] == t and x["state"] == "after_commits")]),
+              ", ".join("%s of the manifest files of %s (%s to %s)" % (int(comp[t]["manifest_files"]) - int(r["manifest_files"]), t,
+                                                                 comp[t]["manifest_files"], r["manifest_files"])
+                        for t, r in sorted(final.items()) if t in comp)))
     w("")
     w("### Athena engine version 3")
     w("")
@@ -326,11 +352,14 @@ def summary(results, summary_path):
       "Cost per query is the bytes scanned, rounded up to the next MB with a 10 MB minimum, at the price in "
       "`infra/prices.json`.")
     w("")
-    w(table(["Query", "Design", "Runs", "Bytes scanned", "p50 ms", "p95 ms", "Engine p50 ms", "Engine p95 ms",
-             "Cost per query USD"],
+    w(table(["Query", "Design", "Runs", "Bytes scanned", "p50 ms", "p95 ms", "p99 ms", "Engine p50 ms",
+             "Engine p95 ms", "Engine p99 ms", "Cost per query USD"],
             [[r["query"], r["design"], r["runs"], r["data_scanned_bytes"], r["total_execution_p50_ms"],
-              r["total_execution_p95_ms"], r["engine_execution_p50_ms"], r["engine_execution_p95_ms"],
-              r["cost_per_query_usd"]] for r in a]))
+              r["total_execution_p95_ms"], r["total_execution_p99_ms"], r["engine_execution_p50_ms"],
+              r["engine_execution_p95_ms"], r["engine_execution_p99_ms"], r["cost_per_query_usd"]] for r in a]))
+    w("")
+    w("With 10 timed runs, the nearest-rank p95 and p99 are both the slowest run. Q1 and Q4 have no C row and Q2 has "
+      "no A or C row: C holds no history and A holds one hop, so they cannot answer those questions from their own data.")
     w("")
     if cost:
         w("### Cost Explorer, unblended cost by service")

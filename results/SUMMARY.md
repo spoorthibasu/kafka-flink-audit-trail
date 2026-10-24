@@ -1110,19 +1110,21 @@ Expiration is expireSnapshots with retainLast 1; compaction is the Flink rewrite
 | c | after compaction and expiration | 1 | 85915 | 2 | 2 | 7 | 16 | 1199268777 | 1000000 | yes |
 
 After compaction and expiration, a keeps 321 data files on S3 that its snapshot no longer references; b keeps 164 data files on S3 that its snapshot no longer references; c keeps 9 data files on S3 that its snapshot no longer references.
-Expiration deletes a replaced data file only when it expires the snapshot that replaced it, and retainLast 1 keeps the compaction snapshot.
+The files left over are the pre-compaction data files, by count and by bytes: a 321 files and 119389089551 bytes on S3 outside the snapshot, against 321 files and 119389089551 bytes after the Flink commits; b 164 files and 60197255664 bytes on S3 outside the snapshot, against 164 files and 60197255664 bytes after the Flink commits; c 9 files and 599647573 bytes on S3 outside the snapshot, against 9 files and 599647573 bytes after the Flink commits. The second expiration removed 71 of the manifest files of a (143 to 72), 33 of the manifest files of b (67 to 34), 1 of the manifest files of c (3 to 2), and no data files. It ran with expireOlderThan(now + 1 ms) and retainLast(1), which keeps only the newest snapshot, the compaction snapshot. Iceberg 1.10.1's incremental cleanup (core IncrementalFileCleanup, used when no snapshot ID or branch is named) deletes a data file only when the snapshot recorded on its DELETED manifest entry has expired; here that is the compaction snapshot, which was kept. Orphan-file removal was not run.
 
 ### Athena engine version 3
 
 Bytes scanned is Athena's DataScannedInBytes, the same on every run of a query. p50 and p95 are nearest-rank over the timed runs of TotalExecutionTimeInMillis; the engine columns are EngineExecutionTimeInMillis. Each SELECT writes its result rows to the workgroup's S3 result location, and the runtime includes that write. Cost per query is the bytes scanned, rounded up to the next MB with a 10 MB minimum, at the price in `infra/prices.json`.
 
-| Query | Design | Runs | Bytes scanned | p50 ms | p95 ms | Engine p50 ms | Engine p95 ms | Cost per query USD |
-|---|---|---|---|---|---|---|---|---|
-| q1_one_hop_previous_single | A | 10 | 491273707 | 3067 | 4553 | 2865 | 4345 | 0.00223636627197265625 |
-| q1_one_hop_previous_single | B | 10 | 524696325 | 2769 | 3961 | 2624 | 3750 | 0.00238895416259765625 |
-| q2_three_changes_back_single | B | 10 | 524696325 | 2529 | 3851 | 2339 | 3628 | 0.00238895416259765625 |
-| q3_current_state_all | A | 10 | 60224568330 | 30166 | 32484 | 29980 | 32256 | 0.27387142181396484375 |
-| q3_current_state_all | B | 10 | 60175997153 | 29817 | 40658 | 29648 | 40489 | 0.27365207672119140625 |
-| q3_current_state_all | C | 10 | 597471193 | 16836 | 19006 | 16672 | 18777 | 0.0027179718017578125 |
-| q4_previous_value_all | A | 10 | 2559908559 | 5558 | 11470 | 5410 | 11291 | 0.0116443634033203125 |
-| q4_previous_value_all | B | 10 | 1545859430 | 6696 | 9266 | 6512 | 8894 | 0.00703334808349609375 |
+| Query | Design | Runs | Bytes scanned | p50 ms | p95 ms | p99 ms | Engine p50 ms | Engine p95 ms | Engine p99 ms | Cost per query USD |
+|---|---|---|---|---|---|---|---|---|---|---|
+| q1_one_hop_previous_single | A | 10 | 491273707 | 3067 | 4553 | 4553 | 2865 | 4345 | 4345 | 0.00223636627197265625 |
+| q1_one_hop_previous_single | B | 10 | 524696325 | 2769 | 3961 | 3961 | 2624 | 3750 | 3750 | 0.00238895416259765625 |
+| q2_three_changes_back_single | B | 10 | 524696325 | 2529 | 3851 | 3851 | 2339 | 3628 | 3628 | 0.00238895416259765625 |
+| q3_current_state_all | A | 10 | 60224568330 | 30166 | 32484 | 32484 | 29980 | 32256 | 32256 | 0.27387142181396484375 |
+| q3_current_state_all | B | 10 | 60175997153 | 29817 | 40658 | 40658 | 29648 | 40489 | 40489 | 0.27365207672119140625 |
+| q3_current_state_all | C | 10 | 597471193 | 16836 | 19006 | 19006 | 16672 | 18777 | 18777 | 0.0027179718017578125 |
+| q4_previous_value_all | A | 10 | 2559908559 | 5558 | 11470 | 11470 | 5410 | 11291 | 11291 | 0.0116443634033203125 |
+| q4_previous_value_all | B | 10 | 1545859430 | 6696 | 9266 | 9266 | 6512 | 8894 | 8894 | 0.00703334808349609375 |
+
+With 10 timed runs, the nearest-rank p95 and p99 are both the slowest run. Q1 and Q4 have no C row and Q2 has no A or C row: C holds no history and A holds one hop, so they cannot answer those questions from their own data.
