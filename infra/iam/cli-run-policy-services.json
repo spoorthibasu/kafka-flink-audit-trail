@@ -1,0 +1,190 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CreateTaggedFlinkApplication",
+      "Effect": "Allow",
+      "Action": "kinesisanalytics:CreateApplication",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/project": "audit-trail-bench",
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "ManageFlinkApplications",
+      "Effect": "Allow",
+      "Action": [
+        "kinesisanalytics:TagResource",
+        "kinesisanalytics:UntagResource",
+        "kinesisanalytics:ListTagsForResource",
+        "kinesisanalytics:DescribeApplication",
+        "kinesisanalytics:UpdateApplication",
+        "kinesisanalytics:StartApplication",
+        "kinesisanalytics:StopApplication",
+        "kinesisanalytics:DeleteApplication",
+        "kinesisanalytics:AddApplicationVpcConfiguration",
+        "kinesisanalytics:DeleteApplicationVpcConfiguration",
+        "kinesisanalytics:AddApplicationCloudWatchLoggingOption",
+        "kinesisanalytics:DeleteApplicationCloudWatchLoggingOption",
+        "kinesisanalytics:ListApplicationSnapshots",
+        "kinesisanalytics:ListApplicationVersions",
+        "kinesisanalytics:DescribeApplicationVersion",
+        "kinesisanalytics:ListApplicationOperations",
+        "kinesisanalytics:DescribeApplicationOperation",
+        "kinesisanalytics:CreateApplicationPresignedUrl"
+      ],
+      "Resource": "arn:aws:kinesisanalytics:us-east-1:*:application/audit-trail-bench-*"
+    },
+    {
+      "Sid": "FlinkLogGroup",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:DeleteLogGroup",
+        "logs:PutRetentionPolicy",
+        "logs:TagResource",
+        "logs:TagLogGroup",
+        "logs:ListTagsForResource",
+        "logs:ListTagsLogGroup",
+        "logs:DescribeLogStreams",
+        "logs:FilterLogEvents",
+        "logs:CreateLogStream",
+        "logs:DeleteLogStream",
+        "logs:GetLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-east-1:*:log-group:/aws/kinesis-analytics/audit-trail-bench",
+        "arn:aws:logs:us-east-1:*:log-group:/aws/kinesis-analytics/audit-trail-bench:*"
+      ]
+    },
+    {
+      "Sid": "ListLogGroups",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "*"
+    },
+    {
+      "Sid": "CancelRunCommand",
+      "Effect": "Allow",
+      "Action": "ssm:CancelCommand",
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "RunBucketConfiguration",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucket*",
+        "s3:GetAccelerateConfiguration",
+        "s3:GetLifecycleConfiguration",
+        "s3:GetReplicationConfiguration",
+        "s3:GetEncryptionConfiguration",
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutBucketOwnershipControls",
+        "s3:PutEncryptionConfiguration",
+        "s3:PutLifecycleConfiguration",
+        "s3:ListBucketVersions",
+        "s3:ListBucketMultipartUploads"
+      ],
+      "Resource": "arn:aws:s3:::audit-trail-bench-run-*"
+    },
+    {
+      "Sid": "RunBucketObjectExtras",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObjectTagging",
+        "s3:PutObjectTagging",
+        "s3:DeleteObjectVersion",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": "arn:aws:s3:::audit-trail-bench-run-*/*"
+    },
+    {
+      "Sid": "ArchiveBucketReadOnly",
+      "Effect": "Deny",
+      "Action": ["s3:Put*", "s3:Delete*", "s3:Abort*", "s3:Replicate*", "s3:Restore*"],
+      "Resource": ["arn:aws:s3:::ARCHIVE_BUCKET_NAME", "arn:aws:s3:::ARCHIVE_BUCKET_NAME/*"]
+    },
+    {
+      "Sid": "RunGlueDatabase",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateDatabase",
+        "glue:GetDatabase",
+        "glue:DeleteDatabase",
+        "glue:GetTags",
+        "glue:TagResource",
+        "glue:UntagResource",
+        "glue:GetTable",
+        "glue:GetTables",
+        "glue:DeleteTable"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:*:catalog",
+        "arn:aws:glue:us-east-1:*:database/audit_trail_bench_aws",
+        "arn:aws:glue:us-east-1:*:table/audit_trail_bench_aws/*",
+        "arn:aws:glue:us-east-1:*:userDefinedFunction/audit_trail_bench_aws/*"
+      ]
+    },
+    {
+      "Sid": "CreateTaggedWorkGroup",
+      "Effect": "Allow",
+      "Action": "athena:CreateWorkGroup",
+      "Resource": "arn:aws:athena:us-east-1:*:workgroup/audit-trail-bench",
+      "Condition": {"StringEquals": {"aws:RequestTag/project": "audit-trail-bench"}}
+    },
+    {
+      "Sid": "AthenaInRunWorkGroup",
+      "Effect": "Allow",
+      "Action": [
+        "athena:TagResource",
+        "athena:UntagResource",
+        "athena:ListTagsForResource",
+        "athena:GetWorkGroup",
+        "athena:UpdateWorkGroup",
+        "athena:DeleteWorkGroup",
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:BatchGetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:GetQueryRuntimeStatistics",
+        "athena:StopQueryExecution",
+        "athena:ListQueryExecutions"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:*:workgroup/audit-trail-bench"
+    },
+    {
+      "Sid": "AthenaDefaultCatalog",
+      "Effect": "Allow",
+      "Action": "athena:GetDataCatalog",
+      "Resource": "arn:aws:athena:us-east-1:*:datacatalog/AwsDataCatalog"
+    },
+    {
+      "Sid": "ReadMetrics",
+      "Effect": "Allow",
+      "Action": ["cloudwatch:GetMetricData", "cloudwatch:GetMetricStatistics", "cloudwatch:ListMetrics"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "RunBudget",
+      "Effect": "Allow",
+      "Action": [
+        "budgets:ViewBudget",
+        "budgets:ModifyBudget",
+        "budgets:TagResource",
+        "budgets:UntagResource",
+        "budgets:ListTagsForResource"
+      ],
+      "Resource": "arn:aws:budgets::*:budget/audit-trail-bench*"
+    },
+    {
+      "Sid": "ReadCosts",
+      "Effect": "Allow",
+      "Action": ["ce:GetCostAndUsage", "ce:GetDimensionValues", "ce:GetTags"],
+      "Resource": "*"
+    }
+  ]
+}

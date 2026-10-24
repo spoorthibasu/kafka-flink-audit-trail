@@ -1,0 +1,17 @@
+label,query,design,scope,entity,run,warmup,query_execution_id,engine_version,data_scanned_bytes,total_execution_ms,engine_execution_ms,queue_ms,planning_ms,service_preprocessing_ms,service_processing_ms,submitted_utc,completed_utc
+smoke,q1_one_hop_previous_single,A,single,C0000500,1,no,79e5bba6-f4e9-43c7-b7c6-99edbb199caa,Athena engine version 3,472569,1009,862,67,112,46,34,2026-10-23T09:33:23.637000-04:00,2026-10-23T09:33:24.646000-04:00
+smoke,q1_one_hop_previous_single,A,single,C0000500,2,no,bdadfd80-230a-4b9a-94ac-cbd9d3f211bc,Athena engine version 3,472569,933,761,91,101,57,24,2026-10-23T09:33:25.494000-04:00,2026-10-23T09:33:26.427000-04:00
+smoke,q1_one_hop_previous_single,B,single,C0000500,1,no,30af2e5b-6e24-4031-a834-5350fc80bd01,Athena engine version 3,383434,1149,1016,61,319,47,25,2026-10-23T09:33:27.298000-04:00,2026-10-23T09:33:28.447000-04:00
+smoke,q1_one_hop_previous_single,B,single,C0000500,2,no,434d6715-2237-40b7-9b1a-8779a64e5e69,Athena engine version 3,383434,805,669,55,104,49,32,2026-10-23T09:33:29.088000-04:00,2026-10-23T09:33:29.893000-04:00
+smoke,q2_three_changes_back_single,B,single,C0000500,1,no,3aa9e415-e259-469b-80b1-72845a1c836a,Athena engine version 3,383434,823,689,63,100,56,15,2026-10-23T09:33:30.887000-04:00,2026-10-23T09:33:31.710000-04:00
+smoke,q2_three_changes_back_single,B,single,C0000500,2,no,b95a1da4-a946-4d56-9a39-cec01a8e4213,Athena engine version 3,383434,1946,1752,52,474,99,43,2026-10-23T09:33:32.673000-04:00,2026-10-23T09:33:34.619000-04:00
+smoke,q3_current_state_all,A,all,,1,no,f38970e1-eb45-49d7-9dca-d1771e8cd012,Athena engine version 3,6245416,1280,1038,100,112,112,30,2026-10-23T09:33:35.851000-04:00,2026-10-23T09:33:37.131000-04:00
+smoke,q3_current_state_all,A,all,,2,no,1aab2b80-bccd-4c68-9b15-0328b30653dd,Athena engine version 3,6245416,2704,2545,55,408,78,26,2026-10-23T09:33:37.627000-04:00,2026-10-23T09:33:40.331000-04:00
+smoke,q3_current_state_all,B,all,,1,no,c79df198-01e8-45ef-802d-09b021fd189c,Athena engine version 3,6741929,1354,1181,62,111,78,33,2026-10-23T09:33:40.775000-04:00,2026-10-23T09:33:42.129000-04:00
+smoke,q3_current_state_all,B,all,,2,no,f9fec13a-6d08-44ac-ba00-c50f9f160e41,Athena engine version 3,6741929,1370,1198,109,157,39,24,2026-10-23T09:33:42.539000-04:00,2026-10-23T09:33:43.909000-04:00
+smoke,q3_current_state_all,C,all,,1,no,a91b2ee4-8f26-4933-aa69-14ae1f01347b,Athena engine version 3,614224,1078,888,108,80,56,26,2026-10-23T09:33:44.331000-04:00,2026-10-23T09:33:45.409000-04:00
+smoke,q3_current_state_all,C,all,,2,no,a9a6fe7d-f7e5-4115-bc4b-4445079825f5,Athena engine version 3,614224,1083,910,94,160,57,22,2026-10-23T09:33:46.140000-04:00,2026-10-23T09:33:47.223000-04:00
+smoke,q4_previous_value_all,A,all,,1,no,86bdde5e-abbc-49c9-9397-5f1d563024b4,Athena engine version 3,470484,924,772,63,115,64,25,2026-10-23T09:33:47.983000-04:00,2026-10-23T09:33:48.907000-04:00
+smoke,q4_previous_value_all,A,all,,2,no,23a908a2-18ae-4c4b-86dc-bfb576ccb626,Athena engine version 3,470484,1026,865,63,143,70,28,2026-10-23T09:33:49.806000-04:00,2026-10-23T09:33:50.832000-04:00
+smoke,q4_previous_value_all,B,all,,1,no,f0d066f3-165d-45e9-9f23-9eebc2223f57,Athena engine version 3,381339,1409,1256,60,124,72,21,2026-10-23T09:33:51.586000-04:00,2026-10-23T09:33:52.995000-04:00
+smoke,q4_previous_value_all,B,all,,2,no,dd1dd446-aee7-4cd3-a6ff-b38da77c68a0,Athena engine version 3,381339,1409,1234,92,197,47,36,2026-10-23T09:33:54.805000-04:00,2026-10-23T09:33:56.214000-04:00

@@ -1,0 +1,27 @@
+{
+  "_comment": "On-demand us-east-1 prices used by infra/estimate.py. Source: AWS Price List Query API (aws pricing get-products --region us-east-1), fetched 2026-10-23. Each entry keeps the service code, SKU, usage type, unit, USD price and effective date the API returned.",
+  "fetched_utc": "2026-10-23",
+  "prices": {
+    "ec2_m8id_2xlarge_hour": {"service": "AmazonEC2", "sku": "XATJC7PYQZKUHTJX", "usagetype": "BoxUsage:m8id.2xlarge", "unit": "Hrs", "usd": "0.5220800000", "effective": "2026-10-01T00:00:00Z"},
+    "ebs_gp3_gb_month": {"service": "AmazonEC2", "sku": "JG3KUJMBRGHV3N8G", "usagetype": "EBS:VolumeUsage.gp3", "unit": "GB-Mo", "usd": "0.0800000000", "effective": "2026-10-01T00:00:00Z"},
+    "public_ipv4_hour": {"service": "AmazonVPC", "sku": "4GQUNXTFWVSGPUZK", "usagetype": "USE1-PublicIPv4:InUseAddress", "unit": "Hrs", "usd": "0.0050000000", "effective": "2026-10-01T00:00:00Z"},
+    "msk_m7g_large_broker_hour": {"service": "AmazonMSK", "sku": "NR4E2TGDUNJZTB8H", "usagetype": "USE1-Kafka.m7g.large", "unit": "hours", "usd": "0.2040000000", "effective": "2026-10-01T00:00:00Z"},
+    "msk_storage_gb_month": {"service": "AmazonMSK", "sku": "65XV7TSGW9ZJSRYZ", "usagetype": "USE1-Kafka.Storage.GP2", "unit": "GB-Mo", "usd": "0.1000000000", "effective": "2026-10-01T00:00:00Z"},
+    "msf_kpu_hour": {"service": "AmazonKinesisAnalytics", "sku": "APZTX99SRBTV9ACQ", "usagetype": "USE1-KPU-Hour-Java", "unit": "KPU-Hour", "usd": "0.1100000000", "effective": "2025-12-01T00:00:00Z"},
+    "msf_running_storage_gb_month": {"service": "AmazonKinesisAnalytics", "sku": "V6GPW77PCCJVB3HT", "usagetype": "USE1-RunningApplicationStorage", "unit": "GB-month", "usd": "0.1000000000", "effective": "2025-12-01T00:00:00Z"},
+    "vpc_endpoint_hour": {"service": "AmazonVPC", "sku": "EN2N5TATXE673A3B", "usagetype": "USE1-VpcEndpoint-Hours", "unit": "Hrs", "usd": "0.0100000000", "effective": "2026-10-01T00:00:00Z"},
+    "vpc_endpoint_gb": {"service": "AmazonVPC", "sku": "DQYYEZBCWSW5XS2R", "usagetype": "USE1-VpcEndpoint-Bytes", "unit": "GB", "usd": "0.0100000000", "effective": "2026-10-01T00:00:00Z"},
+    "data_transfer_regional_gb": {"service": "AWSDataTransfer", "sku": "PNUBVW4CPC8XA46W", "usagetype": "DataTransfer-Regional-Bytes", "unit": "GB", "usd": "0.0100000000", "effective": "2026-06-01T00:00:00Z"},
+    "s3_standard_gb_month": {"service": "AmazonS3", "sku": "WP9ANXZGBYYSGJEA", "usagetype": "TimedStorage-ByteHrs", "unit": "GB-Mo", "usd": "0.0230000000", "effective": "2026-10-01T00:00:00Z"},
+    "s3_tier1_request": {"service": "AmazonS3", "sku": "E9YHNFENF4XQBZR6", "usagetype": "Requests-Tier1", "unit": "Requests", "usd": "0.0000050000", "effective": "2026-10-01T00:00:00Z"},
+    "s3_tier2_request": {"service": "AmazonS3", "sku": "ZWQ6Q48CRJXX4FXE", "usagetype": "Requests-Tier2", "unit": "Requests", "usd": "0.0000004000", "effective": "2026-10-01T00:00:00Z"},
+    "athena_tb_scanned": {"service": "AmazonAthena", "sku": "B6WHE3FUNCDQVVX4", "usagetype": "USE1-DataScannedInTB", "unit": "Terabytes", "usd": "5.0000000000", "effective": "2026-03-01T00:00:00Z"},
+    "cloudwatch_metric_month": {"service": "AmazonCloudWatch", "sku": "KG586CTNGQ4VRZKZ", "usagetype": "CW:MetricMonitorUsage", "unit": "Metrics", "usd": "0.3000000000", "effective": "2026-10-01T00:00:00Z"},
+    "cloudwatch_get_metric_data_metric": {"service": "AmazonCloudWatch", "sku": "ST83NCNZMVRKWEVJ", "usagetype": "CW:GMD-Metrics", "unit": "Metrics", "usd": "0.0000100000", "effective": "2026-10-01T00:00:00Z"},
+    "cloudwatch_logs_ingest_gb": {"service": "AmazonCloudWatch", "sku": "S8QGXX5R2BKKMDSJ", "usagetype": "USE1-DataProcessing-Bytes", "unit": "GB", "usd": "0.5000000000", "effective": "2026-10-01T00:00:00Z"},
+    "cloudwatch_logs_storage_gb_month": {"service": "AmazonCloudWatch", "sku": "6K9ADYQAHV5KX9KZ", "usagetype": "USE1-TimedStorage-ByteHrs", "unit": "GB-Mo", "usd": "0.0300000000", "effective": "2026-10-01T00:00:00Z"},
+    "glue_catalog_request": {"service": "AWSGlue", "sku": "XUYP7NN729GFEEB7", "usagetype": "USE1-Catalog-Request", "unit": "Request", "usd": "0.0000010000", "effective": "2026-10-01T00:00:00Z"},
+    "cost_explorer_api_request": {"service": "AWSCostExplorer", "sku": "BX68HKNBJP73AFBV", "usagetype": "USE1-APIRequest", "unit": "Request", "usd": "0.0100000000", "effective": "2025-09-01T00:00:00Z"},
+    "budgets_budget_day": {"service": "AWSBudgets", "sku": "T2UVJ9XYT52FBFAF", "usagetype": "BudgetsUsage", "unit": "Budget-days", "usd": "0.0000000000", "effective": "2024-06-01T00:00:00Z"}
+  }
+}

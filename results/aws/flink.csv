@@ -1,0 +1,3 @@
+label,design,events,parallelism,kpu,checkpoint_interval_ms,min_pause_ms,job_running_epoch_ms,all_events_committed_epoch_ms,end_to_end_throughput_events_per_s,data_commits,sustained_throughput_events_per_s,checkpoints_counted,checkpoint_duration_p50_ms,checkpoint_duration_p95_ms,checkpoint_duration_max_ms,checkpointed_bytes_p50
+full,A,100000000,4,5,60000,30000,1792772751209,1792777068123,23164.6958915558...,71,23528.7642938502...,71,2736,4199,4566,5214
+full,B,100000000,4,5,60000,30000,1792781095930,1792783114330,49544.1934205311...,33,51698.0769685873...,33,2640,3479,4072,5214

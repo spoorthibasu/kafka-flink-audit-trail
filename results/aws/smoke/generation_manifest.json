@@ -1,0 +1,87 @@
+{
+  "config_file": "bench/aws/config.aws-smoke.json",
+  "config": {
+    "_comment": "AWS smoke run at the bench-full scale (N = 1,000 entities, H = 100): checks the pipeline and the equivalence queries end to end before the full run. Synthetic data; not reported as a measurement.",
+    "seed": 20261113,
+    "n_entities": 1000,
+    "h_events": 100,
+    "k_attributes": 67,
+    "event_models": [
+      "full"
+    ],
+    "changed_attributes_per_event": {
+      "min": 1,
+      "max": 5
+    },
+    "payload": {
+      "deflate_level": 6
+    },
+    "aws": {
+      "label": "smoke",
+      "designs": [
+        "A",
+        "B"
+      ],
+      "compressions": [
+        "zstd",
+        "none"
+      ],
+      "none_entities": 1000,
+      "partitions": 12,
+      "replication_factor": 3,
+      "flink_parallelism": 12,
+      "flink_parallelism_per_kpu": 1,
+      "checkpoint_interval_ms": 60000,
+      "min_pause_ms": 30000,
+      "athena_runs": 2,
+      "athena_warmup_runs": 0,
+      "compaction_parallelism": 8
+    }
+  },
+  "model": "full",
+  "n_entities": 1000,
+  "h_events": 100,
+  "k_attributes": 67,
+  "records_per_step": 1000,
+  "steps": 100,
+  "designs": {
+    "A": {
+      "records": 100000,
+      "datum_bytes": 189837837,
+      "file_bytes": 190237837,
+      "files": 100
+    },
+    "B": {
+      "records": 100000,
+      "datum_bytes": 96176230,
+      "file_bytes": 96576230,
+      "files": 100
+    },
+    "C": {
+      "records": 1000,
+      "datum_bytes": 961623,
+      "file_bytes": 965623,
+      "files": 1
+    }
+  },
+  "checks": {
+    "events_checked": 100000,
+    "first_events": 1000,
+    "previous_value_checks": 99000,
+    "current_state_rows_checked": 1000
+  },
+  "generator_wall_seconds": 11.4,
+  "microseconds_per_event": 113.74,
+  "started_utc": "2026-10-23T12:50:48Z",
+  "python": "3.11.16",
+  "fastavro": "1.12.2",
+  "machine": {
+    "platform": "Linux-6.18.54-121.166.amzn2023.x86_64-x86_64-with-glibc2.34",
+    "machine": "x86_64",
+    "python": "3.11.16",
+    "cpu_count": 8,
+    "cpu": "Intel(R) Xeon(R) 6975P-C",
+    "memory_bytes": 33089286144,
+    "git_commit": null
+  }
+}

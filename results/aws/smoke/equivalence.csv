@@ -1,0 +1,5 @@
+label,query,designs,columns,rows_left,rows_right,differing_rows,equal,query_execution_id,engine_version,data_scanned_bytes,total_execution_ms,engine_execution_ms,queue_ms,planning_ms,service_preprocessing_ms,service_processing_ms,submitted_utc,completed_utc
+smoke,q1_one_hop_previous_single,A vs B,4,100,100,0,yes,e7b03014-9427-46eb-9c6b-5fb067b41c26,Athena engine version 3,224089,2553,2321,94,666,74,64,2026-10-23T09:29:34.519000-04:00,2026-10-23T09:29:37.072000-04:00
+smoke,q3_current_state_all,A vs B,68,1000,1000,0,yes,66633492-fb1e-4259-8445-0febe460fcc3,Athena engine version 3,14504156,1681,1468,109,404,71,33,2026-10-23T09:29:38.212000-04:00,2026-10-23T09:29:39.893000-04:00
+smoke,q3_current_state_all,B vs C,68,1000,1000,0,yes,51fe55b0-9393-4694-8073-4c8a5ba26db7,Athena engine version 3,7981826,1348,1141,90,232,81,36,2026-10-23T09:29:41.961000-04:00,2026-10-23T09:29:43.309000-04:00
+smoke,q4_previous_value_all,A vs B,3,1000,1000,0,yes,51c47d4e-66f5-4c60-bf35-3493b73fc56c,Athena engine version 3,885917,1537,1345,82,265,89,21,2026-10-23T09:29:44.213000-04:00,2026-10-23T09:29:45.750000-04:00

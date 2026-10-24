@@ -11,3 +11,13 @@ warehouse/
 results-smoke/
 results-smoke-pipeline/
 results-smoke-wikimedia/
+# Terraform for the AWS scale run: state holds the account ID and bucket names.
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.plan
+.terraform.tfstate.lock.info
+crash.log
+# Run state of bench/aws/run.py (instance IDs, code archive).
+infra/.run/
