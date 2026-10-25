@@ -178,10 +178,12 @@ Rerun, from a machine with the AWS CLI, Terraform, JDK 17, Maven and `bench/requ
    `audit-trail-bench-boundary`, and attach `infra/iam/cli-run-policy-infra.json` and
    `infra/iam/cli-run-policy-services.json` (with your own bucket name in place of
    `ARCHIVE_BUCKET_NAME`, or without that statement) to the IAM user the CLI uses.
-2. `TF_VAR_alert_email=<address> terraform -chdir=infra/budget apply -var budget_usd=<amount>`
-3. `terraform -chdir=infra/base apply`, then
+2. `terraform -chdir=infra/budget init`, then
+   `TF_VAR_alert_email=<address> terraform -chdir=infra/budget apply -var budget_usd=<amount>`
+3. `terraform -chdir=infra/base init`, `terraform -chdir=infra/base apply`, then
    `python3 bench/aws/run.py --config bench/aws/config.aws.json setup` and `generate`.
-4. `(cd bench/aws/flink-app && mvn -q -B package)`, then `terraform -chdir=infra/stream apply`.
+4. `(cd bench/aws/flink-app && mvn -q -B package)`, then `terraform -chdir=infra/stream init`
+   and `terraform -chdir=infra/stream apply`.
 5. `python3 bench/aws/run.py --config bench/aws/config.aws.json pipeline`, `environment`,
    then `terraform -chdir=infra/stream destroy`.
 6. With the same `--config`: `load-c`, `equivalence`, `stats after_commits`, `expire`,
@@ -322,14 +324,14 @@ in the pipeline benchmark and the AWS run) bin-packs files and does not sort. To
 
 ```bash
 # local filesystem, no S3:
-mvn -q compile exec:exec@run-job   # add: --sink iceberg --warehouse file:///tmp/audit-warehouse
+mvn -q compile exec:exec@run-job -Djob.args="--sink iceberg --warehouse file:///tmp/audit-warehouse"
 # S3:
-#   --sink iceberg --warehouse s3://your-bucket/warehouse \
-#   --io-impl org.apache.iceberg.aws.s3.S3FileIO
+mvn -q compile exec:exec@run-job -Djob.args="--sink iceberg --warehouse s3://your-bucket/warehouse --io-impl org.apache.iceberg.aws.s3.S3FileIO"
 ```
 
-`make loop` and `IcebergRoundTripTest` exercise the write path into a real Iceberg table
-and read the rows back through Iceberg's own reader.
+`make loop` and `IcebergRoundTripTest` exercise the write path into a real Iceberg table.
+`IcebergRoundTripTest` reads the rows back through Iceberg's own reader; `make loop` reads
+the table's Parquet data files with DuckDB.
 
 ### Crash and restart evidence
 
