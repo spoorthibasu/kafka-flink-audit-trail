@@ -167,7 +167,9 @@ public class CustomerProfileAuditJob {
                 .day("event_timestamp")
                 .build();
             Table table = catalog.createTable(tableId, ICEBERG_SCHEMA, spec);
-            // Sort by customer_id so LAG queries scan fewer files per customer.
+            // Declare sort order customer_id. The streaming writer does not sort rows within
+            // files; a compaction that sorts applies this order, and LAG queries then scan
+            // fewer files per customer.
             table.replaceSortOrder().asc("customer_id").commit();
         }
 
