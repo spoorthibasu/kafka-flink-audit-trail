@@ -38,10 +38,11 @@ Delete action on it for the whole run.
    and the tagged listing must hold only the archive bucket. The file replaces the account ID and the
    archive bucket name with placeholders before it is written.
 6. Permissions. In the IAM console: detach `audit-trail-bench-run-infra` and `audit-trail-bench-run-services`
-   from `audit-trail-bench-cli`, delete both policies, then delete `audit-trail-bench-boundary`. Proof: a call
-   only those policies allowed, such as `aws kafka get-bootstrap-brokers` or
-   `aws iam get-role --role-name audit-trail-bench-runner`, returns AccessDenied again. The user
-   `audit-trail-bench-cli` and its original policy stay.
+   from `audit-trail-bench-cli`, delete both policies, then delete `audit-trail-bench-boundary`. Proof:
+   `python3 bench/aws/permissions_check.py --out results/aws/permissions_check.txt` calls one action from
+   each group the run policies granted, which must all be refused, and from the user's original policy,
+   which must all be allowed. The user `audit-trail-bench-cli` and its original policy
+   (study/wikimedia/aws/cli-policy.json) stay.
 7. Local state. Delete `infra/*/terraform.tfstate*` and `infra/*/.terraform`; the state files hold the account
    ID and bucket name and are git-ignored throughout.
 

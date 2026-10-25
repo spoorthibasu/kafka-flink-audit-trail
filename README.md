@@ -183,6 +183,8 @@ Rerun, from a machine with the AWS CLI, Terraform, JDK 17, Maven and `bench/requ
    `python3 bench/aws/report.py costs --start <first day> --end <day after the last>`,
    `python3 bench/aws/report.py summary`, `terraform -chdir=infra/budget destroy`, and
    `python3 bench/aws/teardown_check.py --out results/aws/teardown_listing.txt --archive-bucket <name>`.
+8. Remove the three IAM policies (`infra/TEARDOWN.md`, step 6), then
+   `python3 bench/aws/permissions_check.py --out results/aws/permissions_check.txt`.
 
 `bench/aws/config.aws-smoke.json` runs the same steps at the bench-full scale (1,000
 entities) first; its files go to `results/aws/smoke/`. Nothing in CI touches AWS: the
