@@ -1,0 +1,121 @@
+{
+  "started_utc": "2026-10-25T04:24:03Z",
+  "config_file": "bench/config.json",
+  "config": {
+    "_comment": "All benchmark parameters. Synthetic data at demonstration scale. Change nothing else to re-run.",
+    "seed": 20261113,
+    "n_entities": 1000,
+    "h_events": 100,
+    "k_attributes": 67,
+    "event_models": [
+      "full",
+      "sparse"
+    ],
+    "changed_attributes_per_event": {
+      "min": 1,
+      "max": 5
+    },
+    "payload": {
+      "deflate_level": 6
+    },
+    "storage": {
+      "parquet_compressions": [
+        "snappy",
+        "zstd"
+      ],
+      "parquet_row_group_size": 10000
+    },
+    "queries": {
+      "runs": 20,
+      "warmup_runs": 3
+    },
+    "attribute_sweep": {
+      "k_values": [
+        10,
+        25,
+        67,
+        150
+      ]
+    },
+    "pipeline": {
+      "models": [
+        "full",
+        "sparse"
+      ],
+      "compressions": [
+        "none",
+        "zstd"
+      ],
+      "runs": 5,
+      "partitions": 3,
+      "replication_factor": 3,
+      "parallelism": 3,
+      "checkpoint_interval_ms": 60000,
+      "min_pause_ms": 30000,
+      "iceberg_commits": 20,
+      "poll_ms": 100,
+      "rest_port": 18081,
+      "bootstrap": "localhost:19092,localhost:29092,localhost:39092"
+    },
+    "scaling": {
+      "n_entities": 100,
+      "h_values": [
+        1,
+        10,
+        100,
+        1000
+      ],
+      "runs": 10,
+      "warmup_runs": 2
+    }
+  },
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.9.6",
+    "cpu_count": 8,
+    "cpu": "Apple M3",
+    "memory_bytes": 17179869184,
+    "git_commit": "9230348f58da842d7992a07a7c8eef16ea6ed230"
+  },
+  "duckdb": "1.4.5",
+  "pyspark": "4.0.4",
+  "spark_jar": {
+    "name": "iceberg-spark-runtime-4.0_2.13-1.10.1.jar",
+    "bytes": 47083764,
+    "sha1": "aa296e2a410cac2270e4d4130de0e7bfde714e11"
+  },
+  "java": "openjdk version \"17.0.18\" 2026-01-20",
+  "sort_order": "customer_id ASC NULLS FIRST, event_timestamp ASC NULLS FIRST, event_sequence ASC NULLS FIRST",
+  "rewrite_options": {
+    "rewrite-all": "true"
+  },
+  "flink_version": "1.20.3",
+  "iceberg_flink_version": "1.10.1",
+  "spark_version": "4.0.4",
+  "table_properties": {
+    "write.parquet.compression-codec": "zstd"
+  },
+  "declared_sort_order": "customer_id ASC NULLS FIRST",
+  "iceberg_parquet_defaults": {
+    "write.parquet.compression-codec when unset": "gzip",
+    "write.parquet.compression-codec on new tables": "zstd",
+    "write.parquet.row-group-size-bytes": 134217728,
+    "write.parquet.page-size-bytes": 1048576,
+    "write.parquet.dict-size-bytes": 2097152,
+    "write.target-file-size-bytes": 536870912
+  },
+  "created_by": {
+    "as_written": [
+      "parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61)"
+    ],
+    "binpack": [
+      "parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61)"
+    ],
+    "sort": [
+      "parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61)"
+    ]
+  },
+  "wall_seconds": 237.2,
+  "finished_utc": "2026-10-25T04:28:01Z"
+}

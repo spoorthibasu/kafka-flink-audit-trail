@@ -1170,3 +1170,54 @@ The row counts in `latency.csv` and `scaling_latency.csv` show the difference: d
 returned 100 rows for C0000500 in the full model (one per event, H=100) and 5 in the sparse
 model, and in the sweep over H it returned H rows in the full model (1, 10, 100, 1000) and
 1, 2, 3 and 49 rows in the sparse model.
+
+## Iceberg data layout: as written, bin-pack compaction, sort compaction
+
+Measured by `bench/iceberg_layout.py` from `bench/config.json` on 2026-10-25T04:24:03Z: design B (audit trail), seed 20261113, N=1000, H=100, K=67, 100,000 events per table, 5 runs per model. Machine: Apple M3, 8 logical CPUs. Wall time 237.2 s. Flink 1.20.3 with Iceberg 1.10.1 (FlinkSink, Actions.rewriteDataFiles); Spark 4.0.4 with iceberg-spark-runtime-4.0_2.13-1.10.1.jar (SHA-1 aa296e2a410cac2270e4d4130de0e7bfde714e11); DuckDB 1.4.5 for footers and the query.
+
+- (a) The events go through the Iceberg FlinkSink in 20 bounded jobs at parallelism 3, as the pipeline benchmark's Iceberg mode writes them (`com.example.audit.bench.IcebergLayout`), into a table partitioned by day(event_timestamp) with declared sort order customer_id ASC NULLS FIRST.
+- (b) Snapshot expiration (retainLast 1), then `Actions.rewriteDataFiles` with Iceberg's defaults, as in that mode: the repository's compaction, which bin-packs files and does not sort.
+- (c) From (a): Spark `CALL system.rewrite_data_files` with `strategy => 'sort'`, `sort_order => 'customer_id ASC NULLS FIRST, event_timestamp ASC NULLS FIRST, event_sequence ASC NULLS FIRST'` and `rewrite-all` true, on local[3].
+- Data bytes are the sizes of the snapshot's data files, from Spark's files metadata table at that snapshot ID and equal to the sizes on disk. Bytes scanned are for q3_current_state_all, design B, from bench/benchmark.py, over the snapshot's files: bench/resources.py's derivation from parquet_metadata(), compressed bytes of the column chunks the scan reads, in row groups its pushed-down filters do not prune. All three versions return the same rows in every run. Within each data file in storage order: customer_id runs counts the maximal runs of rows with one customer_id, summed over the files (1000 entities, so 1000 when each entity's rows are contiguous in one file); adjacent rows out of sort order counts the rows whose (customer_id, event_timestamp, event_sequence) is lower than the row before it.
+
+### FULL model
+
+| Version | Data files | Data bytes | Bytes per event | Bytes scanned by q3_current_state_all | Row groups | Rows per row group | Codec | customer_id runs | Adjacent rows out of sort order |
+|---|---|---|---|---|---|---|---|---|---|
+| (a) as the Flink sink wrote it | 60 | 44,941,250 in every run | 449.4125 | 43,815,856 in every run | 60 | 1666 to 1667 | ZSTD | 100,000 in every run | 80 in every run |
+| (b) after Actions.rewriteDataFiles (bin-pack) | 2 | median 10,501,041, min 10,207,417, max 11,038,531 | 102.07417 to 110.38531 | median 10,449,968, min 10,156,360, max 10,987,438 | 2 | 46666 to 53334 / 46667 to 53333 | ZSTD | 100,000 in every run | median 118, min 115, max 121 |
+| (c) after Spark rewrite_data_files, strategy sort | 1 | 5,062,151 in every run | 50.62151 | 5,030,381 in every run | 1 | 100000 to 100000 | ZSTD | 1,000 in every run | 0 in every run |
+
+The table as written matches results/pipeline_iceberg_runs.csv (design B, after_commits, data bytes on disk) in 5 of 5 runs.
+
+Column chunk bytes, run 1, compressed (uncompressed), summed over the snapshot's files:
+
+| Version | customer_id | event_timestamp | event_sequence | 67 attribute columns | Encodings seen |
+|---|---|---|---|---|---|
+| (a) as the Flink sink wrote it | 112,020 (848,640) | 193,960 (801,616) | 5,518 (4,158) | 43,504,358 (74,002,057) | BIT_PACKED PLAIN / BIT_PACKED PLAIN RLE / BIT_PACKED PLAIN_DICTIONARY / BIT_PACKED PLAIN_DICTIONARY RLE |
+| (b) after Actions.rewriteDataFiles (bin-pack) | 26,700 (149,430) | 188,622 (800,173) | 869 (1,463) | 10,173,174 (19,715,508) | BIT_PACKED PLAIN / BIT_PACKED PLAIN RLE / BIT_PACKED PLAIN_DICTIONARY / BIT_PACKED PLAIN_DICTIONARY RLE |
+| (c) after Spark rewrite_data_files, strategy sort | 3,085 (15,962) | 187,653 (800,145) | 2,211 (88,667) | 4,837,432 (7,741,607) | BIT_PACKED PLAIN / BIT_PACKED PLAIN RLE / BIT_PACKED PLAIN_DICTIONARY / BIT_PACKED PLAIN_DICTIONARY RLE |
+
+### SPARSE model
+
+| Version | Data files | Data bytes | Bytes per event | Bytes scanned by q3_current_state_all | Row groups | Rows per row group | Codec | customer_id runs | Adjacent rows out of sort order |
+|---|---|---|---|---|---|---|---|---|---|
+| (a) as the Flink sink wrote it | 60 | 5,876,134 in every run | 58.76134 | 4,796,036 in every run | 60 | 1666 to 1667 | ZSTD | 100,000 in every run | 80 in every run |
+| (b) after Actions.rewriteDataFiles (bin-pack) | 2 | median 4,211,949, min 4,210,754, max 4,213,223 | 42.10754 to 42.13223 | median 4,161,766, min 4,160,549, max 4,162,971 | 2 | 46666 to 53334 / 46667 to 53333 | ZSTD | 100,000 in every run | median 119, min 117, max 124 |
+| (c) after Spark rewrite_data_files, strategy sort | 1 | 4,225,697 in every run | 42.25697 | 4,193,771 in every run | 1 | 100000 to 100000 | ZSTD | 1,000 in every run | 0 in every run |
+
+The table as written matches results/pipeline_iceberg_runs.csv (design B, after_commits, data bytes on disk) in 5 of 5 runs.
+
+Column chunk bytes, run 1, compressed (uncompressed), summed over the snapshot's files:
+
+| Version | customer_id | event_timestamp | event_sequence | 67 attribute columns | Encodings seen |
+|---|---|---|---|---|---|
+| (a) as the Flink sink wrote it | 112,020 (848,640) | 193,960 (801,616) | 5,518 (4,158) | 4,484,538 (6,611,799) | BIT_PACKED PLAIN / BIT_PACKED PLAIN RLE / BIT_PACKED PLAIN_DICTIONARY |
+| (b) after Actions.rewriteDataFiles (bin-pack) | 30,487 (149,430) | 188,346 (800,173) | 873 (1,432) | 3,942,060 (6,500,145) | BIT_PACKED PLAIN / BIT_PACKED PLAIN RLE / BIT_PACKED PLAIN_DICTIONARY |
+| (c) after Spark rewrite_data_files, strategy sort | 3,085 (15,962) | 187,653 (800,145) | 2,211 (88,667) | 4,000,822 (6,586,499) | BIT_PACKED PLAIN / BIT_PACKED PLAIN RLE / BIT_PACKED PLAIN_DICTIONARY |
+
+### Parquet settings
+
+Table properties in the metadata: `write.parquet.compression-codec` = `zstd`. Iceberg 1.10.1 defaults for properties not set: `write.parquet.compression-codec on new tables` = `zstd`, `write.parquet.compression-codec when unset` = `gzip`, `write.parquet.dict-size-bytes` = `2097152`, `write.parquet.page-size-bytes` = `1048576`, `write.parquet.row-group-size-bytes` = `134217728`, `write.target-file-size-bytes` = `536870912`. Every version's footers name the codec in the tables above; created_by: (a) as the Flink sink wrote it: parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61); (b) after Actions.rewriteDataFiles (bin-pack): parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61); (c) after Spark rewrite_data_files, strategy sort: parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61).
+
+Files: `iceberg_layout_runs.csv` (every run and version), `iceberg_layout_columns.csv` (every column, run 1), `iceberg_layout_environment.json`.

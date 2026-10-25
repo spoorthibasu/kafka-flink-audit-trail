@@ -23,9 +23,10 @@ import java.util.Properties;
  * The topology is the one the local pipeline benchmark measures (PipelineBenchmark.runFlink):
  * KafkaSource from the earliest offset, no watermarks, the Avro value deserializer for the
  * design's schema, and the Iceberg FlinkSink appending to a table partitioned by
- * day(event_timestamp) with sort order customer_id, operator uids "kafka-events" and
- * "iceberg-audit-trail". On Managed Flink, checkpointing and parallelism come from the
- * application configuration; locally they come from the properties file.
+ * day(event_timestamp) with sort order customer_id, event_timestamp, event_sequence,
+ * operator uids "kafka-events" and "iceberg-audit-trail". On Managed Flink, checkpointing
+ * and parallelism come from the application configuration; locally they come from the
+ * properties file.
  *
  * Runtime properties, group "job": bootstrap, topic, group.id, design (A or B), catalog
  * (glue or hadoop), warehouse, database, table. Local runs only: checkpoint.interval.ms,

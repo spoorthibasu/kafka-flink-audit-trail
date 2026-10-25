@@ -102,7 +102,7 @@ import java.util.stream.Stream;
  * send to its acknowledgement, read the topic's log bytes per replica from the brokers,
  * then run the Flink job (KafkaSource, noWatermarks, exactly-once checkpoints, Iceberg
  * FlinkSink into a table partitioned by day(event_timestamp) with declared sort order
- * customer_id, which the sink does not apply within files)
+ * customer_id, event_timestamp, event_sequence, which the sink does not apply within files)
  * until Iceberg holds every event. Throughput and checkpoint statistics come from the
  * Flink REST API of the embedded cluster.
  *
@@ -303,8 +303,8 @@ public class PipelineBenchmark {
 
     /**
      * A fresh table in a Hadoop catalog: day(event_timestamp) partitions, declared sort order
-     * customer_id. Neither the FlinkSink nor the rewriteDataFiles compaction in this class
-     * sorts rows by it.
+     * customer_id, event_timestamp, event_sequence. Neither the FlinkSink nor the
+     * rewriteDataFiles compaction in this class sorts rows by it.
      */
     static TableLoader createTable(String warehouse, String name, org.apache.iceberg.Schema schema) {
         Map<String, String> props = new HashMap<>();
@@ -314,7 +314,7 @@ public class PipelineBenchmark {
         Catalog catalog = catalogLoader.loadCatalog();
         if (!catalog.tableExists(id)) {
             Table t = catalog.createTable(id, schema, PartitionSpec.builderFor(schema).day("event_timestamp").build());
-            t.replaceSortOrder().asc("customer_id").commit();
+            t.replaceSortOrder().asc("customer_id").asc("event_timestamp").asc("event_sequence").commit();
         }
         return TableLoader.fromCatalog(catalogLoader, id);
     }
