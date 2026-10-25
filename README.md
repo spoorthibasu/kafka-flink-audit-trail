@@ -314,8 +314,11 @@ windowing and no operator state beyond the Kafka offsets and the Iceberg committ
 
 ### Writing Iceberg
 
-`--sink iceberg` writes an append-only table partitioned by day on `event_timestamp`
-and sorted by `customer_id`:
+`--sink iceberg` writes an append-only table partitioned by day on `event_timestamp`. The
+table declares sort order `customer_id`, but the streaming writer does not sort rows within
+files; a compaction that sorts applies the order, such as Spark's `rewrite_data_files` with
+`strategy => 'sort'`. The compaction this repository runs (Flink `Actions.rewriteDataFiles`,
+in the pipeline benchmark and the AWS run) bin-packs files and does not sort. To run the sink:
 
 ```bash
 # local filesystem, no S3:
