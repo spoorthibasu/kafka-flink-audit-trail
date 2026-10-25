@@ -1,0 +1,4 @@
+customer_id,event_timestamp,event_sequence,email,email_before_last_change
+98765,1000,1,alice@gmail.com,
+98765,2000,2,alice@yahoo.com,alice@gmail.com
+98765,3000,3,alice@newjob.com,alice@yahoo.com

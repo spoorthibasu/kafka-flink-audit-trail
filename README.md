@@ -43,6 +43,7 @@ per-customer counter set by the producer, and it breaks exact timestamp ties.
 | `sql/lag_history.sql` | previous value of each field, via `LAG` | DuckDB, Spark, Trino, Athena |
 | `sql/latest_state.sql` | newest row per customer, via `ROW_NUMBER` | DuckDB, Spark, Trino, Athena |
 | `sql/dedup.sql` | the table with repeated `(customer_id, event_sequence)` pairs dropped | DuckDB, Spark, Trino, Athena |
+| `sql/change_aware_previous_value.sql` | value of email before email last changed, on full-state events, via `LAG`, a running `COUNT` of changes and `FIRST_VALUE` | DuckDB, Spark, Trino, Athena |
 | `sql/sparse_current_value.sql` | last known value as of each event, frame ends at `CURRENT ROW` | Spark, Trino, Athena |
 | `sql/sparse_previous_value.sql` | previous known value, frame ends at `1 PRECEDING` | Spark, Trino, Athena |
 | `sql/duckdb/sparse_current_value.sql` | same query, DuckDB spelling | DuckDB |
@@ -88,9 +89,9 @@ record and arrives as a separate Iceberg row. `sql/dedup.sql` is what drops it.
 ## Validated on three engines
 
 `ci/run_sql_matrix.py` runs every file under `sql/` on DuckDB, Spark (local pyspark) and
-Trino (Docker) against three golden cases, and compares the rows with the expected CSVs
+Trino (Docker) against four golden cases, and compares the rows with the expected CSVs
 under `ci/golden/`. GitHub Actions runs it on every push; `ci/matrix.md` is the matrix
-from the last local run. The cases are the article's: full-state events for customer
+from the last local run. Three of the cases are the article's: full-state events for customer
 98765, sparse events with a phone-only row, and a duplicated `(customer_id,
 event_sequence)`. Each SQL file declares the engines it is written for, and the run
 fails if a file does not return exactly the expected rows on one of them.
@@ -234,7 +235,7 @@ results/
 
 ci/
   run_sql_matrix.py                     every sql/ file on DuckDB, Spark, Trino vs golden outputs
-  golden/                               three cases: input.csv and expected/<query>.csv
+  golden/                               four cases: input.csv and expected/<query>.csv
   matrix.md                             the dialect matrix from the last local run
 
 docs/
