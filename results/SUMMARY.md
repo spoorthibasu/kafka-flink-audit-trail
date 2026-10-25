@@ -1059,7 +1059,7 @@ Measured by `bench/aws/run.py` from `bench/aws/config.aws.json` on AWS (us-east-
 
 Managed Flink rejected parallelism above 4 for this account (CreateApplication: the account needs AWS verification for higher KPU limits), so both applications run at 4 with one KPU per slot plus the orchestration KPU.
 
-Definitions are in `bench/aws/report.py`. Raw rows: `producer_runs.csv`, `topic_log_bytes.csv`, `msk_metrics.csv`, `flink_runs.csv`, `flink_checkpoints.csv`, `flink_job_states.csv`, `iceberg_snapshots.csv`, `iceberg_stats.csv`, `iceberg_history.csv`, `athena_runs.csv`, `equivalence.csv`, `costs_daily.csv`.
+Definitions are in `bench/aws/report.py`. Raw rows: `producer_runs.csv`, `topic_log_bytes.csv`, `msk_metrics.csv`, `flink_runs.csv`, `flink_checkpoints.csv`, `flink_job_states.csv`, `iceberg_snapshots.csv`, `iceberg_stats.csv`, `iceberg_history.csv`, `athena_runs.csv`, `equivalence.csv`, `costs_daily.csv`, `costs_usage_types.csv`.
 
 ### Equivalence before timing
 
@@ -1128,3 +1128,27 @@ Bytes scanned is Athena's DataScannedInBytes, the same on every run of a query. 
 | q4_previous_value_all | B | 10 | 1545859430 | 6696 | 9266 | 9266 | 6512 | 8894 | 8894 | 0.00703334808349609375 |
 
 With 10 timed runs, the nearest-rank p95 and p99 are both the slowest run. Q1 and Q4 have no C row and Q2 has no A or C row: C holds no history and A holds one hop, so they cannot answer those questions from their own data.
+
+### Cost Explorer, unblended cost by service
+
+Cost Explorer UnblendedCost over 2026-10-23 to 2026-10-25 (end exclusive). Usage is the gross charge for what the run used; the account applied credits against it, shown separately. Cost Explorer still marked these days as estimated when read.
+
+| Filter | Service | Usage USD | Credits USD | Net USD |
+|---|---|---|---|---|
+| account, no filter | AWS Cost Explorer | 0.02 | -0.02 | 0 |
+| account, no filter | AWS Data Transfer | 0 | -6.1748887502 | -6.1748887502 |
+| account, no filter | AWS Glue | 0 | 0 | 0 |
+| account, no filter | AWS Key Management Service | 0 | 0 | 0 |
+| account, no filter | Amazon Athena | 7.240275 | -7.240275 | 0 |
+| account, no filter | Amazon Elastic Compute Cloud - Compute | 4.2559669235 | -4.2559669235 | 0 |
+| account, no filter | Amazon Kinesis Analytics | 1.2131149558 | -1.2131149558 | 0 |
+| account, no filter | Amazon Managed Streaming for Apache Kafka | 8.4636653464 | -4.9933880087 | 3.4702773377 |
+| account, no filter | Amazon Simple Storage Service | 0.2587558 | -0.2587558 | 0 |
+| account, no filter | Amazon Virtual Private Cloud | 0.1009308189 | -0.1009308189 | 0 |
+| account, no filter | AmazonCloudWatch | 0.0015 | -0.0015 | 0 |
+| account, no filter | EC2 - Other | 2.7484853644 | -0.0438739536 | 2.7046114108 |
+| account, no filter | Total | 24.302694209 | -24.3026942107 | -0.0000000017 |
+
+Cost Explorer books the credit for regional (cross-AZ) data transfer under AWS Data Transfer (-6.1748887502), while the usage it offsets sits under EC2 - Other (2.7046114108 for 270.46296149 GB) and Amazon Managed Streaming for Apache Kafka (3.4702773394 for 348.02591352 GB); those usage lines sum to 6.1748887502.
+
+The same query filtered on the run tag returned no rows: the tag was not active as a cost allocation tag when Cost Explorer was read. In us-east-1 every usage line of these days is the run's (`costs_usage_types.csv`); the only lines from another region are Glue catalog requests and one S3 request in us-east-2.

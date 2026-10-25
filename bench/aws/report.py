@@ -215,25 +215,54 @@ def athena_summary(results):
 # ------------------------------------------------------------------ costs
 
 def costs(results, start, end, run_tag):
+    """Cost Explorer, daily, by service and record type, for the run tag and for the whole account.
+    Usage is the gross charge; Credit rows are credits the account applied against it."""
     from awscli import aws
+    period = "Start=%s,End=%s" % (start, end)
     out = []
     for flt, args in (("tag run=%s" % run_tag, ["--filter", json.dumps({"Tags": {"Key": "run", "Values": [run_tag]}})]),
                       ("account, no filter", [])):
-        r = aws("ce", "get-cost-and-usage", "--time-period", "Start=%s,End=%s" % (start, end), "--granularity", "DAILY",
-                "--metrics", "UnblendedCost", "UsageQuantity", "--group-by", "Type=DIMENSION,Key=SERVICE", *args)
+        r = aws("ce", "get-cost-and-usage", "--time-period", period, "--granularity", "DAILY",
+                "--metrics", "UnblendedCost", "UsageQuantity",
+                "--group-by", "Type=DIMENSION,Key=SERVICE", "Type=DIMENSION,Key=RECORD_TYPE", *args)
         for day in r["ResultsByTime"]:
             for g in day["Groups"]:
                 out.append({"filter": flt, "day": day["TimePeriod"]["Start"], "service": g["Keys"][0],
-                            "unblended_cost_usd": g["Metrics"]["UnblendedCost"]["Amount"],
+                            "record_type": g["Keys"][1], "unblended_cost_usd": g["Metrics"]["UnblendedCost"]["Amount"],
                             "usage_quantity": g["Metrics"]["UsageQuantity"]["Amount"],
                             "estimated": day.get("Estimated", "")})
     write(results, "costs_daily.csv", out)
+    r = aws("ce", "get-cost-and-usage", "--time-period", period, "--granularity", "DAILY",
+            "--metrics", "UnblendedCost", "UsageQuantity",
+            "--filter", json.dumps({"Dimensions": {"Key": "RECORD_TYPE", "Values": ["Usage"]}}),
+            "--group-by", "Type=DIMENSION,Key=SERVICE", "Type=DIMENSION,Key=USAGE_TYPE")
+    write(results, "costs_usage_types.csv", [
+        {"day": day["TimePeriod"]["Start"], "service": g["Keys"][0], "usage_type": g["Keys"][1],
+         "unblended_cost_usd": g["Metrics"]["UnblendedCost"]["Amount"],
+         "usage_quantity": g["Metrics"]["UsageQuantity"]["Amount"], "unit": g["Metrics"]["UsageQuantity"]["Unit"],
+         "estimated": day.get("Estimated", "")}
+        for day in r["ResultsByTime"] for g in day["Groups"]])
     by = {}
     for o in out:
         k = (o["filter"], o["service"])
-        by[k] = by.get(k, Fraction(0)) + Fraction(o["unblended_cost_usd"])
-    write(results, "costs_by_service.csv", [{"filter": k[0], "service": k[1], "unblended_cost_usd": ex(v),
-                                             "period": "%s to %s (end exclusive)" % (start, end)} for k, v in sorted(by.items())])
+        d = by.setdefault(k, {"Usage": Fraction(0), "Credit": Fraction(0), "other": Fraction(0)})
+        bucket = o["record_type"] if o["record_type"] in ("Usage", "Credit") else "other"
+        d[bucket] += Fraction(o["unblended_cost_usd"])
+    rows_out = []
+    for flt in sorted({k[0] for k in by}):
+        total = {"Usage": Fraction(0), "Credit": Fraction(0), "other": Fraction(0)}
+        for (f, service), d in sorted(by.items()):
+            if f != flt:
+                continue
+            for b in total:
+                total[b] += d[b]
+            rows_out.append({"filter": f, "service": service, "usage_usd": ex(d["Usage"]), "credit_usd": ex(d["Credit"]),
+                             "other_record_types_usd": ex(d["other"]), "net_usd": ex(sum(d.values())),
+                             "period": "%s to %s (end exclusive)" % (start, end)})
+        rows_out.append({"filter": flt, "service": "Total", "usage_usd": ex(total["Usage"]), "credit_usd": ex(total["Credit"]),
+                         "other_record_types_usd": ex(total["other"]), "net_usd": ex(sum(total.values())),
+                         "period": "%s to %s (end exclusive)" % (start, end)})
+    write(results, "costs_by_service.csv", rows_out)
 
 
 # ---------------------------------------------------------------- summary
@@ -269,7 +298,7 @@ def summary(results, summary_path):
     w("Definitions are in `bench/aws/report.py`. Raw rows: `producer_runs.csv`, `topic_log_bytes.csv`, "
       "`msk_metrics.csv`, `flink_runs.csv`, `flink_checkpoints.csv`, `flink_job_states.csv`, "
       "`iceberg_snapshots.csv`, `iceberg_stats.csv`, `iceberg_history.csv`, `athena_runs.csv`, `equivalence.csv`, "
-      "`costs_daily.csv`.")
+      "`costs_daily.csv`, `costs_usage_types.csv`.")
     w("")
     w("### Equivalence before timing")
     w("")
@@ -364,8 +393,27 @@ def summary(results, summary_path):
     if cost:
         w("### Cost Explorer, unblended cost by service")
         w("")
-        w(table(["Filter", "Service", "USD", "Period"], [[c["filter"], c["service"], c["unblended_cost_usd"], c["period"]]
-                                                       for c in cost]))
+        w("Cost Explorer UnblendedCost over %s. Usage is the gross charge for what the run used; the account applied "
+          "credits against it, shown separately. Cost Explorer still marked these days as estimated when read." %
+          cost[0]["period"])
+        w("")
+        w(table(["Filter", "Service", "Usage USD", "Credits USD", "Net USD"],
+                [[c["filter"], c["service"], c["usage_usd"], c["credit_usd"], c["net_usd"]] for c in cost]))
+        dt_credit = next((c["credit_usd"] for c in cost if c["service"] == "AWS Data Transfer"), None)
+        regional = [u for u in rows(results, "costs_usage_types.csv") if u["usage_type"] == "DataTransfer-Regional-Bytes"]
+        if dt_credit and regional:
+            w("")
+            w("Cost Explorer books the credit for regional (cross-AZ) data transfer under AWS Data Transfer (%s), while "
+              "the usage it offsets sits under %s; those usage lines sum to %s." % (
+                  dt_credit, " and ".join("%s (%s for %s GB)" % (u["service"], u["unblended_cost_usd"], u["usage_quantity"])
+                                          for u in regional),
+                  ex(sum(Fraction(u["unblended_cost_usd"]) for u in regional))))
+        if not any(c["filter"].startswith("tag") for c in cost):
+            w("")
+            w("The same query filtered on the run tag returned no rows: the tag was not active as a cost allocation "
+              "tag when Cost Explorer was read. In us-east-1 every usage line of these days is the run's "
+              "(`costs_usage_types.csv`); the only lines from another region are Glue catalog requests and one S3 "
+              "request in us-east-2.")
         w("")
     replace_section(summary_path, HEADING, "\n".join(lines))
 

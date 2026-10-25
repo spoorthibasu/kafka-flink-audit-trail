@@ -1,0 +1,32 @@
+day,service,usage_type,unblended_cost_usd,usage_quantity,unit,estimated
+2026-10-23,AWS Cost Explorer,USE1-APIRequest,0.02,2,Requests,True
+2026-10-23,AWS Glue,USE1-Catalog-Request,0,1292,Requests,True
+2026-10-23,AWS Glue,USE1-Catalog-Storage,0,0.0228494622,Obj-Month,True
+2026-10-23,AWS Glue,USE2-Catalog-Request,0,2,Requests,True
+2026-10-23,AWS Key Management Service,us-east-1-KMS-Requests,0,2,Requests,True
+2026-10-23,Amazon Athena,USE1-DataScannedInTB,7.240275,1.448055,TB,True
+2026-10-23,EC2 - Other,DataTransfer-Regional-Bytes,2.7046114108,270.46296149,GB,True
+2026-10-23,EC2 - Other,EBS:VolumeUsage.gp3,0.0438739536,0.5484244202,GB-Month,True
+2026-10-23,Amazon Elastic Compute Cloud - Compute,BoxUsage:m8id.2xlarge,4.2559669235,8.151944,Hrs,True
+2026-10-23,Amazon Elastic Compute Cloud - Compute,DataTransfer-In-Bytes,0,0.3046600174,GB,True
+2026-10-23,Amazon Elastic Compute Cloud - Compute,DataTransfer-Out-Bytes,0,0.0011278886,GB,True
+2026-10-23,Amazon Kinesis Analytics,USE1-KPU-Hour-Java,1.1565858348,10.51441668,KPU-Hour,True
+2026-10-23,Amazon Kinesis Analytics,USE1-RunningApplicationStorage,0.056529121,0.56529121,GB-Month,True
+2026-10-23,Amazon Managed Streaming for Apache Kafka,DataTransfer-Regional-Bytes,3.4702773394,348.02591352,GB,True
+2026-10-23,Amazon Managed Streaming for Apache Kafka,USE1-Kafka.Storage.GP2,1.0415042563,10.4150425627,GB-Month,True
+2026-10-23,Amazon Managed Streaming for Apache Kafka,USE1-Kafka.m7g.large,3.9518837507,19.37197917,Hrs,True
+2026-10-23,Amazon Simple Storage Service,DataTransfer-In-Bytes,0,4.2402037206,GB,True
+2026-10-23,Amazon Simple Storage Service,DataTransfer-Out-Bytes,0,0.0094057501,GB,True
+2026-10-23,Amazon Simple Storage Service,Global-Bucket-Hrs-FreeTier,0,0.001344086,Bucket-Mo,True
+2026-10-23,Amazon Simple Storage Service,Requests-Tier1,0.08544,17088,Requests,True
+2026-10-23,Amazon Simple Storage Service,Requests-Tier2,0.1733108,433277,Requests,True
+2026-10-23,Amazon Virtual Private Cloud,USE1-DataTransfer-xAZ-In-Bytes,0,0.00304719,GB,True
+2026-10-23,Amazon Virtual Private Cloud,USE1-DataTransfer-xAZ-Out-Bytes,0,0.0078615724,GB,True
+2026-10-23,Amazon Virtual Private Cloud,USE1-PublicIPv4:InUseAddress,0.04079861,8.159722,Hrs,True
+2026-10-23,Amazon Virtual Private Cloud,USE1-VpcEndpoint-Bytes,0.0001322089,0.0132208876,GB,True
+2026-10-23,Amazon Virtual Private Cloud,USE1-VpcEndpoint-Hours,0.06,6,Hrs,True
+2026-10-23,AmazonCloudWatch,CW:GMD-Metrics,0.0015,150,Metrics,True
+2026-10-23,AmazonCloudWatch,CW:MetricMonitorUsage,0,1.2110215054,Metrics,True
+2026-10-23,AmazonCloudWatch,CW:Requests,0,1,Requests,True
+2026-10-23,AmazonCloudWatch,USE1-DataProcessing-Bytes,0,0.0065397554,GB,True
+2026-10-24,Amazon Simple Storage Service,USE2-Requests-Tier1,0.000005,1,Requests,True
