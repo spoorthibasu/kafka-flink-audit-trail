@@ -1,10 +1,11 @@
 """Athena queries for the AWS scale run.
 
 The questions are bench/benchmark.py build_queries() for the full model, unchanged: Q1
-one-hop previous value of email for one entity, Q2 three changes back for one entity, Q3
-current state of every attribute for every entity, Q4 current and previous email for every
-entity. The tables a, b and c live in the run's Glue database, which is each query's
-default database, so the SQL reads exactly as it does on DuckDB.
+one-hop previous value of email for one entity, Q2 (q2_three_changes_back_single) the value
+of email three events back for one entity, Q3 current state of every attribute for every
+entity, Q4 current and previous email for every entity. The tables a, b and c live in the
+run's Glue database, which is each query's default database, so the SQL reads exactly as
+it does on DuckDB.
 
 The equivalence check compares, as multisets, the pairs bench/benchmark.py
 check_equivalence() compares for the full model: Q1 A vs B, Q3 A vs B, Q3 B vs C, Q4 A vs

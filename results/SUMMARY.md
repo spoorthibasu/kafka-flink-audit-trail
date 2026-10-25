@@ -1152,3 +1152,21 @@ Cost Explorer UnblendedCost over 2026-10-23 to 2026-10-25 (end exclusive). Usage
 Cost Explorer books the credit for regional (cross-AZ) data transfer under AWS Data Transfer (-6.1748887502), while the usage it offsets sits under EC2 - Other (2.7046114108 for 270.46296149 GB) and Amazon Managed Streaming for Apache Kafka (3.4702773394 for 348.02591352 GB); those usage lines sum to 6.1748887502.
 
 The same query filtered on the run tag returned no rows: the tag was not active as a cost allocation tag when Cost Explorer was read. In us-east-1 every usage line of these days is the run's (`costs_usage_types.csv`); the only lines from another region are Glue catalog requests and one S3 request in us-east-2.
+
+## Note on q2_three_changes_back_single
+
+q2_three_changes_back_single computes LAG(email, 3) over the entity's events that carry
+email (`WHERE customer_id = '<entity>' AND email IS NOT NULL`, ordered by event_timestamp,
+event_sequence), so it returns email as it was three such events back. In the full model
+every event carries every attribute, so the result is the value three events back; the AWS
+scale run uses the full model, so its q2 is three events back as well. In the sparse model
+an event carries an attribute only when it changes, so the same query returns the value
+three changes back. The description "value of email three changes back, single entity" in
+the sections above, and in the description column of `latency.csv`, `resources.csv` and
+`scaling_latency.csv`, therefore applies to the sparse model only. The query ID stays as it
+is because the results files refer to it.
+
+The row counts in `latency.csv` and `scaling_latency.csv` show the difference: design B's q2
+returned 100 rows for C0000500 in the full model (one per event, H=100) and 5 in the sparse
+model, and in the sweep over H it returned H rows in the full model (1, 10, 100, 1000) and
+1, 2, 3 and 49 rows in the sparse model.
