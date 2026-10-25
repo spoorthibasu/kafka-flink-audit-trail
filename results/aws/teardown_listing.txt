@@ -1,0 +1,23 @@
+AWS scale run teardown check, 2026-10-25T00:35:13 UTC, region us-east-1
+tag:GetResources project=audit-trail-bench                   2 resources
+  tagged                                                     arn:aws:iam::<account>:policy/audit-trail-bench-cli
+  tagged                                                     arn:aws:s3:::<archive bucket>
+ec2 instances tagged project (not terminated)                none
+ec2 volumes tagged project                                   none
+security groups tagged project                               none
+vpc endpoints tagged project                                 none
+msk cluster audit-trail-bench                                not found (An error occurred (NotFoundException) when calling the DescribeClusterV2 operation: The requested resource doesn’t exist)
+managed flink application audit-trail-bench-a                not found (An error occurred (ResourceNotFoundException) when calling the DescribeApplication operation: Application 'audit-trail-b)
+managed flink application audit-trail-bench-b                not found (An error occurred (ResourceNotFoundException) when calling the DescribeApplication operation: Application 'audit-trail-b)
+glue database audit_trail_bench_aws                          not found (An error occurred (EntityNotFoundException) when calling the GetDatabase operation: Database audit_trail_bench_aws not f)
+athena workgroup audit-trail-bench                           not found (An error occurred (InvalidRequestException) when calling the GetWorkGroup operation: WorkGroup is not found.)
+log groups /aws/kinesis-analytics/audit-trail-bench          none
+s3 buckets audit-trail-bench-* other than the archive        none
+s3 archive bucket                                            present
+iam role audit-trail-bench-runner                            not found (An error occurred (NoSuchEntity) when calling the GetRole operation: The role with name audit-trail-bench-runner cannot )
+iam role audit-trail-bench-flink                             not found (An error occurred (NoSuchEntity) when calling the GetRole operation: The role with name audit-trail-bench-flink cannot b)
+iam role AWSServiceRoleForKafka                              not found (An error occurred (NoSuchEntity) when calling the GetRole operation: The role with name AWSServiceRoleForKafka cannot be)
+iam instance profile audit-trail-bench-runner                not found (An error occurred (NoSuchEntity) when calling the GetInstanceProfile operation: Instance Profile audit-trail-bench-runne)
+budget audit-trail-bench-aws-scale                           not found (An error occurred (NotFoundException) when calling the DescribeBudget operation: Unable to get budget: audit-trail-bench)
+
+leftovers: none
