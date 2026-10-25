@@ -4,6 +4,8 @@ Written by `infra/estimate.py` before any resource exists. This is an estimate, 
 
 Two plans differ only in the producer compression `none` measurement: 10,000,000 events per design (the first 100,000 entities) or the full 100,000,000.
 
+Both plans assume Managed Flink parallelism 12. The run used parallelism 4 (one KPU per slot plus the orchestration KPU), because Managed Flink rejected higher parallelism until AWS raises the account's KPU limit; the "AWS scale run" section of `results/SUMMARY.md` reports what the run measured and billed.
+
 ## Plan: compression none on a 10,000,000 event subset
 
 | Service | Item | Quantity | Unit | Price (USD) | Price key | Cost (USD) |
