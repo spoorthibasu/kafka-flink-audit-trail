@@ -6,6 +6,7 @@
 -- duplicate already in the topic is a separate Kafka record.
 -- engines: duckdb, spark, trino, athena
 -- Plain ROW_NUMBER, so the same text runs on every engine listed.
+-- CI checks DuckDB, Spark and Trino; for Athena this is documented, not tested here.
 -- Use the result as a view or CTE in place of customer_profile_changes in the other
 -- queries.
 

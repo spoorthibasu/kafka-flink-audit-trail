@@ -4,6 +4,7 @@
 -- per-customer counter set by the producer and breaks exact timestamp ties.
 -- engines: duckdb, spark, trino, athena
 -- Plain LAG, so the same text runs on every engine listed.
+-- CI checks DuckDB, Spark and Trino; for Athena this is documented, not tested here.
 -- Run sql/dedup.sql first if the topic may contain retried or replayed events;
 -- a repeated (customer_id, event_sequence) pair otherwise appears as its own row.
 -- Further back: LAG(email, 2), LAG(email, 3), and so on. The schema does not change.
