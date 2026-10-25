@@ -1,0 +1,11 @@
+customer_id,event_timestamp,event_sequence,previous_email,previous_phone,previous_address
+98765,1000,1,,,
+98765,2000,2,alice@gmail.com,555-397,
+98765,3000,3,alice@gmail.com,555-397,
+98765,4000,4,alice@gmail.com,555-493,
+98765,5000,5,alice@gmail.com,555-493,
+98765,6000,6,alice@gmail.com,555-493,
+98765,7000,7,alice@newjob.com,555-493,
+98765,8000,8,alice@newjob.com,555-610,
+98765,9000,9,alice@yahoo.com,555-610,
+98765,10000,10,alice@yahoo.com,555-610,

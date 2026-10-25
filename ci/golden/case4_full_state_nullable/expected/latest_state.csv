@@ -1,0 +1,3 @@
+customer_id,event_timestamp,event_sequence,email,phone,address
+98765,10000,10,alice@gmail.com,555-610,
+24680,8500,8,bob@home.com,555-200,
