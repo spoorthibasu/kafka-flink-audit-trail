@@ -295,6 +295,10 @@ def summary(results, summary_path):
       "verification for higher KPU limits), so both applications run at %s with one KPU per slot plus the "
       "orchestration KPU." % (cfg["aws"]["flink_parallelism"], cfg["aws"]["flink_parallelism"]))
     w("")
+    w("The Flink application in `bench/aws/flink-app` compiled against Flink 1.20.0 (`flink.version` in its "
+      "pom.xml) and ran on the FLINK-1_20 runtime; the root build, the local pipeline benchmark and the Iceberg "
+      "layout measurements use Flink 1.20.3.")
+    w("")
     w("Definitions are in `bench/aws/report.py`. Raw rows: `producer_runs.csv`, `topic_log_bytes.csv`, "
       "`msk_metrics.csv`, `flink_runs.csv`, `flink_checkpoints.csv`, `flink_job_states.csv`, "
       "`iceberg_snapshots.csv`, `iceberg_stats.csv`, `iceberg_history.csv`, `athena_runs.csv`, `equivalence.csv`, "
