@@ -194,6 +194,10 @@ def main():
     w("Two plans differ only in the producer compression `none` measurement: 10,000,000 events per design "
       "(the first 100,000 entities) or the full 100,000,000.")
     w("")
+    w("Both plans assume Managed Flink parallelism 12. The run used parallelism 4 (one KPU per slot plus the "
+      "orchestration KPU), because Managed Flink rejected higher parallelism until AWS raises the account's KPU "
+      "limit; the \"AWS scale run\" section of `results/SUMMARY.md` reports what the run measured and billed.")
+    w("")
     for name, title in (("subset", "compression none on a 10,000,000 event subset"),
                         ("full", "compression none at full scale")):
         rows, sizes = results[name]

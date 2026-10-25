@@ -1,6 +1,7 @@
 -- DuckDB variant of sql/sparse_previous_value.sql. Same query, same result; DuckDB
--- takes IGNORE NULLS inside the parentheses. Spark, Trino and Athena reject this
--- spelling and take the standard one in sql/sparse_previous_value.sql.
+-- takes IGNORE NULLS inside the parentheses. Spark and Trino reject this spelling in
+-- CI and take the standard one in sql/sparse_previous_value.sql; for Athena this is
+-- documented, not tested here.
 -- engines: duckdb
 -- Previous known value of each field. The frame ends at 1 PRECEDING.
 

@@ -38,6 +38,7 @@ import java.util.Map;
  * Args (all optional):
  *   --kafka-bootstrap-servers  default localhost:9092
  *   --topic                    default customer-profile-changes
+ *   --sink                     default print (prints each appended row); iceberg writes the table
  *   --warehouse                default file:///tmp/audit-warehouse  (local FS, runnable)
  *                              use s3://bucket/warehouse in production
  *   --io-impl                  e.g. org.apache.iceberg.aws.s3.S3FileIO  (only for s3://)
@@ -76,7 +77,7 @@ public class CustomerProfileAuditJob {
         DataStream<CustomerProfileChangeEvent> eventStream =
             env.fromSource(
                 kafkaSource(bootstrap, topic, "profile-audit-consumer"),
-                WatermarkStrategy.noWatermarks(), // no event-time windowing, no operator state
+                WatermarkStrategy.noWatermarks(), // no event-time windowing, no user-defined operator state
                 "Kafka customer profile events")
             .uid("kafka-customer-profile-events");
 
@@ -169,7 +170,7 @@ public class CustomerProfileAuditJob {
             Table table = catalog.createTable(tableId, ICEBERG_SCHEMA, spec);
             // Declare sort order customer_id, event_timestamp, event_sequence. The streaming
             // writer does not sort rows within files; a compaction that sorts applies this
-            // order, and LAG queries then scan fewer files per customer.
+            // order.
             table.replaceSortOrder().asc("customer_id").asc("event_timestamp").asc("event_sequence").commit();
         }
 

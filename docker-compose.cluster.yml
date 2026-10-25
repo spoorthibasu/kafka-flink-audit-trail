@@ -2,7 +2,7 @@
 # the production way with `flink run`. Flink dashboard at http://localhost:8081.
 #   mvn clean package -DskipTests
 #   docker compose -f docker-compose.cluster.yml up -d
-# See the README "On a real Flink cluster" section for the submit + produce steps.
+# See the README "On a real cluster" section for the topic and submit steps.
 name: kfat-cluster
 services:
   kafka:

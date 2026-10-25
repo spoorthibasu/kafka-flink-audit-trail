@@ -1059,6 +1059,8 @@ Measured by `bench/aws/run.py` from `bench/aws/config.aws.json` on AWS (us-east-
 
 Managed Flink rejected parallelism above 4 for this account (CreateApplication: the account needs AWS verification for higher KPU limits), so both applications run at 4 with one KPU per slot plus the orchestration KPU.
 
+The Flink application in `bench/aws/flink-app` compiled against Flink 1.20.0 (`flink.version` in its pom.xml) and ran on the FLINK-1_20 runtime; the root build, the local pipeline benchmark and the Iceberg layout measurements use Flink 1.20.3.
+
 Definitions are in `bench/aws/report.py`. Raw rows: `producer_runs.csv`, `topic_log_bytes.csv`, `msk_metrics.csv`, `flink_runs.csv`, `flink_checkpoints.csv`, `flink_job_states.csv`, `iceberg_snapshots.csv`, `iceberg_stats.csv`, `iceberg_history.csv`, `athena_runs.csv`, `equivalence.csv`, `costs_daily.csv`, `costs_usage_types.csv`.
 
 ### Equivalence before timing
@@ -1221,3 +1223,18 @@ Column chunk bytes, run 1, compressed (uncompressed), summed over the snapshot's
 Table properties in the metadata: `write.parquet.compression-codec` = `zstd`. Iceberg 1.10.1 defaults for properties not set: `write.parquet.compression-codec on new tables` = `zstd`, `write.parquet.compression-codec when unset` = `gzip`, `write.parquet.dict-size-bytes` = `2097152`, `write.parquet.page-size-bytes` = `1048576`, `write.parquet.row-group-size-bytes` = `134217728`, `write.target-file-size-bytes` = `536870912`. Every version's footers name the codec in the tables above; created_by: (a) as the Flink sink wrote it: parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61); (b) after Actions.rewriteDataFiles (bin-pack): parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61); (c) after Spark rewrite_data_files, strategy sort: parquet-mr version 1.16.0 (build 402c3810c372d29603e181771acebfecc71bef61).
 
 Files: `iceberg_layout_runs.csv` (every run and version), `iceberg_layout_columns.csv` (every column, run 1), `iceberg_layout_environment.json`.
+
+## Note on the declared sort order
+
+The pipeline measurements, the AWS scale run and the Iceberg data layout above were
+measured with the tables' declared sort order customer_id alone (`customer_id ASC NULLS
+FIRST`, as `iceberg_layout_environment.json` records it). Commit 286ccbc changed the
+declared sort order to customer_id, event_timestamp, event_sequence on every table:
+CustomerProfileAuditJob, PipelineBenchmark.createTable and the AWS application's
+Catalogs.createTable. The streaming writer and the bin-pack compaction do not sort. The
+results above are unchanged.
+
+Rerun check from that commit: one `bench/iceberg_layout.py` run per model with the new
+declared sort order gave the same rows and data bytes as committed run 1, for the table as
+written (44,941,250 bytes FULL, 5,876,134 SPARSE) and after the sort compaction (5,062,151
+bytes FULL, 4,225,697 SPARSE).

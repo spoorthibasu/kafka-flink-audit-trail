@@ -17,9 +17,9 @@ import java.sql.Statement;
 import java.util.Comparator;
 
 /**
- * The whole loop, out loud. A Flink job writes three events into a real Iceberg
- * table on disk; the demo then reads the Parquet files it wrote and runs the LAG query
- * over them, printing what comes back.
+ * What `make loop` runs. A Flink job writes three events into a real Iceberg table on
+ * disk; DuckDB then reads the table's Parquet data files and runs the LAG query over
+ * them, printing what comes back.
  *
  * Unlike DemoRunner (which seeds a table directly), every row here went through the
  * pipeline: event -> Flink -> Iceberg -> query. The job runs in batch mode, so the

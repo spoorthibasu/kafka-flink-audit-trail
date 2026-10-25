@@ -33,7 +33,7 @@ Delete action on it for the whole run.
    `aws iam get-service-linked-role-deletion-status` until it reports SUCCEEDED.
 4. Budget. After Cost Explorer shows the run's charges by service (usually 24 to 48 hours after step 2),
    `terraform -chdir=infra/budget destroy`.
-5. Proof. `python3 bench/aws/teardown_check.py --out results/aws/teardown_listing.txt` repeats the tagged
+5. Proof. `python3 bench/aws/teardown_check.py --out results/aws/teardown_listing.txt --archive-bucket <name>` repeats the tagged
    resource listing and asks each service for each named resource; every answer must be "not found",
    and the tagged listing must hold only the archive bucket. The file replaces the account ID and the
    archive bucket name with placeholders before it is written.

@@ -15,10 +15,11 @@ import java.util.List;
  *
  * Seeds an append-only customer_profile_changes table for customer 98765 (sparse
  * updates, the way the pipeline writes), then runs the queries in sql/ on an
- * in-process DuckDB. The plain LAG, ROW_NUMBER and dedup files run unchanged on Spark,
- * Trino and Athena; the sparse-update files have a standard spelling for those engines
- * and a DuckDB spelling under sql/duckdb/, which is what this demo runs. CI runs every
- * file on DuckDB, Spark and Trino against golden outputs (see ci/).
+ * in-process DuckDB. The plain LAG, ROW_NUMBER and dedup files run unchanged on Spark
+ * and Trino; the sparse-update files have a standard spelling for those engines and a
+ * DuckDB spelling under sql/duckdb/, which is what this demo runs. CI runs every file on
+ * DuckDB, Spark and Trino against golden outputs (see ci/). For Athena both statements
+ * are documented, not tested here.
  *
  *   sql/lag_history.sql                   previous values via LAG
  *   sql/latest_state.sql                  newest row via ROW_NUMBER

@@ -1,7 +1,7 @@
 # Single-node Kafka for running the job locally on the host.
 #   docker compose up -d
-# Then `make run` starts the Flink job (embedded, no install) and writes a local
-# Iceberg warehouse; produce events with `make produce`.
+# Then `make run` starts the Flink job (embedded, no install) and prints each appended
+# row; produce events with `make produce`.
 name: kfat
 services:
   kafka:

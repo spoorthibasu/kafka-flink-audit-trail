@@ -26,7 +26,9 @@
         <hadoop.version>3.3.4</hadoop.version>
         <avro.version>1.11.3</avro.version>
         <jackson.version>2.15.2</jackson.version>
-        <duckdb.version>1.1.3</duckdb.version>
+        <duckdb.version>1.4.5.0</duckdb.version>
+        <!-- Arguments for CustomerProfileAuditJob under exec:exec@run-job; empty by default. -->
+        <job.args></job.args>
     </properties>
 
     <dependencies>
@@ -115,8 +117,9 @@
             <version>${jackson.version}</version>
         </dependency>
 
-        <!-- DuckDB: embedded query engine for `mvn demo`. Same window-function SQL as
-             Spark/Trino/Athena, no install. Nothing in the pipeline depends on it. -->
+        <!-- DuckDB 1.4.5 (JDBC release 1.4.5.0), the version the Python benchmarks and CI
+             pin: the embedded query engine for `make demo`, `make loop` and the tests, no
+             install. Nothing in the pipeline depends on it. -->
         <dependency>
             <groupId>org.duckdb</groupId>
             <artifactId>duckdb_jdbc</artifactId>
@@ -206,7 +209,8 @@
             <!-- Run things without installing Flink:
                    mvn -q compile exec:java  -Dexec.mainClass=com.example.audit.demo.DemoRunner
                    mvn -q compile exec:java  -Dexec.mainClass=com.example.audit.bench.SchemaBenchmark
-                   mvn -q compile exec:exec                       (the Flink job, embedded)
+                   mvn -q compile exec:exec@run-job               (the Flink job, embedded; -Djob.args="..." passes its arguments)
+                   mvn -q compile exec:exec@run-loop              (the Iceberg loop behind `make loop`)
                  The add-opens flags are what Flink needs on Java 17 (harmless on Java 11). -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -219,23 +223,9 @@
                     <configuration>
                     <executable>${java.home}/bin/java</executable>
                     <classpathScope>compile</classpathScope>
-                    <arguments>
-                        <argument>-XX:+IgnoreUnrecognizedVMOptions</argument>
-                        <argument>--add-opens=java.base/java.lang=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.net=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.io=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.nio=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/sun.nio.ch=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.util=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.util.concurrent=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.time=ALL-UNNAMED</argument>
-                        <argument>--add-opens=java.base/java.text=ALL-UNNAMED</argument>
-                        <argument>-classpath</argument>
-                        <classpath/>
-                        <argument>com.example.audit.CustomerProfileAuditJob</argument>
-                    </arguments>
+                    <!-- commandlineArgs rather than arguments, so the job.args property
+                         (empty by default) splits into separate job arguments. -->
+                    <commandlineArgs>-XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED -classpath %classpath com.example.audit.CustomerProfileAuditJob ${job.args}</commandlineArgs>
                     </configuration>
                   </execution>
                   <execution>

@@ -5,7 +5,8 @@ dependency-reduced-pom.xml
 .idea/
 *.iml
 warehouse/
-/tmp/audit-warehouse/
+# The job's default warehouse (/tmp/audit-warehouse) and make loop's
+# (/tmp/audit-loop-warehouse) are outside the repository, so git never sees them.
 *.log
 .venv/
 results-smoke/

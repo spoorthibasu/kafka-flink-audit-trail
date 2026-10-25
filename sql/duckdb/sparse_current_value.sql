@@ -1,7 +1,8 @@
 -- DuckDB variant of sql/sparse_current_value.sql. Same query, same result; the only
 -- difference is where IGNORE NULLS goes. DuckDB takes it inside the parentheses:
--- LAST_VALUE(email IGNORE NULLS). Spark, Trino and Athena reject this spelling and
--- take the standard one in sql/sparse_current_value.sql.
+-- LAST_VALUE(email IGNORE NULLS). Spark and Trino reject this spelling in CI and take
+-- the standard one in sql/sparse_current_value.sql; for Athena this is documented, not
+-- tested here.
 -- engines: duckdb
 -- Last known value of each field as of each event. The frame ends at CURRENT ROW.
 
