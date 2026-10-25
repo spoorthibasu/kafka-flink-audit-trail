@@ -49,8 +49,12 @@ per-customer counter set by the producer, and it breaks exact timestamp ties.
 | `sql/duckdb/sparse_current_value.sql` | same query, DuckDB spelling | DuckDB |
 | `sql/duckdb/sparse_previous_value.sql` | same query, DuckDB spelling | DuckDB |
 
-No single file runs on every engine. The three plain files (`LAG`, `ROW_NUMBER`, dedup)
-run unchanged on all four. The sparse-update queries exist in two spellings because
+The two sparse `LAST_VALUE ... IGNORE NULLS` queries need a separate DuckDB form. The four
+plain files (`LAG`, `ROW_NUMBER`, dedup and the change-aware query) have a single spelling
+and run unchanged on DuckDB, Spark and Trino in CI, which checks every sql/ file on those
+three engines. Athena is not in CI, and the AWS scale run executed only the benchmark's
+full-state queries on Athena engine version 3, not the sql/ files. The sparse-update
+queries exist in two spellings because
 engines disagree on where `IGNORE NULLS` goes: Trino, Athena and Spark take it after the
 closing parenthesis, `LAST_VALUE(x) IGNORE NULLS OVER (...)`; DuckDB takes it inside,
 `LAST_VALUE(x IGNORE NULLS) OVER (...)`. Neither spelling parses on the other engine.
@@ -202,6 +206,7 @@ sql/
   lag_history.sql                previous value of each field via LAG
   latest_state.sql               newest row per customer via ROW_NUMBER
   dedup.sql                      one row per (customer_id, event_sequence)
+  change_aware_previous_value.sql value of email before email last changed
   sparse_current_value.sql       last known value, standard IGNORE NULLS spelling
   sparse_previous_value.sql      previous known value, standard IGNORE NULLS spelling
   duckdb/                        the two sparse queries in the DuckDB spelling
