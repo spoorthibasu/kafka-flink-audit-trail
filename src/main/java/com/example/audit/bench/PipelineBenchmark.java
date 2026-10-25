@@ -101,7 +101,8 @@ import java.util.stream.Stream;
  * Mode "kafka", per run: create a topic, produce every event (acks=all) timing each
  * send to its acknowledgement, read the topic's log bytes per replica from the brokers,
  * then run the Flink job (KafkaSource, noWatermarks, exactly-once checkpoints, Iceberg
- * FlinkSink into a table partitioned by day(event_timestamp) and sorted by customer_id)
+ * FlinkSink into a table partitioned by day(event_timestamp) with declared sort order
+ * customer_id, which the sink does not apply within files)
  * until Iceberg holds every event. Throughput and checkpoint statistics come from the
  * Flink REST API of the embedded cluster.
  *
@@ -300,7 +301,11 @@ public class PipelineBenchmark {
 
     // ----------------------------------------------------------------- iceberg
 
-    /** A fresh table in a Hadoop catalog: day(event_timestamp) partitions, sorted by customer_id. */
+    /**
+     * A fresh table in a Hadoop catalog: day(event_timestamp) partitions, declared sort order
+     * customer_id. Neither the FlinkSink nor the rewriteDataFiles compaction in this class
+     * sorts rows by it.
+     */
     static TableLoader createTable(String warehouse, String name, org.apache.iceberg.Schema schema) {
         Map<String, String> props = new HashMap<>();
         props.put("warehouse", warehouse);
