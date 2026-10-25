@@ -167,10 +167,10 @@ public class CustomerProfileAuditJob {
                 .day("event_timestamp")
                 .build();
             Table table = catalog.createTable(tableId, ICEBERG_SCHEMA, spec);
-            // Declare sort order customer_id. The streaming writer does not sort rows within
-            // files; a compaction that sorts applies this order, and LAG queries then scan
-            // fewer files per customer.
-            table.replaceSortOrder().asc("customer_id").commit();
+            // Declare sort order customer_id, event_timestamp, event_sequence. The streaming
+            // writer does not sort rows within files; a compaction that sorts applies this
+            // order, and LAG queries then scan fewer files per customer.
+            table.replaceSortOrder().asc("customer_id").asc("event_timestamp").asc("event_sequence").commit();
         }
 
         return TableLoader.fromCatalog(catalogLoader, tableId);

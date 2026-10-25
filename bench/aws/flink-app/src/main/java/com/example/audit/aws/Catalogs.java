@@ -15,7 +15,8 @@ import java.util.Map;
  * The Iceberg catalog for the run: the Glue Data Catalog with S3FileIO on AWS, or a Hadoop
  * catalog on a local path for tests. Tables are created the way the local pipeline benchmark
  * creates them (PipelineBenchmark.createTable): partitioned by day(event_timestamp), sort
- * order customer_id, every other property at the Iceberg default.
+ * order customer_id, event_timestamp, event_sequence, every other property at the Iceberg
+ * default.
  */
 public final class Catalogs {
 
@@ -43,7 +44,7 @@ public final class Catalogs {
         TableIdentifier id = TableIdentifier.of(database, name);
         if (catalog.tableExists(id)) return false;
         Table t = catalog.createTable(id, schema, PartitionSpec.builderFor(schema).day("event_timestamp").build());
-        t.replaceSortOrder().asc("customer_id").commit();
+        t.replaceSortOrder().asc("customer_id").asc("event_timestamp").asc("event_sequence").commit();
         return true;
     }
 

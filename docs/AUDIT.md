@@ -64,11 +64,10 @@ All four match.
 | Setting | Repository | Article |
 |---|---|---|
 | Partition spec | `PartitionSpec.builderFor(schema).day("event_timestamp")` | partitioned by event date on `event_timestamp` |
-| Sort order | `replaceSortOrder().asc("customer_id")`, a declared sort order; `FlinkSink` writes rows in arrival order and does not sort within files | the streaming writer does not sort rows within data files; only compaction does, and it should sort by `customer_id` followed by the ordering key |
+| Sort order | `replaceSortOrder().asc("customer_id").asc("event_timestamp").asc("event_sequence")` (`customer_id` alone at 7eeae21), a declared sort order; `FlinkSink` writes rows in arrival order and does not sort within files | the streaming writer does not sort rows within data files; only compaction does, and it should sort by `customer_id` followed by the ordering key |
 
-The partition spec matches. Both say the streaming writer does not sort rows within files.
-The declared sort order is `customer_id` alone, without the ordering key the article names
-for compaction.
+Both match. The declared sort order is `customer_id` followed by the ordering key, and both
+say the streaming writer does not sort rows within files.
 
 ## Make targets
 
