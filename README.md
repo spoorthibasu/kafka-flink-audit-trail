@@ -123,12 +123,14 @@ attribute, and SPARSE, where each event carries only the attributes it changes a
 for the rest. For each design the benchmark measures the schema (field count, schema
 size), the Avro payload per event (mean, median, p95; uncompressed, deflate, snappy;
 Confluent framing excluded), the Parquet size of the whole N x H dataset, and DuckDB
-query latency (p50, p95, p99 over repeated runs) for one-hop previous value and
-three-changes-back on a single entity, current state and previous value over all
-entities, and the last-known and previous-known value on sparse events. A sweep over
-H in 1, 10, 100, 1000 shows how latency and storage grow with the length of a
-customer's history. Where a design cannot answer a question from its own data, such
-as three changes back on the one-hop schema A, the table says so instead of a number.
+query latency (p50, p95, p99 over repeated runs) for one-hop previous value and the
+attribute's value three events back on a single entity (in the sparse model, where an
+event carries an attribute only when it changes, this is three changes back), current
+state and previous value over all entities, and the last-known and previous-known value
+on sparse events. A sweep over H in 1, 10, 100, 1000 shows how latency and storage grow
+with the length of a customer's history. Where a design cannot answer a question from
+its own data, such as the value three events back on the one-hop schema A, the table
+says so instead of a number.
 
 ```bash
 pip install -r bench/requirements.txt
@@ -155,8 +157,9 @@ mismatches; CI runs it too.
 Apache Flink and Iceberg on S3 with the Glue Data Catalog, at 1,000,000 entities x 100
 events (100,000,000 events per design), then query A, B and C with Athena engine version
 3. The events are synthetic, from the bench-full generator with the same seed and
-attribute list. The results are in `results/aws/` and the "AWS scale run" section of
-`results/SUMMARY.md`.
+attribute list, in the full model, so q2_three_changes_back_single returns the
+attribute's value three events back. The results are in `results/aws/` and the "AWS
+scale run" section of `results/SUMMARY.md`.
 
 **Cost warning.** This creates billed resources in your AWS account. `infra/COST_ESTIMATE.md`
 estimates 71.50 USD for the whole run from on-demand us-east-1 prices, and lists what each
