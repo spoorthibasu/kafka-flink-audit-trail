@@ -1,0 +1,25 @@
+{
+  "_comment": "AWS scale run. Generator fields are bench/config.json's (seed, attributes, changes per event) with N = 1,000,000 entities; full model only. Synthetic data.",
+  "seed": 20261113,
+  "n_entities": 1000000,
+  "h_events": 100,
+  "k_attributes": 67,
+  "event_models": ["full"],
+  "changed_attributes_per_event": {"min": 1, "max": 5},
+  "payload": {"deflate_level": 6},
+  "aws": {
+    "label": "full",
+    "designs": ["A", "B"],
+    "compressions": ["zstd", "none"],
+    "none_entities": 1000000,
+    "partitions": 12,
+    "replication_factor": 3,
+    "flink_parallelism": 4,
+    "flink_parallelism_per_kpu": 1,
+    "checkpoint_interval_ms": 60000,
+    "min_pause_ms": 30000,
+    "athena_runs": 10,
+    "athena_warmup_runs": 1,
+    "compaction_parallelism": 8
+  }
+}

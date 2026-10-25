@@ -1,0 +1,17 @@
+AWS scale run permission check, 2026-10-25T01:11:16 UTC, as the CLI user, region us-east-1
+run infra: EC2 Terraform describes            refused (UnauthorizedOperation)
+run infra: tagged-resource listing            refused (AccessDeniedException)
+run infra: run roles                          refused (AccessDenied)
+run infra: MSK                                refused (AccessDeniedException)
+run services: Managed Flink                   refused (AccessDeniedException)
+run services: CloudWatch Logs                 refused (AccessDeniedException)
+run services: Glue database                   refused (AccessDeniedException)
+run services: Athena workgroup                refused (AccessDeniedException)
+run services: CloudWatch metrics              refused (AccessDenied)
+run services: Budgets                         refused (AccessDeniedException)
+original: EC2 describe in region              allowed
+original: SSM describe                        allowed
+original: Price List                          allowed
+original: bucket names                        allowed
+
+unexpected: none

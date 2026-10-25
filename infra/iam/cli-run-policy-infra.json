@@ -1,0 +1,205 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RunnerInstanceTypes",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:us-east-1:*:instance/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/project": "audit-trail-bench",
+          "ec2:InstanceType": ["m8id.2xlarge", "m8id.4xlarge"]
+        }
+      }
+    },
+    {
+      "Sid": "TerraformDescribes",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstanceAttribute",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DescribeRouteTables",
+        "ec2:DescribeNetworkAcls",
+        "ec2:DescribePrefixLists",
+        "ec2:DescribeVpcEndpoints",
+        "ec2:DescribeVpcEndpointServices",
+        "ec2:DescribeSecurityGroupRules",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeInstanceTypeOfferings"
+      ],
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "TaggedSecurityGroupRules",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupEgress"
+      ],
+      "Resource": "arn:aws:ec2:us-east-1:*:security-group/*",
+      "Condition": {"StringEquals": {"aws:ResourceTag/project": "audit-trail-bench"}}
+    },
+    {
+      "Sid": "CreateTaggedVpcEndpoint",
+      "Effect": "Allow",
+      "Action": "ec2:CreateVpcEndpoint",
+      "Resource": "arn:aws:ec2:us-east-1:*:vpc-endpoint/*",
+      "Condition": {"StringEquals": {"aws:RequestTag/project": "audit-trail-bench"}}
+    },
+    {
+      "Sid": "CreateVpcEndpointInDefaultVpc",
+      "Effect": "Allow",
+      "Action": "ec2:CreateVpcEndpoint",
+      "Resource": [
+        "arn:aws:ec2:us-east-1:*:vpc/*",
+        "arn:aws:ec2:us-east-1:*:subnet/*",
+        "arn:aws:ec2:us-east-1:*:security-group/*",
+        "arn:aws:ec2:us-east-1:*:route-table/*"
+      ]
+    },
+    {
+      "Sid": "DeleteTaggedVpcEndpoint",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVpcEndpoints",
+      "Resource": "arn:aws:ec2:us-east-1:*:vpc-endpoint/*",
+      "Condition": {"StringEquals": {"aws:ResourceTag/project": "audit-trail-bench"}}
+    },
+    {
+      "Sid": "TagVpcEndpointWhileCreating",
+      "Effect": "Allow",
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:ec2:us-east-1:*:vpc-endpoint/*",
+      "Condition": {"StringEquals": {"ec2:CreateAction": "CreateVpcEndpoint"}}
+    },
+    {
+      "Sid": "RolesOnlyWithBoundary",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:DeleteRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/audit-trail-bench-runner",
+        "arn:aws:iam::*:role/audit-trail-bench-flink"
+      ],
+      "Condition": {
+        "ArnLike": {
+          "iam:PermissionsBoundary": "arn:aws:iam::*:policy/audit-trail-bench-boundary"
+        }
+      }
+    },
+    {
+      "Sid": "ReadAndTagRunRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole",
+        "iam:GetRolePolicy",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListInstanceProfilesForRole",
+        "iam:ListRoleTags",
+        "iam:TagRole",
+        "iam:UntagRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/audit-trail-bench-runner",
+        "arn:aws:iam::*:role/audit-trail-bench-flink"
+      ]
+    },
+    {
+      "Sid": "RunnerInstanceProfile",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:GetInstanceProfile",
+        "iam:AddRoleToInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:TagInstanceProfile",
+        "iam:UntagInstanceProfile",
+        "iam:ListInstanceProfileTags"
+      ],
+      "Resource": "arn:aws:iam::*:instance-profile/audit-trail-bench-runner"
+    },
+    {
+      "Sid": "PassRunnerRoleToEc2",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::*:role/audit-trail-bench-runner",
+      "Condition": {"StringEquals": {"iam:PassedToService": "ec2.amazonaws.com"}}
+    },
+    {
+      "Sid": "PassFlinkRoleToManagedFlink",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::*:role/audit-trail-bench-flink",
+      "Condition": {"StringEquals": {"iam:PassedToService": "kinesisanalytics.amazonaws.com"}}
+    },
+    {
+      "Sid": "CreateMskServiceLinkedRole",
+      "Effect": "Allow",
+      "Action": "iam:CreateServiceLinkedRole",
+      "Resource": "arn:aws:iam::*:role/aws-service-role/kafka.amazonaws.com/AWSServiceRoleForKafka*",
+      "Condition": {"StringEquals": {"iam:AWSServiceName": "kafka.amazonaws.com"}}
+    },
+    {
+      "Sid": "ReadAndRemoveMskServiceLinkedRole",
+      "Effect": "Allow",
+      "Action": ["iam:GetRole", "iam:DeleteServiceLinkedRole", "iam:GetServiceLinkedRoleDeletionStatus"],
+      "Resource": "arn:aws:iam::*:role/aws-service-role/kafka.amazonaws.com/AWSServiceRoleForKafka*"
+    },
+    {
+      "Sid": "SeeWhetherMskServiceLinkedRoleExists",
+      "Effect": "Allow",
+      "Action": "iam:GetRole",
+      "Resource": "arn:aws:iam::*:role/AWSServiceRoleForKafka"
+    },
+    {
+      "Sid": "MskClusterAndConfiguration",
+      "Effect": "Allow",
+      "Action": [
+        "kafka:CreateCluster",
+        "kafka:TagResource",
+        "kafka:UntagResource",
+        "kafka:ListTagsForResource",
+        "kafka:DescribeCluster",
+        "kafka:DescribeClusterV2",
+        "kafka:ListNodes",
+        "kafka:DeleteCluster",
+        "kafka:CreateConfiguration",
+        "kafka:DescribeConfiguration",
+        "kafka:DescribeConfigurationRevision",
+        "kafka:DeleteConfiguration"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-east-1:*:cluster/audit-trail-bench/*",
+        "arn:aws:kafka:us-east-1:*:configuration/audit-trail-bench/*"
+      ]
+    },
+    {
+      "Sid": "MskCallsWithoutResourceTypes",
+      "Effect": "Allow",
+      "Action": [
+        "kafka:GetBootstrapBrokers",
+        "kafka:DescribeClusterOperation",
+        "kafka:DescribeClusterOperationV2"
+      ],
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "ListTaggedResourcesForTeardownProof",
+      "Effect": "Allow",
+      "Action": "tag:GetResources",
+      "Resource": "*"
+    }
+  ]
+}

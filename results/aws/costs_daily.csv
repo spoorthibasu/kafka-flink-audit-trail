@@ -1,0 +1,24 @@
+filter,day,service,record_type,unblended_cost_usd,usage_quantity,estimated
+"account, no filter",2026-10-23,AWS Cost Explorer,Credit,-0.02,0,True
+"account, no filter",2026-10-23,AWS Cost Explorer,Usage,0.02,2,True
+"account, no filter",2026-10-23,AWS Data Transfer,Credit,-6.1748887502,0,True
+"account, no filter",2026-10-23,AWS Glue,Usage,0,1294.0228494622,True
+"account, no filter",2026-10-23,AWS Key Management Service,Usage,0,2,True
+"account, no filter",2026-10-23,Amazon Athena,Credit,-7.240275,0,True
+"account, no filter",2026-10-23,Amazon Athena,Usage,7.240275,1.448055,True
+"account, no filter",2026-10-23,EC2 - Other,Credit,-0.0438739536,0,True
+"account, no filter",2026-10-23,EC2 - Other,Usage,2.7484853644,271.0113859102,True
+"account, no filter",2026-10-23,Amazon Elastic Compute Cloud - Compute,Credit,-4.2559669235,0,True
+"account, no filter",2026-10-23,Amazon Elastic Compute Cloud - Compute,Usage,4.2559669235,8.457731906,True
+"account, no filter",2026-10-23,Amazon Kinesis Analytics,Credit,-1.2131149558,0,True
+"account, no filter",2026-10-23,Amazon Kinesis Analytics,Usage,1.2131149558,11.07970789,True
+"account, no filter",2026-10-23,Amazon Managed Streaming for Apache Kafka,Credit,-4.9933880087,0,True
+"account, no filter",2026-10-23,Amazon Managed Streaming for Apache Kafka,Usage,8.4636653464,377.8129352527,True
+"account, no filter",2026-10-23,Amazon Simple Storage Service,Credit,-0.2587508,0,True
+"account, no filter",2026-10-23,Amazon Simple Storage Service,Usage,0.2587508,450369.2509535567,True
+"account, no filter",2026-10-23,Amazon Virtual Private Cloud,Credit,-0.1009308189,0,True
+"account, no filter",2026-10-23,Amazon Virtual Private Cloud,Usage,0.1009308189,14.18385165,True
+"account, no filter",2026-10-23,AmazonCloudWatch,Credit,-0.0015,0,True
+"account, no filter",2026-10-23,AmazonCloudWatch,Usage,0.0015,152.2175612608,True
+"account, no filter",2026-10-24,Amazon Simple Storage Service,Credit,-0.000005,0,True
+"account, no filter",2026-10-24,Amazon Simple Storage Service,Usage,0.000005,1,True

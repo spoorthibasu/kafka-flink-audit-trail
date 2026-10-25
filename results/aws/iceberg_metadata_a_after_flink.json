@@ -1,0 +1,3378 @@
+{
+ "format-version": 2,
+ "table-uuid": "e1fe12fc-a850-471b-bc34-1d6ebafbd54e",
+ "location": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a",
+ "last-sequence-number": 71,
+ "last-updated-ms": 1792777068123,
+ "last-column-id": 137,
+ "current-schema-id": 0,
+ "schemas": [
+  {
+   "type": "struct",
+   "schema-id": 0,
+   "fields": [
+    {
+     "id": 1,
+     "name": "customer_id",
+     "required": true,
+     "type": "string"
+    },
+    {
+     "id": 2,
+     "name": "event_timestamp",
+     "required": true,
+     "type": "timestamp"
+    },
+    {
+     "id": 3,
+     "name": "event_sequence",
+     "required": true,
+     "type": "long"
+    },
+    {
+     "id": 4,
+     "name": "email",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 5,
+     "name": "previous_email",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 6,
+     "name": "phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 7,
+     "name": "previous_phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 8,
+     "name": "secondary_phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 9,
+     "name": "previous_secondary_phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 10,
+     "name": "first_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 11,
+     "name": "previous_first_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 12,
+     "name": "last_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 13,
+     "name": "previous_last_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 14,
+     "name": "display_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 15,
+     "name": "previous_display_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 16,
+     "name": "address_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 17,
+     "name": "previous_address_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 18,
+     "name": "address_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 19,
+     "name": "previous_address_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 20,
+     "name": "city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 21,
+     "name": "previous_city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 22,
+     "name": "state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 23,
+     "name": "previous_state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 24,
+     "name": "postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 25,
+     "name": "previous_postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 26,
+     "name": "country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 27,
+     "name": "previous_country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 28,
+     "name": "billing_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 29,
+     "name": "previous_billing_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 30,
+     "name": "billing_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 31,
+     "name": "previous_billing_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 32,
+     "name": "billing_city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 33,
+     "name": "previous_billing_city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 34,
+     "name": "billing_state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 35,
+     "name": "previous_billing_state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 36,
+     "name": "billing_postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 37,
+     "name": "previous_billing_postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 38,
+     "name": "billing_country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 39,
+     "name": "previous_billing_country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 40,
+     "name": "company",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 41,
+     "name": "previous_company",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 42,
+     "name": "job_title",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 43,
+     "name": "previous_job_title",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 44,
+     "name": "department",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 45,
+     "name": "previous_department",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 46,
+     "name": "timezone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 47,
+     "name": "previous_timezone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 48,
+     "name": "locale",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 49,
+     "name": "previous_locale",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 50,
+     "name": "preferred_language",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 51,
+     "name": "previous_preferred_language",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 52,
+     "name": "currency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 53,
+     "name": "previous_currency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 54,
+     "name": "account_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 55,
+     "name": "previous_account_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 56,
+     "name": "account_status",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 57,
+     "name": "previous_account_status",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 58,
+     "name": "loyalty_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 59,
+     "name": "previous_loyalty_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 60,
+     "name": "loyalty_points",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 61,
+     "name": "previous_loyalty_points",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 62,
+     "name": "credit_limit",
+     "required": false,
+     "type": "double"
+    },
+    {
+     "id": 63,
+     "name": "previous_credit_limit",
+     "required": false,
+     "type": "double"
+    },
+    {
+     "id": 64,
+     "name": "payment_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 65,
+     "name": "previous_payment_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 66,
+     "name": "card_last_four",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 67,
+     "name": "previous_card_last_four",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 68,
+     "name": "card_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 69,
+     "name": "previous_card_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 70,
+     "name": "billing_cycle_day",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 71,
+     "name": "previous_billing_cycle_day",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 72,
+     "name": "tax_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 73,
+     "name": "previous_tax_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 74,
+     "name": "tax_exempt",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 75,
+     "name": "previous_tax_exempt",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 76,
+     "name": "marketing_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 77,
+     "name": "previous_marketing_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 78,
+     "name": "sms_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 79,
+     "name": "previous_sms_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 80,
+     "name": "email_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 81,
+     "name": "previous_email_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 82,
+     "name": "push_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 83,
+     "name": "previous_push_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 84,
+     "name": "newsletter_frequency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 85,
+     "name": "previous_newsletter_frequency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 86,
+     "name": "contact_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 87,
+     "name": "previous_contact_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 88,
+     "name": "referral_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 89,
+     "name": "previous_referral_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 90,
+     "name": "referred_by",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 91,
+     "name": "previous_referred_by",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 92,
+     "name": "segment",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 93,
+     "name": "previous_segment",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 94,
+     "name": "lifecycle_stage",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 95,
+     "name": "previous_lifecycle_stage",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 96,
+     "name": "lead_source",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 97,
+     "name": "previous_lead_source",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 98,
+     "name": "utm_campaign",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 99,
+     "name": "previous_utm_campaign",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 100,
+     "name": "preferred_store_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 101,
+     "name": "previous_preferred_store_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 102,
+     "name": "default_shipping_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 103,
+     "name": "previous_default_shipping_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 104,
+     "name": "gift_wrap_default",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 105,
+     "name": "previous_gift_wrap_default",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 106,
+     "name": "avatar_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 107,
+     "name": "previous_avatar_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 108,
+     "name": "bio",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 109,
+     "name": "previous_bio",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 110,
+     "name": "website",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 111,
+     "name": "previous_website",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 112,
+     "name": "twitter_handle",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 113,
+     "name": "previous_twitter_handle",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 114,
+     "name": "linkedin_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 115,
+     "name": "previous_linkedin_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 116,
+     "name": "date_of_birth",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 117,
+     "name": "previous_date_of_birth",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 118,
+     "name": "gender",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 119,
+     "name": "previous_gender",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 120,
+     "name": "household_size",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 121,
+     "name": "previous_household_size",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 122,
+     "name": "annual_income_band",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 123,
+     "name": "previous_annual_income_band",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 124,
+     "name": "interests",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 125,
+     "name": "previous_interests",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 126,
+     "name": "favorite_category",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 127,
+     "name": "previous_favorite_category",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 128,
+     "name": "preferred_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 129,
+     "name": "previous_preferred_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 130,
+     "name": "shoe_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 131,
+     "name": "previous_shoe_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 132,
+     "name": "shirt_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 133,
+     "name": "previous_shirt_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 134,
+     "name": "dietary_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 135,
+     "name": "previous_dietary_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 136,
+     "name": "marital_status",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 137,
+     "name": "previous_marital_status",
+     "required": false,
+     "type": "string"
+    }
+   ]
+  }
+ ],
+ "default-spec-id": 0,
+ "partition-specs": [
+  {
+   "spec-id": 0,
+   "fields": [
+    {
+     "name": "event_timestamp_day",
+     "transform": "day",
+     "source-id": 2,
+     "field-id": 1000
+    }
+   ]
+  }
+ ],
+ "last-partition-id": 1000,
+ "default-sort-order-id": 1,
+ "sort-orders": [
+  {
+   "order-id": 0,
+   "fields": []
+  },
+  {
+   "order-id": 1,
+   "fields": [
+    {
+     "transform": "identity",
+     "source-id": 1,
+     "direction": "asc",
+     "null-order": "nulls-first"
+    }
+   ]
+  }
+ ],
+ "properties": {
+  "write.parquet.compression-codec": "zstd"
+ },
+ "current-snapshot-id": 2973991418120340076,
+ "refs": {
+  "main": {
+   "snapshot-id": 2973991418120340076,
+   "type": "branch"
+  }
+ },
+ "snapshots": [
+  {
+   "sequence-number": 1,
+   "snapshot-id": 4058840808398037616,
+   "timestamp-ms": 1792772869546,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "2",
+    "added-data-files": "8",
+    "added-records": "2482912",
+    "added-files-size": "2382646890",
+    "changed-partition-count": "1",
+    "total-records": "2482912",
+    "total-files-size": "2382646890",
+    "total-data-files": "8",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4058840808398037616-1-d9e7c931-47c6-425f-b4ae-828b4343da8a.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 2,
+   "snapshot-id": 8069565218440173990,
+   "parent-snapshot-id": 4058840808398037616,
+   "timestamp-ms": 1792772928376,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "3",
+    "added-data-files": "4",
+    "added-records": "1255293",
+    "added-files-size": "1506409675",
+    "changed-partition-count": "1",
+    "total-records": "3738205",
+    "total-files-size": "3889056565",
+    "total-data-files": "12",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-8069565218440173990-1-e380b177-9a1d-409e-b02a-4b64b1c5f100.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 3,
+   "snapshot-id": 6814138255879423577,
+   "parent-snapshot-id": 8069565218440173990,
+   "timestamp-ms": 1792772988472,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "4",
+    "added-data-files": "4",
+    "added-records": "1347358",
+    "added-files-size": "1616891771",
+    "changed-partition-count": "1",
+    "total-records": "5085563",
+    "total-files-size": "5505948336",
+    "total-data-files": "16",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6814138255879423577-1-8d3104d7-d88e-4400-bc03-ed1660cca6c7.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 4,
+   "snapshot-id": 4544277334563859547,
+   "parent-snapshot-id": 6814138255879423577,
+   "timestamp-ms": 1792773047903,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "5",
+    "added-data-files": "4",
+    "added-records": "1349380",
+    "added-files-size": "1619296938",
+    "changed-partition-count": "1",
+    "total-records": "6434943",
+    "total-files-size": "7125245274",
+    "total-data-files": "20",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4544277334563859547-1-2d2c3d1f-e043-4edc-9418-399a9ca243b6.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 5,
+   "snapshot-id": 6100033753664292148,
+   "parent-snapshot-id": 4544277334563859547,
+   "timestamp-ms": 1792773108445,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "6",
+    "added-data-files": "4",
+    "added-records": "1486682",
+    "added-files-size": "1783922047",
+    "changed-partition-count": "1",
+    "total-records": "7921625",
+    "total-files-size": "8909167321",
+    "total-data-files": "24",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6100033753664292148-1-4c1db3c7-ee5a-4410-94e8-0dedd898d8d9.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 6,
+   "snapshot-id": 4957742362332035176,
+   "parent-snapshot-id": 6100033753664292148,
+   "timestamp-ms": 1792773168505,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "7",
+    "added-data-files": "4",
+    "added-records": "1437237",
+    "added-files-size": "1724668187",
+    "changed-partition-count": "1",
+    "total-records": "9358862",
+    "total-files-size": "10633835508",
+    "total-data-files": "28",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4957742362332035176-1-fa8aaa83-248a-4ec2-8867-1db18f6b3abf.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 7,
+   "snapshot-id": 7988840174101004374,
+   "parent-snapshot-id": 4957742362332035176,
+   "timestamp-ms": 1792773228543,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "8",
+    "added-data-files": "4",
+    "added-records": "1494346",
+    "added-files-size": "1793156677",
+    "changed-partition-count": "1",
+    "total-records": "10853208",
+    "total-files-size": "12426992185",
+    "total-data-files": "32",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-7988840174101004374-1-140c89ed-1d67-4eb3-aec6-8aa1c153be85.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 8,
+   "snapshot-id": 636946922022067772,
+   "parent-snapshot-id": 7988840174101004374,
+   "timestamp-ms": 1792773288668,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "9",
+    "added-data-files": "4",
+    "added-records": "1477182",
+    "added-files-size": "1772506260",
+    "changed-partition-count": "1",
+    "total-records": "12330390",
+    "total-files-size": "14199498445",
+    "total-data-files": "36",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-636946922022067772-1-732a4837-03f9-4fb2-86f6-b3847e166086.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 9,
+   "snapshot-id": 1877929772093195334,
+   "parent-snapshot-id": 636946922022067772,
+   "timestamp-ms": 1792773348355,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "10",
+    "added-data-files": "4",
+    "added-records": "1462161",
+    "added-files-size": "1754466192",
+    "changed-partition-count": "1",
+    "total-records": "13792551",
+    "total-files-size": "15953964637",
+    "total-data-files": "40",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1877929772093195334-1-bfc727c0-23f2-4727-8931-590237f67baa.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 10,
+   "snapshot-id": 1766390599374226235,
+   "parent-snapshot-id": 1877929772093195334,
+   "timestamp-ms": 1792773408655,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "11",
+    "added-data-files": "4",
+    "added-records": "1449502",
+    "added-files-size": "1739266322",
+    "changed-partition-count": "1",
+    "total-records": "15242053",
+    "total-files-size": "17693230959",
+    "total-data-files": "44",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1766390599374226235-1-08efd203-8f38-4708-9182-9f1a8420d163.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 11,
+   "snapshot-id": 4457331451671480511,
+   "parent-snapshot-id": 1766390599374226235,
+   "timestamp-ms": 1792773468238,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "12",
+    "added-data-files": "4",
+    "added-records": "1417629",
+    "added-files-size": "1701027015",
+    "changed-partition-count": "1",
+    "total-records": "16659682",
+    "total-files-size": "19394257974",
+    "total-data-files": "48",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4457331451671480511-1-157655ec-06a4-457b-a8eb-f2eff9c13894.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 12,
+   "snapshot-id": 6312363581586515589,
+   "parent-snapshot-id": 4457331451671480511,
+   "timestamp-ms": 1792773528330,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "13",
+    "added-data-files": "4",
+    "added-records": "1459412",
+    "added-files-size": "1751136488",
+    "changed-partition-count": "1",
+    "total-records": "18119094",
+    "total-files-size": "21145394462",
+    "total-data-files": "52",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6312363581586515589-1-cfb8cda7-98d7-428c-8e46-3472ed6d7fc2.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 13,
+   "snapshot-id": 3151722168800870110,
+   "parent-snapshot-id": 6312363581586515589,
+   "timestamp-ms": 1792773588260,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "14",
+    "added-data-files": "4",
+    "added-records": "1508660",
+    "added-files-size": "1810113372",
+    "changed-partition-count": "1",
+    "total-records": "19627754",
+    "total-files-size": "22955507834",
+    "total-data-files": "56",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-3151722168800870110-1-67c07d42-7040-497f-ae1d-985f17ecdef1.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 14,
+   "snapshot-id": 2804510716681544315,
+   "parent-snapshot-id": 3151722168800870110,
+   "timestamp-ms": 1792773648659,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "15",
+    "added-data-files": "4",
+    "added-records": "1452511",
+    "added-files-size": "1742792294",
+    "changed-partition-count": "1",
+    "total-records": "21080265",
+    "total-files-size": "24698300128",
+    "total-data-files": "60",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-2804510716681544315-1-7b67c90f-c73e-4634-96b8-df956c8e2627.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 15,
+   "snapshot-id": 3417406129032208338,
+   "parent-snapshot-id": 2804510716681544315,
+   "timestamp-ms": 1792773708526,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "16",
+    "added-data-files": "4",
+    "added-records": "1499464",
+    "added-files-size": "1799091301",
+    "changed-partition-count": "1",
+    "total-records": "22579729",
+    "total-files-size": "26497391429",
+    "total-data-files": "64",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-3417406129032208338-1-56ee3e85-f743-49d8-8350-f073d8f76828.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 16,
+   "snapshot-id": 7508908500931391284,
+   "parent-snapshot-id": 3417406129032208338,
+   "timestamp-ms": 1792773768212,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "17",
+    "added-data-files": "4",
+    "added-records": "1467723",
+    "added-files-size": "1761017200",
+    "changed-partition-count": "1",
+    "total-records": "24047452",
+    "total-files-size": "28258408629",
+    "total-data-files": "68",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-7508908500931391284-1-39efee39-2814-443f-b6c2-e9b1dcd1f8cf.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 17,
+   "snapshot-id": 5918924106911715557,
+   "parent-snapshot-id": 7508908500931391284,
+   "timestamp-ms": 1792773828229,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "18",
+    "added-data-files": "4",
+    "added-records": "1443215",
+    "added-files-size": "1731618112",
+    "changed-partition-count": "1",
+    "total-records": "25490667",
+    "total-files-size": "29990026741",
+    "total-data-files": "72",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5918924106911715557-1-8c932607-8966-442e-9ace-17aa68e97808.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 18,
+   "snapshot-id": 2434224977066931871,
+   "parent-snapshot-id": 5918924106911715557,
+   "timestamp-ms": 1792773888054,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "19",
+    "added-data-files": "4",
+    "added-records": "1507557",
+    "added-files-size": "1808825274",
+    "changed-partition-count": "1",
+    "total-records": "26998224",
+    "total-files-size": "31798852015",
+    "total-data-files": "76",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-2434224977066931871-1-a525fb69-be0d-4d2a-a239-0b6d6fe7f227.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 19,
+   "snapshot-id": 1074171679063459239,
+   "parent-snapshot-id": 2434224977066931871,
+   "timestamp-ms": 1792773948130,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "20",
+    "added-data-files": "4",
+    "added-records": "1461407",
+    "added-files-size": "1753386103",
+    "changed-partition-count": "1",
+    "total-records": "28459631",
+    "total-files-size": "33552238118",
+    "total-data-files": "80",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1074171679063459239-1-b286b729-2609-4d5f-9dad-a5d47fe8a2d0.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 20,
+   "snapshot-id": 3415131200264873717,
+   "parent-snapshot-id": 1074171679063459239,
+   "timestamp-ms": 1792774007810,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "21",
+    "added-data-files": "4",
+    "added-records": "1425310",
+    "added-files-size": "1710188864",
+    "changed-partition-count": "1",
+    "total-records": "29884941",
+    "total-files-size": "35262426982",
+    "total-data-files": "84",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-3415131200264873717-1-0ca5cb3f-6471-4c47-8cbb-13c8055a5bad.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 21,
+   "snapshot-id": 8281916390738395939,
+   "parent-snapshot-id": 3415131200264873717,
+   "timestamp-ms": 1792774067710,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "22",
+    "added-data-files": "4",
+    "added-records": "1485794",
+    "added-files-size": "1782723685",
+    "changed-partition-count": "1",
+    "total-records": "31370735",
+    "total-files-size": "37045150667",
+    "total-data-files": "88",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-8281916390738395939-1-1e413e5b-4a48-4f10-af4a-c1b1d0f927cd.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 22,
+   "snapshot-id": 5147437007264398793,
+   "parent-snapshot-id": 8281916390738395939,
+   "timestamp-ms": 1792774127770,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "23",
+    "added-data-files": "4",
+    "added-records": "1496408",
+    "added-files-size": "1795513256",
+    "changed-partition-count": "1",
+    "total-records": "32867143",
+    "total-files-size": "38840663923",
+    "total-data-files": "92",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5147437007264398793-1-80ca13d8-98ed-4332-a8e0-ea4be4ec5c22.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 23,
+   "snapshot-id": 6440801064611769329,
+   "parent-snapshot-id": 5147437007264398793,
+   "timestamp-ms": 1792774188443,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "24",
+    "added-data-files": "4",
+    "added-records": "1564447",
+    "added-files-size": "1877083301",
+    "changed-partition-count": "1",
+    "total-records": "34431590",
+    "total-files-size": "40717747224",
+    "total-data-files": "96",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6440801064611769329-1-55e4330c-00da-4a75-be29-b0977714d5d4.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 24,
+   "snapshot-id": 9132218865301753371,
+   "parent-snapshot-id": 6440801064611769329,
+   "timestamp-ms": 1792774248230,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "25",
+    "added-data-files": "4",
+    "added-records": "1496189",
+    "added-files-size": "1795259913",
+    "changed-partition-count": "1",
+    "total-records": "35927779",
+    "total-files-size": "42513007137",
+    "total-data-files": "100",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-9132218865301753371-1-1130d5ff-bf59-4555-91ed-beb00ae8de19.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 25,
+   "snapshot-id": 1758083746449097249,
+   "parent-snapshot-id": 9132218865301753371,
+   "timestamp-ms": 1792774308769,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "26",
+    "added-data-files": "4",
+    "added-records": "1524741",
+    "added-files-size": "1829475122",
+    "changed-partition-count": "1",
+    "total-records": "37452520",
+    "total-files-size": "44342482259",
+    "total-data-files": "104",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1758083746449097249-1-cdca3fbc-7563-418c-ad26-77402ea032f8.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 26,
+   "snapshot-id": 8951905078293391011,
+   "parent-snapshot-id": 1758083746449097249,
+   "timestamp-ms": 1792774368978,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "27",
+    "added-data-files": "4",
+    "added-records": "1486387",
+    "added-files-size": "1783580935",
+    "changed-partition-count": "1",
+    "total-records": "38938907",
+    "total-files-size": "46126063194",
+    "total-data-files": "108",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-8951905078293391011-1-1d3916a8-567f-4aae-8fae-fddf646e6048.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 27,
+   "snapshot-id": 5449597469852913633,
+   "parent-snapshot-id": 8951905078293391011,
+   "timestamp-ms": 1792774427730,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "28",
+    "added-data-files": "4",
+    "added-records": "1482831",
+    "added-files-size": "1779288277",
+    "changed-partition-count": "1",
+    "total-records": "40421738",
+    "total-files-size": "47905351471",
+    "total-data-files": "112",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5449597469852913633-1-f7443247-ee24-4f64-849a-8c5c1472a4a0.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 28,
+   "snapshot-id": 2960999805159594053,
+   "parent-snapshot-id": 5449597469852913633,
+   "timestamp-ms": 1792774488366,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "29",
+    "added-data-files": "4",
+    "added-records": "1500283",
+    "added-files-size": "1800203583",
+    "changed-partition-count": "1",
+    "total-records": "41922021",
+    "total-files-size": "49705555054",
+    "total-data-files": "116",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-2960999805159594053-1-f3697f83-0cd8-4a6f-a35f-fccc40308152.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 29,
+   "snapshot-id": 4380904595133665058,
+   "parent-snapshot-id": 2960999805159594053,
+   "timestamp-ms": 1792774548053,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "30",
+    "added-data-files": "4",
+    "added-records": "1456400",
+    "added-files-size": "1747577729",
+    "changed-partition-count": "1",
+    "total-records": "43378421",
+    "total-files-size": "51453132783",
+    "total-data-files": "120",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4380904595133665058-1-df3008f3-c485-44c6-b2eb-75b20bffa035.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 30,
+   "snapshot-id": 574777427071273627,
+   "parent-snapshot-id": 4380904595133665058,
+   "timestamp-ms": 1792774608510,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "31",
+    "added-data-files": "4",
+    "added-records": "1483734",
+    "added-files-size": "1780251923",
+    "changed-partition-count": "1",
+    "total-records": "44862155",
+    "total-files-size": "53233384706",
+    "total-data-files": "124",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-574777427071273627-1-729e3428-1e1f-4432-bc27-a72cb9cc0948.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 31,
+   "snapshot-id": 7129206211611719124,
+   "parent-snapshot-id": 574777427071273627,
+   "timestamp-ms": 1792774669288,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "32",
+    "added-data-files": "4",
+    "added-records": "1464347",
+    "added-files-size": "1757034053",
+    "changed-partition-count": "1",
+    "total-records": "46326502",
+    "total-files-size": "54990418759",
+    "total-data-files": "128",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-7129206211611719124-1-2f5ef213-0599-4c90-89ca-4fb718522c9d.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 32,
+   "snapshot-id": 3231391370856154107,
+   "parent-snapshot-id": 7129206211611719124,
+   "timestamp-ms": 1792774728160,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "33",
+    "added-data-files": "4",
+    "added-records": "1436410",
+    "added-files-size": "1723492112",
+    "changed-partition-count": "1",
+    "total-records": "47762912",
+    "total-files-size": "56713910871",
+    "total-data-files": "132",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-3231391370856154107-1-df9b3c52-cc33-47ca-9ab2-ab13a1792a8e.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 33,
+   "snapshot-id": 1661765170503174817,
+   "parent-snapshot-id": 3231391370856154107,
+   "timestamp-ms": 1792774788610,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "34",
+    "added-data-files": "4",
+    "added-records": "1508693",
+    "added-files-size": "1810211649",
+    "changed-partition-count": "1",
+    "total-records": "49271605",
+    "total-files-size": "58524122520",
+    "total-data-files": "136",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1661765170503174817-1-adc4a1df-650d-498d-9895-7c955168d818.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 34,
+   "snapshot-id": 1887485788581470921,
+   "parent-snapshot-id": 1661765170503174817,
+   "timestamp-ms": 1792774848499,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "35",
+    "added-data-files": "4",
+    "added-records": "1525952",
+    "added-files-size": "1830878248",
+    "changed-partition-count": "1",
+    "total-records": "50797557",
+    "total-files-size": "60355000768",
+    "total-data-files": "140",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1887485788581470921-1-42c06304-da49-447d-8784-4e4728ca5cb5.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 35,
+   "snapshot-id": 5979001419114412172,
+   "parent-snapshot-id": 1887485788581470921,
+   "timestamp-ms": 1792774908158,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "36",
+    "added-data-files": "4",
+    "added-records": "1533389",
+    "added-files-size": "1839913556",
+    "changed-partition-count": "1",
+    "total-records": "52330946",
+    "total-files-size": "62194914324",
+    "total-data-files": "144",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5979001419114412172-1-7dcabcdc-a9cd-4b28-a127-f9884084d393.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 36,
+   "snapshot-id": 4022450172519285284,
+   "parent-snapshot-id": 5979001419114412172,
+   "timestamp-ms": 1792774968671,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "37",
+    "added-data-files": "4",
+    "added-records": "1505428",
+    "added-files-size": "1806341978",
+    "changed-partition-count": "1",
+    "total-records": "53836374",
+    "total-files-size": "64001256302",
+    "total-data-files": "148",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4022450172519285284-1-3f6b1d47-988f-4327-ae9d-c00abfd3c8a5.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 37,
+   "snapshot-id": 5134560078366622005,
+   "parent-snapshot-id": 4022450172519285284,
+   "timestamp-ms": 1792775027915,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "38",
+    "added-data-files": "4",
+    "added-records": "1502961",
+    "added-files-size": "1803313758",
+    "changed-partition-count": "1",
+    "total-records": "55339335",
+    "total-files-size": "65804570060",
+    "total-data-files": "152",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5134560078366622005-1-bfee157e-3b84-4806-8cb2-33d518272835.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 38,
+   "snapshot-id": 4760188376344746808,
+   "parent-snapshot-id": 5134560078366622005,
+   "timestamp-ms": 1792775087765,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "39",
+    "added-data-files": "4",
+    "added-records": "1488673",
+    "added-files-size": "1786158728",
+    "changed-partition-count": "1",
+    "total-records": "56828008",
+    "total-files-size": "67590728788",
+    "total-data-files": "156",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4760188376344746808-1-359320ae-e4f4-408f-a4b8-9d3fe9c5a26e.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 39,
+   "snapshot-id": 6410858315792034873,
+   "parent-snapshot-id": 4760188376344746808,
+   "timestamp-ms": 1792775148719,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "40",
+    "added-data-files": "4",
+    "added-records": "1531439",
+    "added-files-size": "1837513035",
+    "changed-partition-count": "1",
+    "total-records": "58359447",
+    "total-files-size": "69428241823",
+    "total-data-files": "160",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6410858315792034873-1-73446f48-dce3-40ac-8895-c9f21334b0d1.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 40,
+   "snapshot-id": 6482767915207442163,
+   "parent-snapshot-id": 6410858315792034873,
+   "timestamp-ms": 1792775208348,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "41",
+    "added-data-files": "4",
+    "added-records": "1489598",
+    "added-files-size": "1787342619",
+    "changed-partition-count": "1",
+    "total-records": "59849045",
+    "total-files-size": "71215584442",
+    "total-data-files": "164",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6482767915207442163-1-ef09a2dd-8234-48e9-b5a6-49361cd36985.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 41,
+   "snapshot-id": 1796294303534356494,
+   "parent-snapshot-id": 6482767915207442163,
+   "timestamp-ms": 1792775268109,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "42",
+    "added-data-files": "4",
+    "added-records": "1428076",
+    "added-files-size": "1713517407",
+    "changed-partition-count": "1",
+    "total-records": "61277121",
+    "total-files-size": "72929101849",
+    "total-data-files": "168",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1796294303534356494-1-2665ee34-cb73-4d08-934e-6abfbc512135.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 42,
+   "snapshot-id": 7690777589097813684,
+   "parent-snapshot-id": 1796294303534356494,
+   "timestamp-ms": 1792775328411,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "43",
+    "added-data-files": "4",
+    "added-records": "1483269",
+    "added-files-size": "1779757329",
+    "changed-partition-count": "1",
+    "total-records": "62760390",
+    "total-files-size": "74708859178",
+    "total-data-files": "172",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-7690777589097813684-1-e908e0fe-bffd-4169-b3cd-357a622c06a7.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 43,
+   "snapshot-id": 9202302380618102447,
+   "parent-snapshot-id": 7690777589097813684,
+   "timestamp-ms": 1792775388269,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "44",
+    "added-data-files": "4",
+    "added-records": "1520448",
+    "added-files-size": "1824370060",
+    "changed-partition-count": "1",
+    "total-records": "64280838",
+    "total-files-size": "76533229238",
+    "total-data-files": "176",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-9202302380618102447-1-9afc1d0a-469f-4259-af78-0c3e2faf6701.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 44,
+   "snapshot-id": 778502195973709408,
+   "parent-snapshot-id": 9202302380618102447,
+   "timestamp-ms": 1792775447962,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "45",
+    "added-data-files": "4",
+    "added-records": "1497730",
+    "added-files-size": "1797022752",
+    "changed-partition-count": "1",
+    "total-records": "65778568",
+    "total-files-size": "78330251990",
+    "total-data-files": "180",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-778502195973709408-1-2844600e-b667-4924-ac77-c0d5815e49b7.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 45,
+   "snapshot-id": 2338486687916295800,
+   "parent-snapshot-id": 778502195973709408,
+   "timestamp-ms": 1792775508761,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "46",
+    "added-data-files": "4",
+    "added-records": "1471531",
+    "added-files-size": "1765637252",
+    "changed-partition-count": "1",
+    "total-records": "67250099",
+    "total-files-size": "80095889242",
+    "total-data-files": "184",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-2338486687916295800-1-884c4154-e050-494a-bcba-5d94001949ee.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 46,
+   "snapshot-id": 1258414531841915265,
+   "parent-snapshot-id": 2338486687916295800,
+   "timestamp-ms": 1792775567643,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "47",
+    "added-data-files": "4",
+    "added-records": "1516884",
+    "added-files-size": "1820049907",
+    "changed-partition-count": "1",
+    "total-records": "68766983",
+    "total-files-size": "81915939149",
+    "total-data-files": "188",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1258414531841915265-1-52709a2b-f24b-43dc-adbf-58903c29be1c.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 47,
+   "snapshot-id": 3583217252602748018,
+   "parent-snapshot-id": 1258414531841915265,
+   "timestamp-ms": 1792775628049,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "48",
+    "added-data-files": "4",
+    "added-records": "1536051",
+    "added-files-size": "1843031324",
+    "changed-partition-count": "1",
+    "total-records": "70303034",
+    "total-files-size": "83758970473",
+    "total-data-files": "192",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-3583217252602748018-1-b49986d8-2c79-41e0-b999-14c535b200ad.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 48,
+   "snapshot-id": 4200334884605123458,
+   "parent-snapshot-id": 3583217252602748018,
+   "timestamp-ms": 1792775689440,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "49",
+    "added-data-files": "4",
+    "added-records": "1472264",
+    "added-files-size": "1766466144",
+    "changed-partition-count": "1",
+    "total-records": "71775298",
+    "total-files-size": "85525436617",
+    "total-data-files": "196",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4200334884605123458-1-c6813576-e0de-48ed-b16d-c66583d19970.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 49,
+   "snapshot-id": 6168941732011116005,
+   "parent-snapshot-id": 4200334884605123458,
+   "timestamp-ms": 1792775748379,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "50",
+    "added-data-files": "4",
+    "added-records": "1531741",
+    "added-files-size": "1837776268",
+    "changed-partition-count": "1",
+    "total-records": "73307039",
+    "total-files-size": "87363212885",
+    "total-data-files": "200",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6168941732011116005-1-e91c0edf-50ec-41a8-ae50-c8cd9e4ad904.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 50,
+   "snapshot-id": 8915699850423126088,
+   "parent-snapshot-id": 6168941732011116005,
+   "timestamp-ms": 1792775808367,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "51",
+    "added-data-files": "4",
+    "added-records": "1509380",
+    "added-files-size": "1810910634",
+    "changed-partition-count": "1",
+    "total-records": "74816419",
+    "total-files-size": "89174123519",
+    "total-data-files": "204",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-8915699850423126088-1-154fd90f-0807-4f84-af5e-06d21fb4ec76.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 51,
+   "snapshot-id": 291340750354712898,
+   "parent-snapshot-id": 8915699850423126088,
+   "timestamp-ms": 1792775868676,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "52",
+    "added-data-files": "5",
+    "added-records": "1494554",
+    "added-files-size": "1793138213",
+    "changed-partition-count": "2",
+    "total-records": "76310973",
+    "total-files-size": "90967261732",
+    "total-data-files": "209",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-291340750354712898-1-24a7f316-82f7-4de7-8706-68b70f9eafcc.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 52,
+   "snapshot-id": 2659903803229574422,
+   "parent-snapshot-id": 291340750354712898,
+   "timestamp-ms": 1792775929910,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "53",
+    "added-data-files": "5",
+    "added-records": "1456468",
+    "added-files-size": "1747503478",
+    "changed-partition-count": "2",
+    "total-records": "77767441",
+    "total-files-size": "92714765210",
+    "total-data-files": "214",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-2659903803229574422-1-6512c9ef-a911-42c4-b708-c9da4eaabf33.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 53,
+   "snapshot-id": 2307548767455362202,
+   "parent-snapshot-id": 2659903803229574422,
+   "timestamp-ms": 1792775990032,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "54",
+    "added-data-files": "5",
+    "added-records": "1445380",
+    "added-files-size": "1734167181",
+    "changed-partition-count": "2",
+    "total-records": "79212821",
+    "total-files-size": "94448932391",
+    "total-data-files": "219",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-2307548767455362202-1-2bbc82f6-35a6-4a73-afe3-6b7b95536592.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 54,
+   "snapshot-id": 1938794024677220241,
+   "parent-snapshot-id": 2307548767455362202,
+   "timestamp-ms": 1792776050210,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "55",
+    "added-data-files": "5",
+    "added-records": "1470077",
+    "added-files-size": "1763879672",
+    "changed-partition-count": "2",
+    "total-records": "80682898",
+    "total-files-size": "96212812063",
+    "total-data-files": "224",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1938794024677220241-1-e2a052a9-a27e-45c5-9716-0ccbf20bdf8b.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 55,
+   "snapshot-id": 3352070131944435195,
+   "parent-snapshot-id": 1938794024677220241,
+   "timestamp-ms": 1792776109271,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "56",
+    "added-data-files": "5",
+    "added-records": "1455816",
+    "added-files-size": "1746713385",
+    "changed-partition-count": "2",
+    "total-records": "82138714",
+    "total-files-size": "97959525448",
+    "total-data-files": "229",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-3352070131944435195-1-4cbcc4da-29d9-4b77-83a7-9f97e89d347d.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 56,
+   "snapshot-id": 794318397673850631,
+   "parent-snapshot-id": 3352070131944435195,
+   "timestamp-ms": 1792776168610,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "57",
+    "added-data-files": "5",
+    "added-records": "1442859",
+    "added-files-size": "1731197626",
+    "changed-partition-count": "2",
+    "total-records": "83581573",
+    "total-files-size": "99690723074",
+    "total-data-files": "234",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-794318397673850631-1-0694b02a-47af-4fc1-b25f-fba34d3f83d5.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 57,
+   "snapshot-id": 5048175271755673196,
+   "parent-snapshot-id": 794318397673850631,
+   "timestamp-ms": 1792776228172,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "58",
+    "added-data-files": "5",
+    "added-records": "1469258",
+    "added-files-size": "1762927250",
+    "changed-partition-count": "2",
+    "total-records": "85050831",
+    "total-files-size": "101453650324",
+    "total-data-files": "239",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5048175271755673196-1-bf6cea11-2963-4a5b-bb7a-65b957d9442e.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 58,
+   "snapshot-id": 844582752281092,
+   "parent-snapshot-id": 5048175271755673196,
+   "timestamp-ms": 1792776288510,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "59",
+    "added-data-files": "5",
+    "added-records": "1443766",
+    "added-files-size": "1732386478",
+    "changed-partition-count": "2",
+    "total-records": "86494597",
+    "total-files-size": "103186036802",
+    "total-data-files": "244",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-844582752281092-1-b819d18b-2a84-471b-8c09-f5b7f6908bd3.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 59,
+   "snapshot-id": 8626551446807309040,
+   "parent-snapshot-id": 844582752281092,
+   "timestamp-ms": 1792776348231,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "60",
+    "added-data-files": "5",
+    "added-records": "1381364",
+    "added-files-size": "1654428072",
+    "changed-partition-count": "2",
+    "total-records": "87875961",
+    "total-files-size": "104840464874",
+    "total-data-files": "249",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-8626551446807309040-1-8621e4f9-070f-4df4-bce9-df414abfcc9b.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 60,
+   "snapshot-id": 7973405939588423984,
+   "parent-snapshot-id": 8626551446807309040,
+   "timestamp-ms": 1792776408529,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "61",
+    "added-data-files": "6",
+    "added-records": "1407830",
+    "added-files-size": "1689334801",
+    "changed-partition-count": "2",
+    "total-records": "89283791",
+    "total-files-size": "106529799675",
+    "total-data-files": "255",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-7973405939588423984-1-b2aef6e8-607c-4487-b9f9-3121d50b94db.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 61,
+   "snapshot-id": 4037689809838634215,
+   "parent-snapshot-id": 7973405939588423984,
+   "timestamp-ms": 1792776469209,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "62",
+    "added-data-files": "7",
+    "added-records": "1347957",
+    "added-files-size": "1617510966",
+    "changed-partition-count": "2",
+    "total-records": "90631748",
+    "total-files-size": "108147310641",
+    "total-data-files": "262",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4037689809838634215-1-57778c42-6016-4ac4-be0d-b1bf40e74129.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 62,
+   "snapshot-id": 1179424803699111286,
+   "parent-snapshot-id": 4037689809838634215,
+   "timestamp-ms": 1792776529852,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "63",
+    "added-data-files": "7",
+    "added-records": "1332795",
+    "added-files-size": "1599326996",
+    "changed-partition-count": "2",
+    "total-records": "91964543",
+    "total-files-size": "109746637637",
+    "total-data-files": "269",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1179424803699111286-1-98d7cf7d-7a9d-436c-a2fc-2b4c647b8d8d.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 63,
+   "snapshot-id": 5364196890404708819,
+   "parent-snapshot-id": 1179424803699111286,
+   "timestamp-ms": 1792776590161,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "64",
+    "added-data-files": "7",
+    "added-records": "1215761",
+    "added-files-size": "1458854236",
+    "changed-partition-count": "2",
+    "total-records": "93180304",
+    "total-files-size": "111205491873",
+    "total-data-files": "276",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5364196890404708819-1-e1ecd40b-ca90-47bb-8603-a679afd12bd4.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 64,
+   "snapshot-id": 4375704206790436048,
+   "parent-snapshot-id": 5364196890404708819,
+   "timestamp-ms": 1792776650229,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "65",
+    "added-data-files": "7",
+    "added-records": "1231872",
+    "added-files-size": "1478222065",
+    "changed-partition-count": "2",
+    "total-records": "94412176",
+    "total-files-size": "112683713938",
+    "total-data-files": "283",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-4375704206790436048-1-99fae2a7-1323-4acf-9ea0-e782c2d9e74e.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 65,
+   "snapshot-id": 5293904734607656966,
+   "parent-snapshot-id": 4375704206790436048,
+   "timestamp-ms": 1792776709010,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "66",
+    "added-data-files": "6",
+    "added-records": "1337108",
+    "added-files-size": "1604417429",
+    "changed-partition-count": "2",
+    "total-records": "95749284",
+    "total-files-size": "114288131367",
+    "total-data-files": "289",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-5293904734607656966-1-367c7cbc-9805-4019-8ab5-a292822378ca.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 66,
+   "snapshot-id": 6416475557962817056,
+   "parent-snapshot-id": 5293904734607656966,
+   "timestamp-ms": 1792776769410,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "67",
+    "added-data-files": "8",
+    "added-records": "1292648",
+    "added-files-size": "1551083496",
+    "changed-partition-count": "2",
+    "total-records": "97041932",
+    "total-files-size": "115839214863",
+    "total-data-files": "297",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-6416475557962817056-1-264d8a71-55fe-44cc-acfa-79b465755a75.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 67,
+   "snapshot-id": 8003182556483145152,
+   "parent-snapshot-id": 6416475557962817056,
+   "timestamp-ms": 1792776829183,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "68",
+    "added-data-files": "8",
+    "added-records": "1127952",
+    "added-files-size": "1353533053",
+    "changed-partition-count": "2",
+    "total-records": "98169884",
+    "total-files-size": "117192747916",
+    "total-data-files": "305",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-8003182556483145152-1-af12fe5d-52ad-4033-93bb-24ee17257912.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 68,
+   "snapshot-id": 424282066654143472,
+   "parent-snapshot-id": 8003182556483145152,
+   "timestamp-ms": 1792776889226,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "69",
+    "added-data-files": "5",
+    "added-records": "579361",
+    "added-files-size": "695290145",
+    "changed-partition-count": "2",
+    "total-records": "98749245",
+    "total-files-size": "117888038061",
+    "total-data-files": "310",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-424282066654143472-1-bf0f1365-9967-45ae-95f0-388775702c9a.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 69,
+   "snapshot-id": 7534828541409182986,
+   "parent-snapshot-id": 424282066654143472,
+   "timestamp-ms": 1792776948308,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "70",
+    "added-data-files": "4",
+    "added-records": "512906",
+    "added-files-size": "615563759",
+    "changed-partition-count": "2",
+    "total-records": "99262151",
+    "total-files-size": "118503601820",
+    "total-data-files": "314",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-7534828541409182986-1-3df60ad6-240c-46c0-994f-c3b852f0f149.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 70,
+   "snapshot-id": 1847166698952995615,
+   "parent-snapshot-id": 7534828541409182986,
+   "timestamp-ms": 1792777009001,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "71",
+    "added-data-files": "4",
+    "added-records": "617022",
+    "added-files-size": "740414523",
+    "changed-partition-count": "2",
+    "total-records": "99879173",
+    "total-files-size": "119244016343",
+    "total-data-files": "318",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-1847166698952995615-1-6639b44b-a0a4-4024-9b88-058db0fcb267.avro",
+   "schema-id": 0
+  },
+  {
+   "sequence-number": 71,
+   "snapshot-id": 2973991418120340076,
+   "parent-snapshot-id": 1847166698952995615,
+   "timestamp-ms": 1792777068123,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "f4dd83cb80ed5fe3a456039fd700366a",
+    "flink.max-committed-checkpoint-id": "72",
+    "added-data-files": "3",
+    "added-records": "120827",
+    "added-files-size": "145073208",
+    "changed-partition-count": "2",
+    "total-records": "100000000",
+    "total-files-size": "119389089551",
+    "total-data-files": "321",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/snap-2973991418120340076-1-df87a109-3f8b-41ed-a6a0-b78576d6f999.avro",
+   "schema-id": 0
+  }
+ ],
+ "statistics": [],
+ "partition-statistics": [],
+ "snapshot-log": [
+  {
+   "timestamp-ms": 1792772869546,
+   "snapshot-id": 4058840808398037616
+  },
+  {
+   "timestamp-ms": 1792772928376,
+   "snapshot-id": 8069565218440173990
+  },
+  {
+   "timestamp-ms": 1792772988472,
+   "snapshot-id": 6814138255879423577
+  },
+  {
+   "timestamp-ms": 1792773047903,
+   "snapshot-id": 4544277334563859547
+  },
+  {
+   "timestamp-ms": 1792773108445,
+   "snapshot-id": 6100033753664292148
+  },
+  {
+   "timestamp-ms": 1792773168505,
+   "snapshot-id": 4957742362332035176
+  },
+  {
+   "timestamp-ms": 1792773228543,
+   "snapshot-id": 7988840174101004374
+  },
+  {
+   "timestamp-ms": 1792773288668,
+   "snapshot-id": 636946922022067772
+  },
+  {
+   "timestamp-ms": 1792773348355,
+   "snapshot-id": 1877929772093195334
+  },
+  {
+   "timestamp-ms": 1792773408655,
+   "snapshot-id": 1766390599374226235
+  },
+  {
+   "timestamp-ms": 1792773468238,
+   "snapshot-id": 4457331451671480511
+  },
+  {
+   "timestamp-ms": 1792773528330,
+   "snapshot-id": 6312363581586515589
+  },
+  {
+   "timestamp-ms": 1792773588260,
+   "snapshot-id": 3151722168800870110
+  },
+  {
+   "timestamp-ms": 1792773648659,
+   "snapshot-id": 2804510716681544315
+  },
+  {
+   "timestamp-ms": 1792773708526,
+   "snapshot-id": 3417406129032208338
+  },
+  {
+   "timestamp-ms": 1792773768212,
+   "snapshot-id": 7508908500931391284
+  },
+  {
+   "timestamp-ms": 1792773828229,
+   "snapshot-id": 5918924106911715557
+  },
+  {
+   "timestamp-ms": 1792773888054,
+   "snapshot-id": 2434224977066931871
+  },
+  {
+   "timestamp-ms": 1792773948130,
+   "snapshot-id": 1074171679063459239
+  },
+  {
+   "timestamp-ms": 1792774007810,
+   "snapshot-id": 3415131200264873717
+  },
+  {
+   "timestamp-ms": 1792774067710,
+   "snapshot-id": 8281916390738395939
+  },
+  {
+   "timestamp-ms": 1792774127770,
+   "snapshot-id": 5147437007264398793
+  },
+  {
+   "timestamp-ms": 1792774188443,
+   "snapshot-id": 6440801064611769329
+  },
+  {
+   "timestamp-ms": 1792774248230,
+   "snapshot-id": 9132218865301753371
+  },
+  {
+   "timestamp-ms": 1792774308769,
+   "snapshot-id": 1758083746449097249
+  },
+  {
+   "timestamp-ms": 1792774368978,
+   "snapshot-id": 8951905078293391011
+  },
+  {
+   "timestamp-ms": 1792774427730,
+   "snapshot-id": 5449597469852913633
+  },
+  {
+   "timestamp-ms": 1792774488366,
+   "snapshot-id": 2960999805159594053
+  },
+  {
+   "timestamp-ms": 1792774548053,
+   "snapshot-id": 4380904595133665058
+  },
+  {
+   "timestamp-ms": 1792774608510,
+   "snapshot-id": 574777427071273627
+  },
+  {
+   "timestamp-ms": 1792774669288,
+   "snapshot-id": 7129206211611719124
+  },
+  {
+   "timestamp-ms": 1792774728160,
+   "snapshot-id": 3231391370856154107
+  },
+  {
+   "timestamp-ms": 1792774788610,
+   "snapshot-id": 1661765170503174817
+  },
+  {
+   "timestamp-ms": 1792774848499,
+   "snapshot-id": 1887485788581470921
+  },
+  {
+   "timestamp-ms": 1792774908158,
+   "snapshot-id": 5979001419114412172
+  },
+  {
+   "timestamp-ms": 1792774968671,
+   "snapshot-id": 4022450172519285284
+  },
+  {
+   "timestamp-ms": 1792775027915,
+   "snapshot-id": 5134560078366622005
+  },
+  {
+   "timestamp-ms": 1792775087765,
+   "snapshot-id": 4760188376344746808
+  },
+  {
+   "timestamp-ms": 1792775148719,
+   "snapshot-id": 6410858315792034873
+  },
+  {
+   "timestamp-ms": 1792775208348,
+   "snapshot-id": 6482767915207442163
+  },
+  {
+   "timestamp-ms": 1792775268109,
+   "snapshot-id": 1796294303534356494
+  },
+  {
+   "timestamp-ms": 1792775328411,
+   "snapshot-id": 7690777589097813684
+  },
+  {
+   "timestamp-ms": 1792775388269,
+   "snapshot-id": 9202302380618102447
+  },
+  {
+   "timestamp-ms": 1792775447962,
+   "snapshot-id": 778502195973709408
+  },
+  {
+   "timestamp-ms": 1792775508761,
+   "snapshot-id": 2338486687916295800
+  },
+  {
+   "timestamp-ms": 1792775567643,
+   "snapshot-id": 1258414531841915265
+  },
+  {
+   "timestamp-ms": 1792775628049,
+   "snapshot-id": 3583217252602748018
+  },
+  {
+   "timestamp-ms": 1792775689440,
+   "snapshot-id": 4200334884605123458
+  },
+  {
+   "timestamp-ms": 1792775748379,
+   "snapshot-id": 6168941732011116005
+  },
+  {
+   "timestamp-ms": 1792775808367,
+   "snapshot-id": 8915699850423126088
+  },
+  {
+   "timestamp-ms": 1792775868676,
+   "snapshot-id": 291340750354712898
+  },
+  {
+   "timestamp-ms": 1792775929910,
+   "snapshot-id": 2659903803229574422
+  },
+  {
+   "timestamp-ms": 1792775990032,
+   "snapshot-id": 2307548767455362202
+  },
+  {
+   "timestamp-ms": 1792776050210,
+   "snapshot-id": 1938794024677220241
+  },
+  {
+   "timestamp-ms": 1792776109271,
+   "snapshot-id": 3352070131944435195
+  },
+  {
+   "timestamp-ms": 1792776168610,
+   "snapshot-id": 794318397673850631
+  },
+  {
+   "timestamp-ms": 1792776228172,
+   "snapshot-id": 5048175271755673196
+  },
+  {
+   "timestamp-ms": 1792776288510,
+   "snapshot-id": 844582752281092
+  },
+  {
+   "timestamp-ms": 1792776348231,
+   "snapshot-id": 8626551446807309040
+  },
+  {
+   "timestamp-ms": 1792776408529,
+   "snapshot-id": 7973405939588423984
+  },
+  {
+   "timestamp-ms": 1792776469209,
+   "snapshot-id": 4037689809838634215
+  },
+  {
+   "timestamp-ms": 1792776529852,
+   "snapshot-id": 1179424803699111286
+  },
+  {
+   "timestamp-ms": 1792776590161,
+   "snapshot-id": 5364196890404708819
+  },
+  {
+   "timestamp-ms": 1792776650229,
+   "snapshot-id": 4375704206790436048
+  },
+  {
+   "timestamp-ms": 1792776709010,
+   "snapshot-id": 5293904734607656966
+  },
+  {
+   "timestamp-ms": 1792776769410,
+   "snapshot-id": 6416475557962817056
+  },
+  {
+   "timestamp-ms": 1792776829183,
+   "snapshot-id": 8003182556483145152
+  },
+  {
+   "timestamp-ms": 1792776889226,
+   "snapshot-id": 424282066654143472
+  },
+  {
+   "timestamp-ms": 1792776948308,
+   "snapshot-id": 7534828541409182986
+  },
+  {
+   "timestamp-ms": 1792777009001,
+   "snapshot-id": 1847166698952995615
+  },
+  {
+   "timestamp-ms": 1792777068123,
+   "snapshot-id": 2973991418120340076
+  }
+ ],
+ "metadata-log": [
+  {
+   "timestamp-ms": 1792772585094,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00000-40ccddaa-77e1-4c46-83af-09ee1e67f18a.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792772585719,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00001-fc1767ff-fe1d-49cf-9048-a53c61958bd2.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792772869546,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00002-adab39a0-3647-4b5f-a611-c70d8e675e90.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792772928376,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00003-adfb938c-3e64-457e-a195-8f495d4ba821.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792772988472,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00004-f01e1092-cc73-441b-af1c-ef0bc88ae64b.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773047903,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00005-65671130-b1b3-457d-9e6c-ffdaba42ffef.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773108445,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00006-6ef21c46-de34-475b-aca6-e2dc101fb18c.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773168505,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00007-3a1767f5-e5d6-468b-a647-7a424d05c377.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773228543,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00008-723b61a9-6f5f-46dd-9803-a7852a487f19.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773288668,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00009-a81d9a2e-41a4-47cb-b298-3322ab290e21.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773348355,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00010-acd1583d-2a3e-421a-9c57-8869f823eb36.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773408655,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00011-fc7742b0-88ce-4871-a03e-32b85f7bc231.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773468238,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00012-10e24165-5123-4f30-a6af-e9ee15934db6.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773528330,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00013-c974ebdf-a0d8-4172-82e5-19403f677ee2.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773588260,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00014-dc753f7d-9da1-43d7-a3db-2a75042e8bb4.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773648659,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00015-b3798727-95dd-41b7-9fe3-c852ceddaf01.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773708526,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00016-efb6f855-63f8-4d11-b553-6bc12d94a134.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773768212,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00017-62e99ac8-702a-4292-a0c0-272824485c5d.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773828229,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00018-86f72930-2440-4922-863e-0fb60f9a5da8.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773888054,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00019-fb75e3f4-6d70-46ca-89d1-aa526583cc0d.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792773948130,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00020-41a4b1e8-6db9-4b17-87cd-cd15b83e2f5b.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774007810,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00021-6ca6485a-bea7-479f-8379-efb095128cf6.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774067710,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00022-8a556d9c-76d6-4f65-9b0f-03426cbd2906.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774127770,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00023-2e6e7277-50d9-4573-aff7-9650bd43d56b.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774188443,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00024-89159c31-fe75-4bb3-bacd-b605b1e3edea.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774248230,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00025-224f15c6-cbf2-4182-bae8-0bd0958d1d24.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774308769,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00026-24ca1220-f0da-4fa4-8f1d-147fcbfc0d15.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774368978,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00027-9cc3bd29-1427-4d37-9c6b-bd606d971bd8.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774427730,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00028-516a5d66-9230-497e-9bfe-5fb23b94328b.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774488366,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00029-61eefcab-4fcc-4d7a-a633-ba90f2fedda0.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774548053,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00030-3c7de4b1-a2ee-4c7d-9de4-49ac1e0c42fd.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774608510,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00031-df3621fa-0b90-4a1a-bc15-797f4f9ed8b7.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774669288,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00032-d94476cb-a431-4536-b7f9-614016b56371.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774728160,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00033-06920cbf-6b8b-4590-bc9c-da8c287ebd54.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774788610,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00034-84184952-0b60-4f97-a51f-901900cb6ef2.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774848499,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00035-0da5af4a-a5c6-4797-a172-b6694dbe94f4.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774908158,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00036-e00d9c48-792c-497b-b743-be223ddfaf66.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792774968671,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00037-efbf4a22-42bc-45d6-8074-9c89f48e4b28.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775027915,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00038-dfa77a5a-3bcf-43eb-9654-c4137de719a2.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775087765,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00039-305c1cef-1fe5-4b52-b5e1-12e9792b66b2.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775148719,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00040-66db9a88-38fa-4fad-b961-d7dad05dccf3.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775208348,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00041-254f0dc1-6dff-4f5d-a23a-204fd61ebbf6.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775268109,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00042-6a52f348-a891-4cc8-bd09-747074cf85b3.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775328411,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00043-ae77b3bb-530e-4c33-b108-b36a5b86ef23.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775388269,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00044-323841bd-d149-4921-a958-195f75b72f2e.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775447962,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00045-6544d250-4a3e-4be0-afc4-8e77d9556b97.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775508761,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00046-2247c865-7c20-4a10-a7e8-50e4ec9faa96.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775567643,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00047-6e1a3216-d9f3-4cc4-8363-ce3f96c3a4bb.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775628049,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00048-86054b7b-700d-498e-bd24-74a1e107438f.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775689440,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00049-99d3f7c5-f2bb-418d-8e50-5a748820c2b0.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775748379,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00050-dd413419-4169-47f8-9a54-593bf8151aaf.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775808367,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00051-1ad809ea-67ba-4a65-9490-e9580d9d8976.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775868676,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00052-92b75621-6350-4ad5-b06c-0ff52506db12.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775929910,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00053-13467824-95f4-40d2-a266-2a44719f2e00.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792775990032,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00054-3d01797f-b061-45bd-a1f6-b85751729535.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776050210,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00055-93f7c062-fd62-4bba-b1ed-c3b3fd5a2356.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776109271,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00056-508fc98c-8505-4e49-ab6d-e489d99ebfad.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776168610,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00057-80426f4f-c8ff-428d-8d70-cad6439af746.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776228172,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00058-33fadf9e-ee71-4b6e-939b-41996753454a.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776288510,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00059-bffac2f1-04d2-48a4-b15d-8e8a9278bdb4.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776348231,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00060-39bfc849-3d94-4e0b-8521-950368c9f374.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776408529,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00061-4ebfb44c-0bfd-49b1-b051-081a70394421.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776469209,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00062-f7ce9a77-a9f0-4fc4-abca-2db230263764.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776529852,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00063-6a5233c7-fcf0-4d6e-b2f5-4c3083755aa5.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776590161,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00064-220b9c44-62c2-4fd9-a75a-275b727b3368.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776650229,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00065-f1f5de50-003a-45a6-b544-1ba0874d1af5.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776709010,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00066-0145cb87-65c2-41f2-8210-2f7d685a1024.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776769410,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00067-f53fbb91-4910-449b-8862-0963fa2ee16c.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776829183,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00068-4cc2afcb-1772-474f-9e56-3af1e0fbde86.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776889226,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00069-392b10f6-85dd-48fe-adca-da2192597894.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792776948308,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00070-3842aad2-f64e-4a5c-8098-b5a1bf4fa7ec.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792777009001,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/a/metadata/00071-148fd83b-6e1f-4dff-8319-084e1b055cde.metadata.json"
+  }
+ ]
+}

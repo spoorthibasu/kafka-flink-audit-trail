@@ -1,0 +1,526 @@
+{
+ "format-version": 2,
+ "table-uuid": "8f28a77e-e781-499e-8356-12dce2b9028b",
+ "location": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/b",
+ "last-sequence-number": 1,
+ "last-updated-ms": 1792761997595,
+ "last-column-id": 70,
+ "current-schema-id": 0,
+ "schemas": [
+  {
+   "type": "struct",
+   "schema-id": 0,
+   "fields": [
+    {
+     "id": 1,
+     "name": "customer_id",
+     "required": true,
+     "type": "string"
+    },
+    {
+     "id": 2,
+     "name": "event_timestamp",
+     "required": true,
+     "type": "timestamp"
+    },
+    {
+     "id": 3,
+     "name": "event_sequence",
+     "required": true,
+     "type": "long"
+    },
+    {
+     "id": 4,
+     "name": "email",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 5,
+     "name": "phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 6,
+     "name": "secondary_phone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 7,
+     "name": "first_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 8,
+     "name": "last_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 9,
+     "name": "display_name",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 10,
+     "name": "address_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 11,
+     "name": "address_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 12,
+     "name": "city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 13,
+     "name": "state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 14,
+     "name": "postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 15,
+     "name": "country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 16,
+     "name": "billing_line1",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 17,
+     "name": "billing_line2",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 18,
+     "name": "billing_city",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 19,
+     "name": "billing_state",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 20,
+     "name": "billing_postal_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 21,
+     "name": "billing_country",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 22,
+     "name": "company",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 23,
+     "name": "job_title",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 24,
+     "name": "department",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 25,
+     "name": "timezone",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 26,
+     "name": "locale",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 27,
+     "name": "preferred_language",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 28,
+     "name": "currency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 29,
+     "name": "account_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 30,
+     "name": "account_status",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 31,
+     "name": "loyalty_tier",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 32,
+     "name": "loyalty_points",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 33,
+     "name": "credit_limit",
+     "required": false,
+     "type": "double"
+    },
+    {
+     "id": 34,
+     "name": "payment_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 35,
+     "name": "card_last_four",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 36,
+     "name": "card_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 37,
+     "name": "billing_cycle_day",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 38,
+     "name": "tax_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 39,
+     "name": "tax_exempt",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 40,
+     "name": "marketing_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 41,
+     "name": "sms_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 42,
+     "name": "email_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 43,
+     "name": "push_opt_in",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 44,
+     "name": "newsletter_frequency",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 45,
+     "name": "contact_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 46,
+     "name": "referral_code",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 47,
+     "name": "referred_by",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 48,
+     "name": "segment",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 49,
+     "name": "lifecycle_stage",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 50,
+     "name": "lead_source",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 51,
+     "name": "utm_campaign",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 52,
+     "name": "preferred_store_id",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 53,
+     "name": "default_shipping_method",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 54,
+     "name": "gift_wrap_default",
+     "required": false,
+     "type": "boolean"
+    },
+    {
+     "id": 55,
+     "name": "avatar_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 56,
+     "name": "bio",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 57,
+     "name": "website",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 58,
+     "name": "twitter_handle",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 59,
+     "name": "linkedin_url",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 60,
+     "name": "date_of_birth",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 61,
+     "name": "gender",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 62,
+     "name": "household_size",
+     "required": false,
+     "type": "long"
+    },
+    {
+     "id": 63,
+     "name": "annual_income_band",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 64,
+     "name": "interests",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 65,
+     "name": "favorite_category",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 66,
+     "name": "preferred_brand",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 67,
+     "name": "shoe_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 68,
+     "name": "shirt_size",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 69,
+     "name": "dietary_preference",
+     "required": false,
+     "type": "string"
+    },
+    {
+     "id": 70,
+     "name": "marital_status",
+     "required": false,
+     "type": "string"
+    }
+   ]
+  }
+ ],
+ "default-spec-id": 0,
+ "partition-specs": [
+  {
+   "spec-id": 0,
+   "fields": [
+    {
+     "name": "event_timestamp_day",
+     "transform": "day",
+     "source-id": 2,
+     "field-id": 1000
+    }
+   ]
+  }
+ ],
+ "last-partition-id": 1000,
+ "default-sort-order-id": 1,
+ "sort-orders": [
+  {
+   "order-id": 0,
+   "fields": []
+  },
+  {
+   "order-id": 1,
+   "fields": [
+    {
+     "transform": "identity",
+     "source-id": 1,
+     "direction": "asc",
+     "null-order": "nulls-first"
+    }
+   ]
+  }
+ ],
+ "properties": {
+  "write.parquet.compression-codec": "zstd"
+ },
+ "current-snapshot-id": 1358694827233841968,
+ "refs": {
+  "main": {
+   "snapshot-id": 1358694827233841968,
+   "type": "branch"
+  }
+ },
+ "snapshots": [
+  {
+   "sequence-number": 1,
+   "snapshot-id": 1358694827233841968,
+   "timestamp-ms": 1792761997595,
+   "summary": {
+    "operation": "append",
+    "flink.operator-id": "250b1a8540e87f88d1f0266ed00fea7a",
+    "flink.job-id": "2aa0fb262d9568daa7d2f44cf417e3fe",
+    "flink.max-committed-checkpoint-id": "1",
+    "added-data-files": "4",
+    "added-records": "100000",
+    "added-files-size": "7382188",
+    "changed-partition-count": "1",
+    "total-records": "100000",
+    "total-files-size": "7382188",
+    "total-data-files": "4",
+    "total-delete-files": "0",
+    "total-position-deletes": "0",
+    "total-equality-deletes": "0",
+    "engine-version": "1.20.5",
+    "engine-name": "flink",
+    "iceberg-version": "Apache Iceberg 1.10.1 (commit ccb8bc435062171e64bc8b7e5f56e6aed9c5b934)"
+   },
+   "manifest-list": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/b/metadata/snap-1358694827233841968-1-fdd4998f-a24f-419f-9f2c-6b3536146f31.avro",
+   "schema-id": 0
+  }
+ ],
+ "statistics": [],
+ "partition-statistics": [],
+ "snapshot-log": [
+  {
+   "timestamp-ms": 1792761997595,
+   "snapshot-id": 1358694827233841968
+  }
+ ],
+ "metadata-log": [
+  {
+   "timestamp-ms": 1792761791607,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/b/metadata/00000-8a624f8e-7b4c-4b88-91e0-928e8dfd0c9a.metadata.json"
+  },
+  {
+   "timestamp-ms": 1792761792311,
+   "metadata-file": "s3://<run-bucket>/warehouse/audit_trail_bench_aws.db/b/metadata/00001-11db7f7c-18bd-495d-8450-7dfe772e8fd7.metadata.json"
+  }
+ ]
+}

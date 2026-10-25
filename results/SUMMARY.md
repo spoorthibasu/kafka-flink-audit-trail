@@ -1052,3 +1052,103 @@ Fetched by `bench/engine_docs_fetch.py` on 2026-10-23T10:43:45Z. Each syntax lin
 - Athena, https://docs.aws.amazon.com/athena/latest/ug/functions-env3.html: links to https://trino.io/docs/current/functions/window.html.
 
 Files: `engine_docs_fetched.csv`.
+
+## AWS scale run
+
+Measured by `bench/aws/run.py` from `bench/aws/config.aws.json` on AWS (us-east-1), with the infrastructure in `infra/`. Synthetic data from the bench-full generator, seed 20261113, K=67, full model, N=1,000,000 entities x H=100 events = 100,000,000 events per design. Runner m8id.2xlarge; Amazon MSK 3.9.x.kraft, 3 x kafka.m7g.large brokers, replication factor 3; Amazon Managed Service for Apache Flink FLINK-1_20 at parallelism 4; Iceberg on S3 with the Glue Data Catalog; Athena engine version 3. Kafka 3.7.x, which the local pipeline benchmark used, is past MSK end of support, so the brokers run 3.9.x.kraft.
+
+Managed Flink rejected parallelism above 4 for this account (CreateApplication: the account needs AWS verification for higher KPU limits), so both applications run at 4 with one KPU per slot plus the orchestration KPU.
+
+Definitions are in `bench/aws/report.py`. Raw rows: `producer_runs.csv`, `topic_log_bytes.csv`, `msk_metrics.csv`, `flink_runs.csv`, `flink_checkpoints.csv`, `flink_job_states.csv`, `iceberg_snapshots.csv`, `iceberg_stats.csv`, `iceberg_history.csv`, `athena_runs.csv`, `equivalence.csv`, `costs_daily.csv`, `costs_usage_types.csv`.
+
+### Equivalence before timing
+
+| Dataset | Query | Designs | Rows left | Rows right | Differing rows | Equal |
+|---|---|---|---|---|---|---|
+| full | q1_one_hop_previous_single | A vs B | 100 | 100 | 0 | yes |
+| full | q3_current_state_all | A vs B | 1000000 | 1000000 | 0 | yes |
+| full | q3_current_state_all | B vs C | 1000000 | 1000000 | 0 | yes |
+| full | q4_previous_value_all | A vs B | 1000000 | 1000000 | 0 | yes |
+
+### Producer and Kafka
+
+Producer latency is send() to acknowledgement for every event of the run, sent back to back with no pacing (acks=all, Kafka client 3.4.0 defaults otherwise), so it includes each record's wait in the producer's buffer. Log bytes come from describeLogDirs once every replica matched its leader. Replication bytes from CloudWatch sum ReplicationBytesInPerSec (and ...OutPerSec) over the three brokers, one-minute averages times 60, from the minute the run started to the minute after the log bytes settled; the derived column is one copy times (replication factor - 1).
+
+| Design | Compression | Events | p50 ms | p95 ms | p99 ms | Max ms | Log bytes, one copy | Bytes per event | Log bytes, all replicas | Replication bytes in (CloudWatch) | Replication bytes out (CloudWatch) | Replication bytes (derived) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A | zstd | 100000000 | 13.672902 | 47.293248 | 165.64037 | 505.175579 | 74023632171 | 740.23632171 | 222070896513 | 143490988304.20193843055714 | 143493766485.54152615055687 | 148047264342 |
+| A | none | 100000000 | 20.11992 | 4598.309395 | 4996.711522 | 6263.642761 | 192248378915 | 1922.48378915 | 576745136745 | 382596771585.01432491 | 382605371304.0271506 | 384496757830 |
+| B | zstd | 100000000 | 12.701734 | 29.15702 | 100.952569 | 567.711554 | 64919671514 | 649.19671514 | 194759014542 | 128210366226.79109634 | 128210772332.9552472 | 129839343028 |
+| B | none | 100000000 | 22.63433 | 2551.797033 | 3320.844921 | 3828.815631 | 98225607669 | 982.25607669 | 294676823007 | 194302916461.06319778 | 194307835950.97236636 | 196451215338 |
+
+### Flink
+
+Each application read its zstd topic from the earliest offset after the topic held every event. End-to-end throughput is events over the time from the job's switch to RUNNING (JobManager log) to the commit of the first Iceberg snapshot holding every event; sustained throughput is the records committed between the first and the second-to-last data commit over the time between them. Checkpoint durations are the checkpointDuration of every "Completed checkpoint" line of the job up to the checkpoint that made every event visible, nearest-rank.
+
+| Design | Events | KPU | End-to-end events/s | Sustained events/s | Data commits | Checkpoints | Checkpoint p50 ms | Checkpoint p95 ms | Checkpoint max ms |
+|---|---|---|---|---|---|---|---|---|---|
+| A | 100000000 | 5 | 23164.6958915558... | 23528.7642938502... | 71 | 71 | 2736 | 4199 | 4566 |
+| B | 100000000 | 5 | 49544.1934205311... | 51698.0769685873... | 33 | 33 | 2640 | 3479 | 4072 |
+
+### Iceberg on S3
+
+Expiration is expireSnapshots with retainLast 1; compaction is the Flink rewriteDataFiles action with Iceberg's defaults, both run from the runner against the Glue catalog. Bytes and file counts are listed from the table's metadata/ and data/ prefixes on S3. History unchanged compares, in Athena, the row count, the distinct (customer_id, event_sequence) count and a checksum over LAG(email) and the previous known email at every row with the same three values after the Flink commits.
+
+| Table | State | Snapshots | Metadata bytes on S3 | Manifest files on S3 | Manifests in snapshot | Data files in snapshot | Data files on S3 | Data bytes on S3 | Rows | History unchanged |
+|---|---|---|---|---|---|---|---|---|---|---|
+| a | after commits | 71 | 6012556 | 71 | 71 | 321 | 321 | 119389089551 | 100000000 | yes |
+| b | after commits | 33 | 1692987 | 33 | 33 | 164 | 164 | 60197255664 | 100000000 | yes |
+| c | after commits | 1 | 47997 | 1 | 1 | 9 | 9 | 599647573 | 1000000 | yes |
+| a | after expiration | 1 | 5604165 | 71 | 71 | 321 | 321 | 119389089551 | 100000000 | yes |
+| b | after expiration | 1 | 1536526 | 33 | 33 | 164 | 164 | 60197255664 | 100000000 | yes |
+| c | after expiration | 1 | 47997 | 1 | 1 | 9 | 9 | 599647573 | 1000000 | yes |
+| a | after compaction | 2 | 9305023 | 143 | 72 | 1042 | 1363 | 238780190252 | 100000000 | yes |
+| b | after compaction | 2 | 2793352 | 67 | 34 | 477 | 641 | 120397213717 | 100000000 | yes |
+| c | after compaction | 2 | 109238 | 3 | 2 | 7 | 16 | 1199268777 | 1000000 | yes |
+| a | after compaction and expiration | 1 | 7487600 | 72 | 72 | 1042 | 1363 | 238780190252 | 100000000 | yes |
+| b | after compaction and expiration | 1 | 2128734 | 34 | 34 | 477 | 641 | 120397213717 | 100000000 | yes |
+| c | after compaction and expiration | 1 | 85915 | 2 | 2 | 7 | 16 | 1199268777 | 1000000 | yes |
+
+After compaction and expiration, a keeps 321 data files on S3 that its snapshot no longer references; b keeps 164 data files on S3 that its snapshot no longer references; c keeps 9 data files on S3 that its snapshot no longer references.
+The files left over are the pre-compaction data files, by count and by bytes: a 321 files and 119389089551 bytes on S3 outside the snapshot, against 321 files and 119389089551 bytes after the Flink commits; b 164 files and 60197255664 bytes on S3 outside the snapshot, against 164 files and 60197255664 bytes after the Flink commits; c 9 files and 599647573 bytes on S3 outside the snapshot, against 9 files and 599647573 bytes after the Flink commits. The second expiration removed 71 of the manifest files of a (143 to 72), 33 of the manifest files of b (67 to 34), 1 of the manifest files of c (3 to 2), and no data files. It ran with expireOlderThan(now + 1 ms) and retainLast(1), which keeps only the newest snapshot, the compaction snapshot. Iceberg 1.10.1's incremental cleanup (core IncrementalFileCleanup, used when no snapshot ID or branch is named) deletes a data file only when the snapshot recorded on its DELETED manifest entry has expired; here that is the compaction snapshot, which was kept. Orphan-file removal was not run.
+
+### Athena engine version 3
+
+Bytes scanned is Athena's DataScannedInBytes, the same on every run of a query. p50 and p95 are nearest-rank over the timed runs of TotalExecutionTimeInMillis; the engine columns are EngineExecutionTimeInMillis. Each SELECT writes its result rows to the workgroup's S3 result location, and the runtime includes that write. Cost per query is the bytes scanned, rounded up to the next MB with a 10 MB minimum, at the price in `infra/prices.json`.
+
+| Query | Design | Runs | Bytes scanned | p50 ms | p95 ms | p99 ms | Engine p50 ms | Engine p95 ms | Engine p99 ms | Cost per query USD |
+|---|---|---|---|---|---|---|---|---|---|---|
+| q1_one_hop_previous_single | A | 10 | 491273707 | 3067 | 4553 | 4553 | 2865 | 4345 | 4345 | 0.00223636627197265625 |
+| q1_one_hop_previous_single | B | 10 | 524696325 | 2769 | 3961 | 3961 | 2624 | 3750 | 3750 | 0.00238895416259765625 |
+| q2_three_changes_back_single | B | 10 | 524696325 | 2529 | 3851 | 3851 | 2339 | 3628 | 3628 | 0.00238895416259765625 |
+| q3_current_state_all | A | 10 | 60224568330 | 30166 | 32484 | 32484 | 29980 | 32256 | 32256 | 0.27387142181396484375 |
+| q3_current_state_all | B | 10 | 60175997153 | 29817 | 40658 | 40658 | 29648 | 40489 | 40489 | 0.27365207672119140625 |
+| q3_current_state_all | C | 10 | 597471193 | 16836 | 19006 | 19006 | 16672 | 18777 | 18777 | 0.0027179718017578125 |
+| q4_previous_value_all | A | 10 | 2559908559 | 5558 | 11470 | 11470 | 5410 | 11291 | 11291 | 0.0116443634033203125 |
+| q4_previous_value_all | B | 10 | 1545859430 | 6696 | 9266 | 9266 | 6512 | 8894 | 8894 | 0.00703334808349609375 |
+
+With 10 timed runs, the nearest-rank p95 and p99 are both the slowest run. Q1 and Q4 have no C row and Q2 has no A or C row: C holds no history and A holds one hop, so they cannot answer those questions from their own data.
+
+### Cost Explorer, unblended cost by service
+
+Cost Explorer UnblendedCost over 2026-10-23 to 2026-10-25 (end exclusive). Usage is the gross charge for what the run used; the account applied credits against it, shown separately. Cost Explorer still marked these days as estimated when read.
+
+| Filter | Service | Usage USD | Credits USD | Net USD |
+|---|---|---|---|---|
+| account, no filter | AWS Cost Explorer | 0.02 | -0.02 | 0 |
+| account, no filter | AWS Data Transfer | 0 | -6.1748887502 | -6.1748887502 |
+| account, no filter | AWS Glue | 0 | 0 | 0 |
+| account, no filter | AWS Key Management Service | 0 | 0 | 0 |
+| account, no filter | Amazon Athena | 7.240275 | -7.240275 | 0 |
+| account, no filter | Amazon Elastic Compute Cloud - Compute | 4.2559669235 | -4.2559669235 | 0 |
+| account, no filter | Amazon Kinesis Analytics | 1.2131149558 | -1.2131149558 | 0 |
+| account, no filter | Amazon Managed Streaming for Apache Kafka | 8.4636653464 | -4.9933880087 | 3.4702773377 |
+| account, no filter | Amazon Simple Storage Service | 0.2587558 | -0.2587558 | 0 |
+| account, no filter | Amazon Virtual Private Cloud | 0.1009308189 | -0.1009308189 | 0 |
+| account, no filter | AmazonCloudWatch | 0.0015 | -0.0015 | 0 |
+| account, no filter | EC2 - Other | 2.7484853644 | -0.0438739536 | 2.7046114108 |
+| account, no filter | Total | 24.302694209 | -24.3026942107 | -0.0000000017 |
+
+Cost Explorer books the credit for regional (cross-AZ) data transfer under AWS Data Transfer (-6.1748887502), while the usage it offsets sits under EC2 - Other (2.7046114108 for 270.46296149 GB) and Amazon Managed Streaming for Apache Kafka (3.4702773394 for 348.02591352 GB); those usage lines sum to 6.1748887502.
+
+The same query filtered on the run tag returned no rows: the tag was not active as a cost allocation tag when Cost Explorer was read. In us-east-1 every usage line of these days is the run's (`costs_usage_types.csv`); the only lines from another region are Glue catalog requests and one S3 request in us-east-2.

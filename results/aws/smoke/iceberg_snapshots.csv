@@ -1,0 +1,3 @@
+label,design,table,snapshot_id,sequence_number,timestamp_ms,operation,added_records,total_records,added_data_files,total_data_files,added_files_size,total_files_size,flink_max_committed_checkpoint_id,flink_job_id
+smoke,A,a,7881866500442620061,1,1792761649500,append,100000,100000,4,4,14303053,14303053,1,f4dd83cb80ed5fe3a456039fd700366a
+smoke,B,b,1358694827233841968,1,1792761997595,append,100000,100000,4,4,7382188,7382188,1,2aa0fb262d9568daa7d2f44cf417e3fe
