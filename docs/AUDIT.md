@@ -1,7 +1,10 @@
 # Repository audit against the revised article
 
-Taken before any revision change. Each item records what the repository contained at
-commit 7eeae21 and whether it matches the article text.
+Historical record, written on 2026-10-20 before any revision change. Each item records
+what the repository contained at commit 7eeae21 and whether it matched the article text;
+it does not describe the repository as it is now, which the README does. One row and the
+sentence under it were updated on 2026-10-25 and are marked "(updated 2026-10-25)". The
+last section was added on 2026-10-20, after the cross-engine CI first ran.
 
 Dialect behaviour below was checked by running each spelling on the engine named, on
 2026-10-20: DuckDB 1.4.5 (Python), Spark 4.0.4 (local pyspark), Trino 483 (Docker).
@@ -46,7 +49,7 @@ and the article's claim for it is carried on that basis.
 | 102 to 103 | "Each Flink checkpoint commits the Kafka offsets and the Iceberg snapshot together, so a restart picks up where it left off without duplicates." | Broader than the article. Exactly-once covers Flink's own recovery path. Duplicates already in the topic land as separate rows. |
 | 14 to 19 | `make bench` is "schema size comparison" | No statement that the data is synthetic or that the scale is a demonstration. |
 | whole file | No mention of duplicates in the topic or how to drop them | Missing against the article. |
-| 76 to 84, Makefile `produce` | Sample events use phone `555-1001` and third email `alice@outlook.com` | Differs from the article's golden case 1 (`555-397`, `555-493`, `alice@newjob.com`). The sample is sparse, the golden case is full-state. Not part of the article list; recorded for the authors. |
+| 76 to 84, Makefile `produce` | Sample events use phone `555-1001` and third email `alice@outlook.com` | Differs from the article's golden case 1 (`555-397`, `555-493`, `alice@newjob.com`). The sample is sparse, the golden case is full-state. The article does not describe this sample. |
 
 ## Flink configuration (`CustomerProfileAuditJob.java`)
 
@@ -64,10 +67,10 @@ All four match.
 | Setting | Repository | Article |
 |---|---|---|
 | Partition spec | `PartitionSpec.builderFor(schema).day("event_timestamp")` | partitioned by event date on `event_timestamp` |
-| Sort order | `replaceSortOrder().asc("customer_id").asc("event_timestamp").asc("event_sequence")` (`customer_id` alone at 7eeae21), a declared sort order; `FlinkSink` writes rows in arrival order and does not sort within files | the streaming writer does not sort rows within data files; only compaction does, and it should sort by `customer_id` followed by the ordering key |
+| Sort order (updated 2026-10-25) | `replaceSortOrder().asc("customer_id").asc("event_timestamp").asc("event_sequence")` (`customer_id` alone at 7eeae21), a declared sort order; `FlinkSink` writes rows in arrival order and does not sort within files | the streaming writer does not sort rows within data files; only compaction does, and it should sort by `customer_id` followed by the ordering key |
 
-Both match. The declared sort order is `customer_id` followed by the ordering key, and both
-say the streaming writer does not sort rows within files.
+Both match (updated 2026-10-25). The declared sort order is `customer_id` followed by the
+ordering key, and both say the streaming writer does not sort rows within files.
 
 ## Make targets
 
@@ -97,7 +100,7 @@ beyond the three values checked in `DemoQueriesTest`.
 The word "we" appears in comments in `IcebergRoundTripTest.java`, `IcebergLoopRunner.java`
 and `SchemaBenchmark.java`. No em dashes found.
 
-## Summary of disagreements with the article list
+## Summary of disagreements with the article
 
 1. Duplicates: no dedup query, no statement that topic duplicates arrive as separate rows,
    and the README exactly-once sentence promises more than the article does.
@@ -106,8 +109,8 @@ and `SchemaBenchmark.java`. No em dashes found.
    Trino.
 4. Ordering, Flink configuration and Iceberg layout already match.
 5. Benchmarks: byte counts come from one hand-built event each, without the compressed
-   sizes, storage, latency or history-length sweep the revision calls for, and without a
-   synthetic-data label.
+   sizes, storage, latency or history-length sweep the revised article reports, and
+   without a synthetic-data label.
 
 ## Found after the audit, by the cross-engine CI
 
