@@ -184,7 +184,8 @@ class CrashRestartTest {
             "| Checkpoints completed before the failure | " + FailOnce.checkpointsBeforeFailure + " |",
             "| Iceberg rows committed when run 1 died | " + afterRun1.rows.size() + " (" + afterRun1.snapshots + " snapshots) |",
             "| Records between the last commit and the failure, replayed from Kafka | " + (recordsBeforeFailure - afterRun1.rows.size()) + " |",
-            "| Restored from | " + restoreFrom + " |",
+            // Only the chk-N name: the full path is a machine-specific temporary folder.
+            "| Restored from | " + restoreFrom.getFileName() + " |",
             "| Iceberg rows after run 2 | " + afterRun2.rows.size() + " (" + afterRun2.snapshots + " snapshots) |",
             "| Distinct (customer_id, event_sequence) after run 2 | " + distinct.size() + " |",
             "| Rows added by recovery beyond the input | " + duplicateRows + " |",
