@@ -1300,3 +1300,22 @@ Partitions come from the producer's acknowledgements. DuckDB 1.4.5 ran the check
 | sparse | partitioner-change | 3 | 100,000 | 1,000 | 1,000 | 100,000 | 100,000 of 100,000 | 6,700,000 | 0 | yes, yes, yes |
 
 In every run some entities had events in more than one partition, and every row and every LAG answer equalled the expected one. Records per partition, entities with later events in an added partition and each run's settings are in `partition_change.csv` and `partition_change_environment.json`.
+
+## Compatibility view: previous-value columns from LAG
+
+Measured by `bench/compat_view.py` from `bench/config.json` on 2026-10-28T07:12:46Z: the main FULL dataset of `bench/benchmark.py`, synthetic, seed 20261113, N=1000 entities x H=100 events, K=67, regenerated and written to the same Parquet files (sizes equal `storage.csv`). Machine: Apple M3, 8 logical CPUs. DuckDB 1.4.5, threads=8.
+
+A view named `a` over the audit trail (design B) exposes every column of the previous-value table in the same order, with the same names and types: each attribute x as stored and previous_x as LAG(x) OVER (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence). The benchmark's design A queries run against it with their SQL unchanged.
+
+- Schema: the view's DESCRIBE equals the stored table's (137 columns, names, types and order): yes.
+- Table: rows of the stored table not in the view 0, rows of the view not in the stored table 0, of 100,000 rows each (EXCEPT ALL both ways).
+- Queries: every design A query returned the same rows from the view as from the stored table (column Same rows below).
+- p50 and p95 ms: `bench/benchmark.py` time_query(), the protocol of `latency.csv`: CREATE OR REPLACE TEMP TABLE AS the query, 3 warm-up runs and 20 timed runs on one connection, nearest-rank.
+
+| Query | Reads previous_ columns | Rows | Same rows | Stored table p50 ms | View p50 ms | Stored table p95 ms | View p95 ms |
+|---|---|---|---|---|---|---|---|
+| q1_one_hop_previous_single | yes | 100 | yes | 1.982 | 5.493 | 2.057 | 6.567 |
+| q3_current_state_all | no | 1,000 | yes | 51.328 | 112.293 | 54.014 | 115.416 |
+| q4_previous_value_all | yes | 1,000 | yes | 6.745 | 72.432 | 7.178 | 81.213 |
+
+Files: `compat_view.csv`, `compat_view_environment.json`.
