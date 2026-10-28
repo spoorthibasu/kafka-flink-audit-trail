@@ -61,6 +61,7 @@ import random
 import subprocess
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -288,6 +289,11 @@ def explorer_logs(api, contract, token, from_block, to_block):
             if res.get("message") == "No logs found":
                 return [], None
             err = str(res.get("message") or res)[:120]
+        except urllib.error.HTTPError as exc:  # 429: wait as the server asks, or back off
+            err = str(exc)[:120]
+            if exc.code == 429:
+                time.sleep(int(exc.headers.get("Retry-After") or 0) or 30 * (attempt + 1))
+                continue
         except Exception as exc:  # retry transient network errors, then give up on this call
             err = str(exc)[:120]
         time.sleep(2 * (attempt + 1))
@@ -307,7 +313,7 @@ def chain_check(a):
         chain, err = explorer_logs(a.explorer, contract, token, prev_block, block)
         time.sleep(a.pause)
         if err is not None:
-            fidelity = "explorer error"
+            fidelity = "explorer error (%s)" % err.split(":")[0]
         else:
             fidelity = ("dataset equals chain" if chain == ds else "chain has events the dataset lacks"
                         if set(ds) < set(chain) else "dataset and chain differ")
