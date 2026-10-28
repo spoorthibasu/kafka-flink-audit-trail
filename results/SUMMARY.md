@@ -1319,3 +1319,19 @@ A view named `a` over the audit trail (design B) exposes every column of the pre
 | q4_previous_value_all | yes | 1,000 | yes | 6.745 | 72.432 | 7.178 | 81.213 |
 
 Files: `compat_view.csv`, `compat_view_environment.json`.
+
+## Compatibility view, narrow: previous_email only
+
+Measured by `bench/compat_view_narrow.py` from `bench/config.json` on 2026-10-28T07:13:01Z: the main FULL dataset of `bench/benchmark.py`, synthetic, seed 20261113, N=1000 x H=100, K=67, regenerated and written to the same Parquet files (sizes equal `storage.csv`). Machine: Apple M3, 8 logical CPUs. DuckDB 1.4.5, threads=8.
+
+The narrow view, named `a` over the audit trail (design B), exposes only the columns q1 and q4 read: customer_id, event_timestamp, event_sequence, email, previous_email, with previous_email as LAG(email) OVER (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence). Its column names and types equal the previous-value table's for those columns: yes. The 67-attribute view is the one in the section above, measured again in this run so that all three columns of times come from one session.
+
+- Same rows: q1 and q4, SQL unchanged, return the same rows from the narrow view and from the 67-attribute view as from the stored table (sorted row sets).
+- p50 and p95 ms: `bench/benchmark.py` time_query(), the protocol of `latency.csv`: CREATE OR REPLACE TEMP TABLE AS the query, 3 warm-up runs and 20 timed runs on one connection, nearest-rank.
+
+| Query | Rows | Same rows | Stored table p50 ms | 67-attribute view p50 ms | Narrow view p50 ms | Stored table p95 ms | 67-attribute view p95 ms | Narrow view p95 ms |
+|---|---|---|---|---|---|---|---|---|
+| q1_one_hop_previous_single | 100 | yes | 1.997 | 5.482 | 1.322 | 2.066 | 5.577 | 1.525 |
+| q4_previous_value_all | 1,000 | yes | 6.885 | 71.908 | 9.236 | 7.165 | 73.325 | 9.436 |
+
+Files: `compat_view_narrow.csv`, `compat_view_narrow_environment.json`.
