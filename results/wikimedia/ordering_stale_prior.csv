@@ -1,0 +1,7 @@
+event,kind,committed_class,own_parent,embedded_revision,own_parent_rev_parent_id,embedded_is_one_revision_before_own_parent,lag_row_kind,seconds_after_lag_row,same_titles_as_lag_row,api_parent_of_event,api_parent_of_own_parent
+cewiki:534202:26609998,move,ordering: prior revision ordered before the LAG row,26609995,26609922,26609922,yes,move,0,yes,26609995,26609922
+cewiki:1920380:26609999,move,ordering: prior revision ordered before the LAG row,26609997,26609924,26609924,yes,move,0,yes,26609997,26609924
+dewiki:14008465:271503045,move,"missed event: prior revision older than the LAG revision, not captured",271503044,271503020,271503020,yes,move,1,yes,271503044,271503020
+enwiki:38774416:1380755126,move,ordering: prior revision ordered before the LAG row,1380755125,1037580627,1037580627,yes,move,0,yes,1380755125,1037580627
+hewiki:2562527:44077014,move,"missed event: prior revision older than the LAG revision, not captured",44077012,43731112,43731112,yes,move,0,yes,44077012,43731112
+hewiki:2585305:44102519,move,ordering: prior revision ordered before the LAG row,44102517,44102459,44102459,yes,move,0,yes,44102517,44102459
