@@ -1256,3 +1256,16 @@ Same files and same answers as the benchmark: the regenerated Parquet files equa
 Controls, each on a copy of design A with one planted change and B unchanged: previous_marital_status set to null on one event (C0000000 seq 2) gave 1 difference in previous_marital_status and 0 unmatched rows; the event_sequence of one event (C0000999 seq 100) moved up by one gave 2 unmatched rows, that A row and the B row it no longer matches.
 
 Files: `lag_previous_fields.csv`, `lag_previous_fields_environment.json`.
+
+## sql/ files on Athena engine version 3
+
+Run once by `bench/aws/athena_sql_check.py` on 2026-10-28, outside CI: the 6 standard-form `sql/` files, each file's full text as the query string, on Athena engine version 3 (every query reported Athena engine version 3) against the four CI golden cases, compared with the golden expected rows as `ci/run_sql_matrix.py` compares them. 6 of 6 files returned exactly the expected rows in all four cases. The two `sql/duckdb/` files were not run. Details, per query, in `athena_sql_check.md`; the workgroup, Glue database and bucket were deleted afterwards (leftovers: none).
+
+| SQL file | Cases passed | Rows matched of expected | Differences |
+|---|---|---|---|
+| `sql/change_aware_previous_value.sql` | 4 of 4 | 28 of 28 | none |
+| `sql/dedup.sql` | 4 of 4 | 27 of 27 | none |
+| `sql/lag_history.sql` | 4 of 4 | 20 of 20 | none |
+| `sql/latest_state.sql` | 4 of 4 | 5 of 5 | none |
+| `sql/sparse_current_value.sql` | 4 of 4 | 20 of 20 | none |
+| `sql/sparse_previous_value.sql` | 4 of 4 | 20 of 20 | none |
