@@ -1282,3 +1282,21 @@ statement, gained the same one. The SHA-256 of the six files therefore differ fr
 ones in `athena_sql_check_environment.json`, which records the files as they ran, at
 commit 10dccc8. With the comment lines (lines starting with `--`) removed, each of the
 six files is identical to the text that ran. The results above are unchanged.
+
+## Partition changes and LAG
+
+Measured by `bench/partition_change.py` from `bench/config.json` on 2026-10-28T05:35:14Z: the benchmark's design B (audit trail) events, synthetic, seed 20261113, N=1000 entities x H=100 events, K=67, per event model, sent to a local Kafka broker (apache/kafka:3.7.0) keyed by customer_id while a Flink 1.20.3 job appended them to an Iceberg 1.10.1 table (parallelism 3, checkpoints every 1000 ms, Kafka partition discovery every 1000 ms, Kafka client 3.4.0). Halfway through, in event-time order, the assignment of records to partitions changed:
+
+- partition-increase: the topic went from 3 to 6 partitions while the job ran; every event was keyed by customer_id and sent with the producer's default partitioner (murmur2 of the key modulo the partition count).
+- partitioner-change: 3 partitions throughout; the first half was sent with the default partitioner, the second half with RoundRobinPartitioner, which ignores the key.
+
+Partitions come from the producer's acknowledgements. DuckDB 1.4.5 ran the checks over the data files of the table's current snapshot; the expected answers were computed in Python from the generated events, not with SQL. Rows equal to the events compares every column of every row. LAG values compares LAG(x) OVER (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence) for each of the 67 attributes at every event with x on the entity's previous generated event. q1, q2 and q4 are the benchmark's design B LAG queries from `bench/benchmark.py`.
+
+| Model | Scenario | Partitions | Events | Entities | Entities with events in more than one partition | Iceberg rows | Rows equal to the events | LAG values compared | LAG differences | q1, q2, q4 equal to expected |
+|---|---|---|---|---|---|---|---|---|---|---|
+| full | partition-increase | 3 to 6 | 100,000 | 1,000 | 525 | 100,000 | 100,000 of 100,000 | 6,700,000 | 0 | yes, yes, yes |
+| full | partitioner-change | 3 | 100,000 | 1,000 | 1,000 | 100,000 | 100,000 of 100,000 | 6,700,000 | 0 | yes, yes, yes |
+| sparse | partition-increase | 3 to 6 | 100,000 | 1,000 | 525 | 100,000 | 100,000 of 100,000 | 6,700,000 | 0 | yes, yes, yes |
+| sparse | partitioner-change | 3 | 100,000 | 1,000 | 1,000 | 100,000 | 100,000 of 100,000 | 6,700,000 | 0 | yes, yes, yes |
+
+In every run some entities had events in more than one partition, and every row and every LAG answer equalled the expected one. Records per partition, entities with later events in an added partition and each run's settings are in `partition_change.csv` and `partition_change_environment.json`.

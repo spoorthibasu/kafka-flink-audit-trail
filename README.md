@@ -487,6 +487,27 @@ check runs before either case starts, so Maven reports CrashRestartTest as
 `Tests run: 0, ... Skipped: 0` rather than as two skipped tests. `make crash-test` sets
 `REQUIRE_KAFKA=1` so they fail instead.
 
+### Partition changes
+
+`bench/partition_change.py` sends the benchmark's design B events to Kafka keyed by
+`customer_id` while the pipeline's Flink job lands them in Iceberg, and halfway through
+changes how records are assigned to partitions: once by raising the topic from 3 to 6
+partitions, once by switching the producer to `RoundRobinPartitioner`. It counts the
+entities whose events ended up in more than one partition, from the producer's
+acknowledgements, and checks every landed row, `LAG` of every attribute at every event
+and the benchmark's q1, q2 and q4 against answers computed from the generated events.
+On `bench/config.json`, 525 of 1,000 entities were split by the partition increase and
+1,000 of 1,000 by the partitioner change, and every row and `LAG` answer matched, in
+both event models (`results/partition_change.csv`, and the "Partition changes and LAG"
+section of `results/SUMMARY.md`). GitHub Actions runs it on the smoke configuration in
+the crash-restart job. Locally:
+
+```bash
+make up
+make partition-change
+make down
+```
+
 ### On a real cluster
 
 ```bash

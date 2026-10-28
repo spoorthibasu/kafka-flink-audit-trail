@@ -150,9 +150,11 @@ jobs:
         run: |
           pip install -r bench/requirements.txt
           python3 bench/pipeline.py --config bench/config.smoke.json --out results-smoke-pipeline
+      - name: Partition count raised and partitioner switched mid-stream, LAG checked against the events
+        run: python3 bench/partition_change.py --config bench/config.smoke.json --out results-smoke-partition --bootstrap localhost:9092
       - name: Evidence as job summary
         if: always()
-        run: cat results/crash_restart_case1.md results/crash_restart_case2.md >> "$GITHUB_STEP_SUMMARY" || true
+        run: cat results/crash_restart_case1.md results/crash_restart_case2.md results-smoke-partition/SUMMARY.md >> "$GITHUB_STEP_SUMMARY" || true
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -163,6 +165,11 @@ jobs:
         with:
           name: pipeline-smoke-results
           path: results-smoke-pipeline
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: partition-change-smoke-results
+          path: results-smoke-partition
 
   aws-offline:
     name: AWS scale run code without AWS (generator check, Flink app tests, Terraform validate, estimate)
