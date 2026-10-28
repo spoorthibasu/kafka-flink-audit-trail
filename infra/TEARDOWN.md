@@ -7,7 +7,7 @@ roots, created in this order and destroyed in reverse:
 |---|---|---|
 | `infra/budget` | the AWS Budgets cost budget and its email alerts | last, once Cost Explorer has posted the run's costs |
 | `infra/base` | run bucket `audit-trail-bench-run-<random>`, IAM roles `audit-trail-bench-runner` and `audit-trail-bench-flink` (with the permissions boundary), instance profile, security group, runner instance, Glue database `audit_trail_bench_aws`, Athena workgroup `audit-trail-bench`, log group `/aws/kinesis-analytics/audit-trail-bench` | after the Iceberg and Athena measurements and the download of every result |
-| `infra/stream` | MSK configuration and cluster `audit-trail-bench`, S3 gateway endpoint, Glue (and STS, if needed) interface endpoints, Managed Flink applications `audit-trail-bench-a` and `audit-trail-bench-b` | right after the Kafka and Flink measurements, because it is the most expensive stage per hour |
+| `infra/stream` | MSK cluster `audit-trail-bench`, S3 gateway endpoint, Glue (and STS, if needed) interface endpoints, Managed Flink applications `audit-trail-bench-a` and `audit-trail-bench-b` | right after the Kafka and Flink measurements, because it is the most expensive stage per hour |
 
 The Wikimedia archive bucket is not in any Terraform root. The CLI user's run policy denies every Put and
 Delete action on it for the whole run.

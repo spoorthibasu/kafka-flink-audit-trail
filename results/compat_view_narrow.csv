@@ -1,0 +1,3 @@
+model,query,design,entity,rows,same_rows,runs,warmup_runs,stored_p50_ms,wide_view_p50_ms,narrow_view_p50_ms,stored_p95_ms,wide_view_p95_ms,narrow_view_p95_ms,stored_p99_ms,wide_view_p99_ms,narrow_view_p99_ms
+full,q1_one_hop_previous_single,A,C0000500,100,yes,20,3,1.997,5.482,1.322,2.066,5.577,1.525,2.099,5.601,1.646
+full,q4_previous_value_all,A,,1000,yes,20,3,6.885,71.908,9.236,7.165,73.325,9.436,7.192,74.587,9.457

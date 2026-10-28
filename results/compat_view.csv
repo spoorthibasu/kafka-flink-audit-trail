@@ -1,0 +1,4 @@
+model,query,design,entity,reads_previous_columns,rows,same_rows,runs,warmup_runs,stored_p50_ms,view_p50_ms,stored_p95_ms,view_p95_ms,stored_p99_ms,view_p99_ms,stored_scan_rows_out,view_scan_rows_out
+full,q1_one_hop_previous_single,A,C0000500,yes,100,yes,20,3,1.982,5.493,2.057,6.567,2.093,7.488,100,100
+full,q3_current_state_all,A,,no,1000,yes,20,3,51.328,112.293,54.014,115.416,56.257,116.811,100000,100000
+full,q4_previous_value_all,A,,yes,1000,yes,20,3,6.745,72.432,7.178,81.213,10.774,117.609,100000,100000
