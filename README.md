@@ -63,7 +63,8 @@ which gives 137 fields against 70 (`results/SUMMARY.md`).
 - Spark 4.0.4 (`pyspark==4.0.4`) for the SQL matrix and `bench/iceberg_layout.py`, which
   adds `iceberg-spark-runtime-4.0_2.13-1.10.1.jar`.
 - Trino 483 (`trinodb/trino:483`) for the SQL matrix.
-- Athena engine version 3, in the AWS run only.
+- Athena engine version 3, in the AWS run and in one run of the standard-form sql/ files
+  (`results/athena_sql_check.md`).
 
 ## The queries
 
@@ -88,13 +89,17 @@ customer.
 The two sparse `LAST_VALUE ... IGNORE NULLS` queries need a separate DuckDB form. The four
 plain files (`LAG`, `ROW_NUMBER`, dedup and the change-aware query) have a single spelling
 and run unchanged on DuckDB, Spark and Trino in CI, which checks every sql/ file on those
-three engines. Athena is not in CI, and the AWS scale run executed only the benchmark's
-full-state queries on Athena engine version 3, not the sql/ files. The sparse-update
-queries exist in two spellings because
+three engines. Athena is not in CI. The AWS scale run executed the benchmark's full-state
+queries on Athena engine version 3. A separate run on 2026-10-28 executed the six
+standard-form sql/ files, each file's full text as the query string, on Athena engine
+version 3 against the four golden cases: all six returned exactly the expected rows in
+every case, 24 of 24 queries (`results/athena_sql_check.md`). The two `sql/duckdb/` files
+were not run on Athena. The sparse-update queries exist in two spellings because
 engines disagree on where `IGNORE NULLS` goes: Trino, Athena and Spark take it after the
 closing parenthesis, `LAST_VALUE(x) IGNORE NULLS OVER (...)`; DuckDB takes it inside,
 `LAST_VALUE(x IGNORE NULLS) OVER (...)`. In CI neither spelling parses on the other
-engine (DuckDB against Spark and Trino); for Athena this is documented, not tested here.
+engine (DuckDB against Spark and Trino). On Athena engine version 3 the standard spelling
+ran in that one run; the DuckDB spelling was not tried there.
 Spark also accepts `LAST(x, true)`. Each file's `-- engines:` header names the engines
 it is written for. `results/engine_docs.csv` gives, for DuckDB, Spark, Trino and Athena, the official page that defines LAST_VALUE with IGNORE NULLS, its documented version, and the syntax line it shows. The Trino and Athena pages do not show where IGNORE NULLS goes.
 
@@ -136,6 +141,9 @@ under `ci/golden/`. GitHub Actions runs it on pushes to main and on pull request
 article's: full-state events for customer 98765, sparse events with a phone-only row, and
 a duplicated `(customer_id, event_sequence)`. Each SQL file declares the engines it is written for, and the run
 fails if a file does not return exactly the expected rows on one of them.
+Athena engine version 3 is not in CI; `bench/aws/athena_sql_check.py` ran the
+standard-form files on it once, against the same golden cases and with the same
+comparison (`results/athena_sql_check.md`).
 
 ```bash
 pip install -r ci/requirements.txt
@@ -182,7 +190,7 @@ make bench-smoke     # tiny configuration, seconds; checks the script runs
 
 ## Further measurements
 
-Four scripts behind sections of `results/SUMMARY.md` have no Make target. Each writes its
+Six scripts behind sections of `results/SUMMARY.md` have no Make target. Each writes its
 CSV files and its SUMMARY.md section into the `--out` directory, so `--out results`
 replaces the committed files.
 
@@ -221,6 +229,32 @@ replaces the committed files.
 
   ```bash
   python3 bench/engine_docs_fetch.py --out results
+  ```
+
+- `bench/lag_previous_fields.py`: regenerates the main full-state dataset and runs
+  `bench/benchmark.py`'s equivalence checks on it without timing, including the check of
+  every `previous_x` against `LAG(x)` at every event. It checks its Parquet sizes against
+  `storage.csv` and its comparisons against `equivalence.csv` in the same directory.
+  Needs `bench/requirements.txt`.
+
+  ```bash
+  python3 bench/lag_previous_fields.py --config bench/config.json --out results
+  ```
+
+- `bench/aws/athena_sql_check.py`: the standard-form `sql/` files on Athena engine
+  version 3 against the golden cases, in one temporary S3 bucket, Glue database and
+  Athena workgroup that it deletes afterwards. This creates billed resources in your AWS
+  account; the committed run's 28 queries were billed at Athena's 10 MB minimum each.
+  Attach `infra/iam/athena-sql-check-policy.json`, with your bucket name and account ID,
+  to the IAM user the AWS CLI uses. Needs the AWS CLI and `bench/requirements.txt`.
+
+  ```bash
+  python3 bench/aws/athena_sql_check.py setup --bucket <name>
+  python3 bench/aws/athena_sql_check.py run --bucket <name> --out results
+  python3 bench/aws/athena_sql_check.py recorded-text --bucket <name> --out results
+  python3 bench/aws/athena_sql_check.py teardown --bucket <name>
+  python3 bench/aws/athena_sql_check.py check-teardown --bucket <name> --out results
+  python3 bench/aws/athena_sql_check.py report --out results
   ```
 
 ## Wikimedia field study

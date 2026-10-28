@@ -1238,3 +1238,34 @@ Rerun check from that commit: one `bench/iceberg_layout.py` run per model with t
 declared sort order gave the same rows and data bytes as committed run 1, for the table as
 written (44,941,250 bytes FULL, 5,876,134 SPARSE) and after the sort compaction (5,062,151
 bytes FULL, 4,225,697 SPARSE).
+
+## LAG against every previous-value field
+
+Measured by `bench/lag_previous_fields.py` from `bench/config.json` on 2026-10-28T04:46:20Z: the main FULL dataset of `bench/benchmark.py`, synthetic, seed 20261113, N=1000 entities x H=100 events, K=67. DuckDB 1.4.5. Nothing is timed; no timing, size or cost result above changes.
+
+The equivalence checks above compare the previous value of the first attribute, email, only (q1 for one entity, q4 at each entity's newest event). `check_equivalence()` in `bench/benchmark.py` now also compares, before timing, every previous-value field design A stores with LAG over design B: for each of the 67 attributes x, previous_x on every A row against LAG(x) OVER (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence) on the B row with the same customer_id, event_timestamp and event_sequence, joined with a full outer join, compared with IS DISTINCT FROM. This section ran that check on the same Parquet files the benchmark reads.
+
+| Fields | Rows in A | Rows in B | Joined rows | Unmatched rows | Field values compared | Field values set in A | Differences | Equal |
+|---|---|---|---|---|---|---|---|---|
+| 67 | 100,000 | 100,000 | 100,000 | 0 | 6,700,000 | 6,633,000 | 0 | yes |
+
+Each field was compared at all 100,000 events. Per-field rows, with the differences and the events where A stores a non-null previous value, are in `lag_previous_fields.csv`.
+
+Same files and same answers as the benchmark: the regenerated Parquet files equal `storage.csv` for main FULL (3 checks, designs A, B and C, snappy), and the four existing comparisons gave the rows `equivalence.csv` records for main_full (4 of 4).
+
+Controls, each on a copy of design A with one planted change and B unchanged: previous_marital_status set to null on one event (C0000000 seq 2) gave 1 difference in previous_marital_status and 0 unmatched rows; the event_sequence of one event (C0000999 seq 100) moved up by one gave 2 unmatched rows, that A row and the B row it no longer matches.
+
+Files: `lag_previous_fields.csv`, `lag_previous_fields_environment.json`.
+
+## sql/ files on Athena engine version 3
+
+Run once by `bench/aws/athena_sql_check.py` on 2026-10-28, outside CI: the 6 standard-form `sql/` files, each file's full text as the query string, on Athena engine version 3 (every query reported Athena engine version 3) against the four CI golden cases, compared with the golden expected rows as `ci/run_sql_matrix.py` compares them. 6 of 6 files returned exactly the expected rows in all four cases. The two `sql/duckdb/` files were not run. Details, per query, in `athena_sql_check.md`; the workgroup, Glue database and bucket were deleted afterwards (leftovers: none).
+
+| SQL file | Cases passed | Rows matched of expected | Differences |
+|---|---|---|---|
+| `sql/change_aware_previous_value.sql` | 4 of 4 | 28 of 28 | none |
+| `sql/dedup.sql` | 4 of 4 | 27 of 27 | none |
+| `sql/lag_history.sql` | 4 of 4 | 20 of 20 | none |
+| `sql/latest_state.sql` | 4 of 4 | 5 of 5 | none |
+| `sql/sparse_current_value.sql` | 4 of 4 | 20 of 20 | none |
+| `sql/sparse_previous_value.sql` | 4 of 4 | 20 of 20 | none |

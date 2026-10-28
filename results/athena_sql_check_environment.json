@@ -1,0 +1,54 @@
+{
+  "started_utc": "2026-10-28T04:55:23Z",
+  "git_commit": "10dccc84ff122215b23facbcd7748697c60649af",
+  "region": "us-east-1",
+  "workgroup": "athena-sql-check",
+  "database": "athena_sql_check",
+  "table": "customer_profile_changes",
+  "workgroup_engine_version": {
+    "SelectedEngineVersion": "Athena engine version 3",
+    "EffectiveEngineVersion": "Athena engine version 3"
+  },
+  "duckdb_parquet_writer": "1.4.5",
+  "tags": {
+    "s3 bucket": {
+      "project": "audit-trail-bench",
+      "run": "athena-sql-check"
+    },
+    "glue database": {
+      "project": "audit-trail-bench",
+      "run": "athena-sql-check"
+    },
+    "athena workgroup": {
+      "project": "audit-trail-bench",
+      "run": "athena-sql-check"
+    }
+  },
+  "files": [
+    {
+      "path": "sql/change_aware_previous_value.sql",
+      "sha256": "e570f88f0b3aea434863ba1aae3a9637f643222dffcbb602260619433b6e0e73"
+    },
+    {
+      "path": "sql/dedup.sql",
+      "sha256": "c4e851a72d1879d05df66e08218b242455dbeb15ff46494bada3f109fee4f2a2"
+    },
+    {
+      "path": "sql/lag_history.sql",
+      "sha256": "1ae8d1da29d19737c0b7b7b89eeafedaa4433d93d63bd72fe472af45fca15e04"
+    },
+    {
+      "path": "sql/latest_state.sql",
+      "sha256": "2fedc5f13c1ec69022339666882a7fa2681677348a8c96527dc7c7f422685818"
+    },
+    {
+      "path": "sql/sparse_current_value.sql",
+      "sha256": "3ce2dc24b2f08a6357e6d951ac1f30c7716b78f187d88a6104c12000cfe8429f"
+    },
+    {
+      "path": "sql/sparse_previous_value.sql",
+      "sha256": "0be61324a529bbdd72772e9e5a55431cfafc9e89b34f756025e551344c88f5f2"
+    }
+  ],
+  "finished_utc": "2026-10-28T04:56:33Z"
+}

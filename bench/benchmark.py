@@ -385,13 +385,43 @@ def time_query(con, sql, runs, warmup, profile_path, explain_path):
 # ------------------------------------------------------------------------ equivalence
 
 
+def previous_field_differences(con, attrs):
+    """FULL model: every previous_x design A stores against LAG(x) over design B, at every event.
+
+    LAG orders by event_timestamp, event_sequence within customer_id, as every query here
+    does. A full outer join on (customer_id, event_timestamp, event_sequence), the event's
+    key, pairs each A row with its B row, so an event missing from either side shows up as
+    unmatched and a repeated key as more joined rows than rows in A. IS DISTINCT FROM
+    counts a null against a value as a difference and two nulls as equal. Returns the row
+    counts of A, B and the join, the unmatched rows, and for every attribute x, in order,
+    (x, rows where A stores a non-null previous_x, rows where previous_x differs from LAG(x)).
+    """
+    names = [a for a, _ in attrs]
+    lags = ", ".join("LAG(%s) OVER w AS lag_%s" % (a, a) for a in names)
+    counts = ", ".join("count(*) FILTER (WHERE a.previous_%s IS NOT NULL), "
+                       "count(*) FILTER (WHERE a.previous_%s IS DISTINCT FROM l.lag_%s)" % (a, a, a) for a in names)
+    row = con.execute(
+        "WITH l AS (SELECT customer_id, event_timestamp, event_sequence, %s FROM b "
+        "WINDOW w AS (PARTITION BY customer_id ORDER BY event_timestamp, event_sequence)) "
+        "SELECT count(*), count(*) FILTER (WHERE a.customer_id IS NULL OR l.customer_id IS NULL), %s "
+        "FROM a FULL OUTER JOIN l ON a.customer_id = l.customer_id AND a.event_timestamp = l.event_timestamp "
+        "AND a.event_sequence = l.event_sequence" % (lags, counts)).fetchone()
+    rows_a = con.execute("SELECT count(*) FROM a").fetchone()[0]
+    rows_b = con.execute("SELECT count(*) FROM b").fetchone()[0]
+    fields = [(a, row[2 + 2 * i], row[3 + 2 * i]) for i, a in enumerate(names)]
+    return rows_a, rows_b, row[0], row[1], fields
+
+
 def check_equivalence(con, attrs, model, queries):
     """The three designs describe one history, so they must agree wherever they overlap.
 
     Compares, as sorted row sets: Q1 A vs B, Q3 A vs B vs C, Q4 A vs B, and in the
-    SPARSE model the current_* columns of Q5 A vs B. Returns one record per comparison
-    and raises if any pair differs, because a difference means the generator or a query
-    is wrong and every other number would be suspect.
+    SPARSE model the current_* columns of Q5 A vs B. Q1 and Q4 compare the previous
+    value of the first attribute only, so in the FULL model it also compares every
+    previous_x A stores with LAG(x) over B, for every attribute and every event
+    (previous_field_differences). Returns one record per comparison and raises if any
+    pair differs, because a difference means the generator or a query is wrong and every
+    other number would be suspect.
     """
     sql_by = {(qid, design): sql for qid, _, _, design, sql, _ in queries if sql is not None}
     names = [a for a, _ in attrs]
@@ -419,6 +449,15 @@ def check_equivalence(con, attrs, model, queries):
                         "columns": "current_* only" if project else "all", "rows_compared": len(r1), "equal": "yes" if equal else "no"})
         if not equal:
             raise RuntimeError("designs %s and %s disagree on %s (%s model): %d vs %d rows" % (d1, d2, qid, model, len(r1), len(r2)))
+    if model == "full":
+        rows_a, rows_b, joined, unmatched, fields = previous_field_differences(con, attrs)
+        differing = [(a, d) for a, _, d in fields if d]
+        equal = rows_a == rows_b == joined and unmatched == 0 and not differing
+        records.append({"model": model, "query": "lag_every_previous_field", "designs": "A vs B",
+                        "columns": "previous_* (%d)" % len(fields), "rows_compared": joined, "equal": "yes" if equal else "no"})
+        if not equal:
+            raise RuntimeError("LAG over B does not reproduce A's previous-value fields (%s model): %d rows in A, %d in B, "
+                               "%d joined, %d unmatched, differences %s" % (model, rows_a, rows_b, joined, unmatched, differing))
     return records
 
 

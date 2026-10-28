@@ -1,0 +1,9 @@
+Athena sql/ check teardown, 2026-10-28T04:58:25 UTC, region us-east-1
+s3 head-bucket <bucket>                                  not found (An error occurred (404) when calling the HeadBucket operation: Not Found)
+s3 list-buckets contains <bucket>                        no
+glue get-database athena_sql_check                       not found (An error occurred (EntityNotFoundException) when calling the GetDatabase operation: Database athena_sql_check )
+athena get-work-group athena-sql-check                   not found (An error occurred (InvalidRequestException) when calling the GetWorkGroup operation: WorkGroup is not found. A)
+athena list-work-groups                                  primary
+tag:GetResources run=athena-sql-check                    0 resources
+
+leftovers: none
