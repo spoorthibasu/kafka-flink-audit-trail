@@ -1272,13 +1272,13 @@ Run once by `bench/aws/athena_sql_check.py` on 2026-10-28, outside CI: the 6 sta
 
 ## Note on the sql/ comments after the Athena run
 
-Commit e4864df, made after the run in the section above, changed comment lines only, in
-five of the six standard-form files: `sql/change_aware_previous_value.sql`,
+Commits e4864df and 608ac9e, made after the run in the section above, changed comment
+lines only, in all six standard-form files. In `sql/change_aware_previous_value.sql`,
 `sql/dedup.sql`, `sql/lag_history.sql`, `sql/latest_state.sql` and
-`sql/sparse_current_value.sql`. "for Athena this is documented, not tested here" became
+`sql/sparse_current_value.sql`, "for Athena this is documented, not tested here" became
 a statement that the file was run on Athena engine version 3 against the golden outputs
-and that Athena is not in CI. The SHA-256 of those five files therefore differ from the
+and that Athena is not in CI; `sql/sparse_previous_value.sql`, which had no such
+statement, gained the same one. The SHA-256 of the six files therefore differ from the
 ones in `athena_sql_check_environment.json`, which records the files as they ran, at
 commit 10dccc8. With the comment lines (lines starting with `--`) removed, each of the
-six files is identical to the text that ran; `sql/sparse_previous_value.sql` is
-unchanged byte for byte. The results above are unchanged.
+six files is identical to the text that ran. The results above are unchanged.
