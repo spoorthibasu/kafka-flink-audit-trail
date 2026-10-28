@@ -1,0 +1,86 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CheckBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:DeleteBucket",
+        "s3:PutBucketTagging",
+        "s3:GetBucketTagging",
+        "s3:GetBucketLocation",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads"
+      ],
+      "Resource": "arn:aws:s3:::BUCKET_NAME"
+    },
+    {
+      "Sid": "CheckObjects",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": "arn:aws:s3:::BUCKET_NAME/*"
+    },
+    {
+      "Sid": "CheckGlueDatabase",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateDatabase",
+        "glue:GetDatabase",
+        "glue:DeleteDatabase",
+        "glue:TagResource",
+        "glue:GetTags",
+        "glue:CreateTable",
+        "glue:GetTable",
+        "glue:DeleteTable",
+        "glue:GetPartitions"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:ACCOUNT_ID:catalog",
+        "arn:aws:glue:us-east-1:ACCOUNT_ID:database/athena_sql_check",
+        "arn:aws:glue:us-east-1:ACCOUNT_ID:table/athena_sql_check/*",
+        "arn:aws:glue:us-east-1:ACCOUNT_ID:userDefinedFunction/athena_sql_check/*"
+      ]
+    },
+    {
+      "Sid": "CreateTaggedWorkGroup",
+      "Effect": "Allow",
+      "Action": "athena:CreateWorkGroup",
+      "Resource": "arn:aws:athena:us-east-1:ACCOUNT_ID:workgroup/athena-sql-check",
+      "Condition": {"StringEquals": {"aws:RequestTag/run": "athena-sql-check"}}
+    },
+    {
+      "Sid": "UseWorkGroup",
+      "Effect": "Allow",
+      "Action": [
+        "athena:TagResource",
+        "athena:ListTagsForResource",
+        "athena:GetWorkGroup",
+        "athena:DeleteWorkGroup",
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:StopQueryExecution"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:ACCOUNT_ID:workgroup/athena-sql-check"
+    },
+    {
+      "Sid": "DefaultDataCatalog",
+      "Effect": "Allow",
+      "Action": "athena:GetDataCatalog",
+      "Resource": "arn:aws:athena:us-east-1:ACCOUNT_ID:datacatalog/AwsDataCatalog"
+    },
+    {
+      "Sid": "TeardownListing",
+      "Effect": "Allow",
+      "Action": ["athena:ListWorkGroups", "tag:GetResources"],
+      "Resource": "*"
+    }
+  ]
+}
