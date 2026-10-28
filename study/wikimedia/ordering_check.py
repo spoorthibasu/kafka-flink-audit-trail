@@ -193,7 +193,7 @@ def analyze(a):
         first_dt = con.execute("SELECT min(meta__dt) FROM events").fetchone()[0]
         for cause, cls, n, before in con.execute(
                 "SELECT cause, class, count(*), count(*) FILTER (WHERE prior_dt < ?::TIMESTAMPTZ) FROM prim "
-                "GROUP BY 1, 2 ORDER BY 3 DESC", [first_dt]).fetchall():
+                "GROUP BY 1, 2 ORDER BY 3 DESC, 1, 2", [first_dt]).fetchall():
             split_rows.append({"cause": cause, "committed_class": cls, "events": n,
                                "embedded_revision_dated_before_first_captured_event": before})
         if sum(r["events"] for r in split_rows) != differ or any(r["cause"] == "other" for r in split_rows):
