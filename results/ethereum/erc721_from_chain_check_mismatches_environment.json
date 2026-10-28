@@ -1,0 +1,13 @@
+{
+  "started_utc": "2026-10-28T13:27:54Z",
+  "checked_utc": "2026-10-28T13:29:54Z",
+  "population": "mismatches",
+  "sample": 50,
+  "of": 52,
+  "seed": 20261028,
+  "explorer": "https://api.etherscan.io/v2/api",
+  "chain_id": 1,
+  "pause_seconds": 1.0,
+  "calls": "the logs API (contract, topic0, tokenId as topic3) from the predecessor's block to the transfer's block, both included, compared with the dataset's events for the token in that range; the proxy module's eth_call supportsInterface(0x80ac58cd) at latest",
+  "git_commit": "dd5dee88e139b8fbce2989cc0d307fc1878ac4b3"
+}
