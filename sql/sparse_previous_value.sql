@@ -6,6 +6,8 @@
 -- engines: spark, trino, athena
 -- Standard spelling: IGNORE NULLS after the closing parenthesis, before OVER. DuckDB
 -- rejects it; use sql/duckdb/sparse_previous_value.sql there.
+-- This file was run on Athena engine version 3 against the golden outputs
+-- (results/athena_sql_check.md); Athena is not in CI.
 
 SELECT
   customer_id,
