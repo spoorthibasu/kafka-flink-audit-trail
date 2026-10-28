@@ -38,6 +38,7 @@ size.py             step 5: JSON and Avro bytes; Parquet bytes
 distributions.py    step 6: prior_state presence and string lengths
 query_cost.py       step 7: stored prior_state versus LAG
 api_checks.py       samples checked against the public MediaWiki API (redirect status, missing revisions)
+ordering_check.py   "ordering" mismatches against each event's own parent revision, from the S3 archive
 study.py            runs steps 3 to 7; writes results/wikimedia and the SUMMARY section
 synthetic.py        a small synthetic capture with planted mismatches, for CI
 aws/cli-policy.json least-privilege IAM policy for running a capture on EC2
@@ -138,6 +139,24 @@ to 7 on it into `results-smoke-wikimedia/`. It then checks the planted counts: m
 events, ordering swaps, re-keyed revisions, delete and undelete, visibility changes,
 `is_redirect` omissions, editor-record drift, cross-topic pages and the gap
 exclusion. CI runs the same target.
+
+## Ordering mismatches against parent revisions
+
+`ordering_check.py` reads the capture back from its S3 archive, verifies every file
+against `SHA256SUMS.txt`, loads it with `load.py` and checks that the counts equal
+`ordering_sensitivity.csv`. It then tests each "ordering" revision mismatch against the
+event's own `revision.rev_parent_id`, under the three orderings, and splits the primary
+key's mismatches by cause. It writes the `ordering_*` files in `results/wikimedia/` and
+its own section of `results/SUMMARY.md`. The bucket name is passed on the command line;
+keep `--raw-dir` and `--work` outside the repository.
+
+```bash
+python3 study/wikimedia/ordering_check.py download --archive s3://<bucket>/wikimedia-page-change-v1/ \
+    --profile audit-trail-bench --raw-dir /some/dir/raw
+python3 study/wikimedia/ordering_check.py analyze --raw-dir /some/dir/raw --work /some/dir/work \
+    --out results/wikimedia --api
+python3 study/wikimedia/ordering_check.py summary --out results/wikimedia --summary results/SUMMARY.md
+```
 
 ## Running the capture on EC2 instead
 
