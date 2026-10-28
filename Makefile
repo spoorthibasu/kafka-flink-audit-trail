@@ -1,7 +1,7 @@
 # Kafka, Flink, and Iceberg audit-trail example.
 # Everything below needs only JDK 11+ and Maven, except the targets that say Docker,
 # and the Python benchmark, which needs bench/requirements.txt.
-.PHONY: help test demo bench bench-full bench-smoke bench-resources bench-sweep bench-pipeline engine-docs wikimedia-study wikimedia-smoke kafka3-up kafka3-down sql-matrix trino-up trino-down crash-test loop build run produce up down
+.PHONY: help test demo bench bench-full bench-smoke bench-resources bench-sweep bench-pipeline engine-docs wikimedia-study wikimedia-smoke kafka3-up kafka3-down sql-matrix trino-up trino-down crash-test partition-change loop build run produce up down
 
 PYTHON ?= python3
 
@@ -21,6 +21,7 @@ help:
 	@echo "make sql-matrix  - run every sql/ file on DuckDB, Spark and Trino against the golden outputs (needs 'make trino-up')"
 	@echo "make trino-up    - start a local Trino (Docker) for sql-matrix; make trino-down stops it"
 	@echo "make crash-test  - Flink to Iceberg job: fail, restart from the last checkpoint, assert counts (needs 'make up')"
+	@echo "make partition-change - add partitions or switch partitioner mid-stream, check LAG over Iceberg (needs 'make up')"
 	@echo "make loop        - Flink writes a real Iceberg table, then query it back (no Kafka/Docker)"
 	@echo "make build       - shaded fat jar for 'flink run'"
 	@echo "make up          - start single-node Kafka (Docker)"
@@ -109,6 +110,11 @@ trino-down:
 KAFKA_BOOTSTRAP ?= localhost:9092
 crash-test:
 	REQUIRE_KAFKA=1 KAFKA_BOOTSTRAP=$(KAFKA_BOOTSTRAP) mvn -q test -Dtest=CrashRestartTest
+
+# Partition changes under a running job, against the Kafka that `make up` starts. Writes
+# results/partition_change.csv, its environment file and a SUMMARY.md section.
+partition-change:
+	$(PYTHON) bench/partition_change.py --config bench/config.json --out results --bootstrap $(KAFKA_BOOTSTRAP)
 
 loop:
 	@mvn -q compile exec:exec@run-loop

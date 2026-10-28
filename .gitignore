@@ -12,6 +12,7 @@ warehouse/
 results-smoke/
 results-smoke-pipeline/
 results-smoke-wikimedia/
+results-smoke-partition/
 # Terraform for the AWS scale run: state holds the account ID and bucket names.
 .terraform/
 *.tfstate
