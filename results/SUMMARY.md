@@ -1370,11 +1370,18 @@ Measured by `study/ethereum/erc721_from.py` on the AWS Public Blockchain Data (`
 
 Classes, checked in this order: same_block_ordering, from is the `to` of another transfer of the token in the same block; non_standard_contract, the contract also emits three-topic (ERC-20 style) Transfer events in the window; previous_transfer_not_captured, from is never the `to` of a captured transfer of the token in the window; other, anything else.
 
-Chain check of mismatches: 50 drawn at random (seed 20261028) of 52, each checked with https://eth.blockscout.com/api and https://eth-mainnet.public.blastapi.io: the explorer's logs API (contract, topic0, tokenId) from the predecessor's block to the transfer's block, compared with the dataset's events for the token in that range; eth_call supportsInterface(0x80ac58cd) at latest.
+Dataset against chain: "dataset equals chain" when the API returns exactly the dataset's Transfer events of the token from the predecessor's block to the transfer's block; for a matched pair, that means the chain has no Transfer of the token between the two that the dataset lacks.
+
+Chain check of mismatches: 50 drawn at random (seed 20261028) of 52, each checked through Etherscan's API V2 (`https://api.etherscan.io/v2/api`, chain id 1) from 2026-10-28T13:27:54Z to 2026-10-28T13:29:54Z, with a 1.0 s pause between calls: the logs API (contract, topic0, tokenId as topic3) from the predecessor's block to the transfer's block, both included, compared with the dataset's events for the token in that range; the proxy module's eth_call supportsInterface(0x80ac58cd) at latest.
 
 | Class | Dataset against chain | ERC-165 answer | Sampled |
 |---|---|---|---|
-| previous_transfer_not_captured | dataset equals chain | declares ERC-721 | 7 |
-| previous_transfer_not_captured | explorer error | declares ERC-721 | 43 |
+| previous_transfer_not_captured | dataset equals chain | declares ERC-721 | 50 |
+
+Chain check of matches: 50 drawn at random (seed 20261028) of 33,482, each checked through Etherscan's API V2 (`https://api.etherscan.io/v2/api`, chain id 1) from 2026-10-28T13:29:54Z to 2026-10-28T13:31:53Z, with a 1.0 s pause between calls: the logs API (contract, topic0, tokenId as topic3) from the predecessor's block to the transfer's block, both included, compared with the dataset's events for the token in that range; the proxy module's eth_call supportsInterface(0x80ac58cd) at latest.
+
+| Class | Dataset against chain | ERC-165 answer | Sampled |
+|---|---|---|---|
+| match | dataset equals chain | declares ERC-721 | 50 |
 
 Files: `ethereum/erc721_from.csv`, `erc721_from_days.csv`, `erc721_from_mismatch_classes.csv`, `erc721_from_chain_check_*.csv` and their environment files. Aggregates only: no contract, token, wallet or transaction identifiers.

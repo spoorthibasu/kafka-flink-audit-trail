@@ -1,3 +1,2 @@
 population,class,dataset_against_chain,erc165_erc721,sampled
-mismatches,previous_transfer_not_captured,dataset equals chain,declares ERC-721,7
-mismatches,previous_transfer_not_captured,explorer error,declares ERC-721,43
+mismatches,previous_transfer_not_captured,dataset equals chain,declares ERC-721,50
