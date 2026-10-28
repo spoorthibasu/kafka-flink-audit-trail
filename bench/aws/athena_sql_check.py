@@ -22,7 +22,10 @@ the next MB, at least 10 MB, at the price in infra/prices.json.
   python3 bench/aws/athena_sql_check.py run --bucket <name> --out results
   python3 bench/aws/athena_sql_check.py teardown --bucket <name>
   python3 bench/aws/athena_sql_check.py check-teardown --bucket <name> --out results
-  python3 bench/aws/athena_sql_check.py report --bucket <name> --out results
+  python3 bench/aws/athena_sql_check.py report --out results
+
+recorded-text re-reads, before teardown, the query text Athena recorded for each query
+execution in athena_sql_check.csv and rewrites that column; run writes it the same way.
 
 If a file fails as written, its statement as ci/run_sql_matrix.py sends it (trailing
 comment lines and the semicolon removed) runs next and is recorded beside it.
@@ -169,6 +172,23 @@ def athena_query(text, work):
     return q, header, rows[1:]
 
 
+def utc(timestamp):
+    """The CLI prints Athena's timestamps in local time with an offset; written here in UTC."""
+    if not timestamp:
+        return ""
+    t = datetime.datetime.fromisoformat(str(timestamp)).astimezone(datetime.timezone.utc)
+    return t.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+
+def recorded_text(sent, recorded):
+    """How the query text Athena records in GetQueryExecution relates to the text sent."""
+    if recorded == sent:
+        return "identical"
+    if sent.endswith(";\n") and recorded == sent[:-2]:
+        return "text sent without its final semicolon and newline"
+    return "differs"
+
+
 def compare(header, rows, expected):
     """ci/run_sql_matrix.py's comparison, plus counts: rows matched is the multiset
     intersection of returned and expected rows."""
@@ -190,7 +210,7 @@ def record(q, text, sql_file, case, kind, result, n_exp, n_got, matched, differe
     status = q["Status"]
     error = "" if status["State"] == "SUCCEEDED" else "%s: %s" % (status["State"], status.get("StateChangeReason", ""))
     return {"sql_file": sql_file, "case": case, "kind": kind, "query_sha256": sha256_bytes(text.encode("utf-8")),
-            "athena_recorded_same_text": "yes" if q.get("Query") == text else "no",
+            "athena_recorded_text": recorded_text(text, q.get("Query")),
             "query_execution_id": q["QueryExecutionId"],
             "engine_version": q.get("EngineVersion", {}).get("EffectiveEngineVersion", ""),
             "state": status["State"], "result": result if not error else "error",
@@ -199,7 +219,7 @@ def record(q, text, sql_file, case, kind, result, n_exp, n_got, matched, differe
             "billed_bytes": billed_bytes(scanned), "cost_usd": exact_or_prefix(cost_usd(scanned)),
             "engine_execution_ms": s.get("EngineExecutionTimeInMillis", ""),
             "total_execution_ms": s.get("TotalExecutionTimeInMillis", ""),
-            "submitted_utc": str(status.get("SubmissionDateTime", ""))}
+            "submitted_utc": utc(status.get("SubmissionDateTime"))}
 
 
 def read_tags(bucket):
@@ -255,6 +275,27 @@ def run(a):
     with open(os.path.join(a.out, "athena_sql_check_environment.json"), "w") as fh:
         json.dump(env, fh, indent=2)
     print("%d queries, %d passed" % (len(records), sum(r["result"] == "pass" for r in records)))
+
+
+def recorded_text_step(a):
+    files = {f["path"]: open(os.path.join(ROOT, f["path"]), "rb").read().decode("utf-8") for f in standard_files()}
+    path = os.path.join(a.out, "athena_sql_check.csv")
+    recs = list(csv.DictReader(open(path)))
+    for r in recs:
+        sent = files[r["sql_file"]] if r["kind"] == "file as written" else "SELECT * FROM %s" % TABLE
+        if r["kind"] not in ("file as written", "input") or sha256_bytes(sent.encode("utf-8")) != r["query_sha256"]:
+            raise SystemExit("%s %s: cannot rebuild the text sent" % (r["sql_file"], r["case"]))
+        q = aws("athena", "get-query-execution", "--query-execution-id", r["query_execution_id"], region=REGION)
+        r.pop("athena_recorded_same_text", None)
+        r["athena_recorded_text"] = recorded_text(sent, q["QueryExecution"]["Query"])
+        r["submitted_utc"] = utc(q["QueryExecution"]["Status"]["SubmissionDateTime"])
+    fields = [k if k != "athena_recorded_same_text" else "athena_recorded_text" for k in
+              csv.DictReader(open(path)).fieldnames]
+    with open(path, "w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=fields)
+        w.writeheader()
+        w.writerows(recs)
+    print(collections.Counter((r["kind"], r["athena_recorded_text"]) for r in recs))
 
 
 # --------------------------------------------------------------------------- teardown
@@ -367,12 +408,13 @@ def report(a):
             shas = sorted(set(r["query_sha256"][:16] for r in mine))
             out.append(["`%s`" % path, ", ".join("`%s`" % h for h in shas), "%d of %d" % (sum(r["result"] == "pass" for r in mine), len(mine)),
                         "%d of %d" % (sum(int(r["rows_matched"]) for r in mine), sum(int(r["rows_expected"]) for r in mine)),
-                        "%d of %d" % (sum(r["athena_recorded_same_text"] == "yes" for r in mine), len(mine)),
+                        "; ".join("%d of %d %s" % (n, len(mine), t) for t, n in
+                                  sorted(collections.Counter(r["athena_recorded_text"] for r in mine).items())),
                         diffs or "none"])
         return out
 
     file_headers = ["SQL file", "Query SHA-256 (first 16 hex)", "Cases passed", "Rows matched of expected",
-                    "Query text Athena recorded equals the text sent", "Differences"]
+                    "Query text Athena recorded", "Differences"]
     verbatim = sum(r["query_sha256"] == sha[r["sql_file"]] for r in as_written)
     tagged = all(t.get(k) == v for t in env["tags"].values() for k, v in TAGS.items())
     passed_files = [row for row in per_file(as_written) if row[2].split(" of ")[0] == row[2].split(" of ")[1]]
@@ -404,6 +446,13 @@ def report(a):
       "names, then the rows as sorted row sets, against `ci/golden/<case>/expected/<file>.csv`. Rows matched counts "
       "the returned rows that are expected rows, as a multiset."
       % (len(sha), verbatim, len(as_written), env["database"], env["table"]))
+    w("")
+    recorded = collections.Counter(r["athena_recorded_text"] for r in as_written)
+    w("Athena accepted every query string as sent. The query text it records for an execution (GetQueryExecution, "
+      "field Query): for the file queries, %s; for the input checks, which end without a semicolon, %s."
+      % ("; ".join("the %s (%d of %d)" % (t, n, len(as_written)) for t, n in sorted(recorded.items())),
+         "; ".join("%s (%d of %d)" % (t, n, len(inputs)) for t, n in
+                   sorted(collections.Counter(r["athena_recorded_text"] for r in inputs).items()))))
     w("")
     w("Result: %d of %d files returned exactly the expected rows in all four cases, %d of %d queries."
       % (len(passed_files), len(sha), sum(r["result"] == "pass" for r in as_written), len(as_written)))
@@ -455,13 +504,14 @@ def report(a):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["setup", "run", "teardown", "check-teardown", "report"])
+    ap.add_argument("step", choices=["setup", "run", "recorded-text", "teardown", "check-teardown", "report"])
     ap.add_argument("--bucket", default=None, help="required for every step but report; never written to a file")
     ap.add_argument("--out", default="results")
     a = ap.parse_args()
     if a.step != "report" and not a.bucket:
         ap.error("--bucket is required for %s" % a.step)
-    {"setup": setup, "run": run, "teardown": teardown, "check-teardown": check_teardown, "report": report}[a.step](a)
+    {"setup": setup, "run": run, "recorded-text": recorded_text_step, "teardown": teardown,
+     "check-teardown": check_teardown, "report": report}[a.step](a)
 
 
 if __name__ == "__main__":
