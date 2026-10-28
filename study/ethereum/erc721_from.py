@@ -34,10 +34,12 @@ Mismatch classes, checked in this order:
   other                           anything else (from is the `to` of an earlier, not
                                   immediate, transfer of the token in another block)
 
-Chain check, per sampled mismatch: eth_getLogs for the token's Transfer events (contract
-address, topic0, tokenId) from the predecessor's block to the transfer's block, compared
-with the dataset's events for that token in that range, and eth_call supportsInterface
-(0x80ac58cd, ERC-721 under ERC-165) on the contract at the latest block.
+Chain check, per sampled mismatch: the token's Transfer events (contract address, topic0,
+tokenId) from the predecessor's block to the transfer's block, from a public Blockscout
+explorer's logs API, compared with the dataset's events for that token in that range; and
+eth_call supportsInterface (0x80ac58cd, ERC-721 under ERC-165) on the contract at the
+latest block, through a public JSON-RPC endpoint. Public RPC endpoints refuse or cap
+eth_getLogs over ranges of thousands of blocks, so the event check uses the explorer.
 
 Only aggregates reach --out: counts and shares. Contract addresses, token ids, wallet
 addresses and transaction hashes stay in --work, outside the repository.
@@ -271,6 +273,27 @@ def rpc(url, method, params):
     return None, err
 
 
+def explorer_logs(api, contract, token, from_block, to_block):
+    """The token's Transfer logs in [from_block, to_block] from a Blockscout (Etherscan-compatible)
+    logs API, as (block number, log index) pairs; (None, error) when the call fails."""
+    q = urllib.parse.urlencode({"module": "logs", "action": "getLogs", "fromBlock": from_block, "toBlock": to_block,
+                                "address": contract, "topic0": TRANSFER, "topic3": token, "topic0_3_opr": "and"})
+    err = None
+    for attempt in range(4):
+        try:
+            res = json.loads(get(api + "?" + q, 60).read())
+            if res.get("status") == "1" and isinstance(res.get("result"), list):
+                return sorted((int(l["blockNumber"], 0), int(l["logIndex"], 0)) for l in res["result"]
+                              if len(l["topics"]) >= 4 and l["topics"][3]), None
+            if res.get("message") == "No logs found":
+                return [], None
+            err = str(res.get("message") or res)[:120]
+        except Exception as exc:  # retry transient network errors, then give up on this call
+            err = str(exc)[:120]
+        time.sleep(2 * (attempt + 1))
+    return None, err
+
+
 def chain_check(a):
     con = duckdb.connect()
     rows = con.execute("SELECT contract, token_topic, block_number, log_index, prev_block, class FROM read_parquet('%s') "
@@ -281,13 +304,11 @@ def chain_check(a):
         ds = sorted(con.execute("SELECT block_number, log_index FROM read_parquet('%s') WHERE contract = ? AND token_topic = ? "
                                 "AND block_number BETWEEN ? AND ?" % os.path.join(a.work, "transfers.parquet"),
                                 [contract, token, prev_block, block]).fetchall())
-        logs, err = rpc(a.rpc, "eth_getLogs", [{"address": contract, "fromBlock": hex(prev_block), "toBlock": hex(block),
-                                                 "topics": [TRANSFER, None, None, token]}])
+        chain, err = explorer_logs(a.explorer, contract, token, prev_block, block)
         time.sleep(a.pause)
         if err is not None:
-            fidelity = "rpc error"
+            fidelity = "explorer error"
         else:
-            chain = sorted((int(l["blockNumber"], 16), int(l["logIndex"], 16)) for l in logs if len(l["topics"]) == 4)
             fidelity = ("dataset equals chain" if chain == ds else "chain has events the dataset lacks"
                         if set(ds) < set(chain) else "dataset and chain differ")
         call, err = rpc(a.rpc, "eth_call", [{"to": contract, "data": "0x01ffc9a7" + ERC721_INTERFACE[2:] + "0" * 56}, "latest"])
@@ -305,8 +326,9 @@ def chain_check(a):
     write_csv(os.path.join(a.out, "erc721_from_chain_check_%s.csv" % a.population), out)
     with open(os.path.join(a.out, "erc721_from_chain_check_%s_environment.json" % a.population), "w") as fh:
         json.dump({"checked_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "population": a.population,
-                   "sample": len(sample), "of": len(rows), "seed": a.seed, "rpc": a.rpc,
-                   "calls": "eth_getLogs (contract, topic0, tokenId) from the predecessor's block to the transfer's block; "
+                   "sample": len(sample), "of": len(rows), "seed": a.seed, "explorer": a.explorer, "rpc": a.rpc,
+                   "calls": "the explorer's logs API (contract, topic0, tokenId) from the predecessor's block to the "
+                            "transfer's block, compared with the dataset's events for the token in that range; "
                             "eth_call supportsInterface(0x80ac58cd) at latest"}, fh, indent=2)
     for r in out:
         print(r)
@@ -365,8 +387,8 @@ def summary(a):
       "anything else.")
     w("")
     for chain, cenv in checks:
-        w("Chain check of %s: %d drawn at random (seed %d) of %s, each checked against %s: %s." % (
-            cenv["population"], cenv["sample"], cenv["seed"], fmt(cenv["of"]), cenv["rpc"], cenv["calls"]))
+        w("Chain check of %s: %d drawn at random (seed %d) of %s, each checked with %s and %s: %s." % (
+            cenv["population"], cenv["sample"], cenv["seed"], fmt(cenv["of"]), cenv["explorer"], cenv["rpc"], cenv["calls"]))
         w("")
         if cenv["sample"]:
             w(md([[r["class"], r["dataset_against_chain"], r["erc165_erc721"], r["sampled"]] for r in chain],
@@ -391,7 +413,8 @@ def main():
     ap.add_argument("--summary", default="results/SUMMARY.md")
     ap.add_argument("--sample", type=int, default=50)
     ap.add_argument("--seed", type=int, default=20261028)
-    ap.add_argument("--rpc", default="https://eth-mainnet.public.blastapi.io")
+    ap.add_argument("--rpc", default="https://eth-mainnet.public.blastapi.io", help="JSON-RPC endpoint for eth_call")
+    ap.add_argument("--explorer", default="https://eth.blockscout.com/api", help="Blockscout logs API for the event check")
     ap.add_argument("--pause", type=float, default=1.0, help="seconds between RPC calls")
     ap.add_argument("--population", choices=["mismatches", "matches"], default="mismatches",
                     help="sample mismatches, or matched comparisons (a check that the chain has no transfer between them)")
