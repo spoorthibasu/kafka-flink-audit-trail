@@ -17,7 +17,8 @@
 -- engines: duckdb, spark, trino, athena
 -- Plain LAG, COUNT and FIRST_VALUE with explicit ROWS frames, so the same text runs on
 -- every engine listed.
--- CI checks DuckDB, Spark and Trino; for Athena this is documented, not tested here.
+-- CI checks DuckDB, Spark and Trino. This file was run on Athena engine version 3
+-- against the golden outputs (results/athena_sql_check.md); Athena is not in CI.
 -- For full-state events. On sparse events a NULL email means the event did not carry
 -- email; use sparse_previous_value.sql there.
 -- Run sql/dedup.sql first if the topic may contain retried or replayed events: copies

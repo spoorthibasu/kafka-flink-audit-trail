@@ -5,8 +5,9 @@
 -- the new email.
 -- engines: spark, trino, athena
 -- Standard spelling: IGNORE NULLS after the closing parenthesis, before OVER. Trino
--- and Spark accept it in CI; for Athena this is documented, not tested here. DuckDB
--- rejects it; use sql/duckdb/sparse_current_value.sql there. Spark also accepts
+-- and Spark accept it in CI. This file was run on Athena engine version 3 against the
+-- golden outputs (results/athena_sql_check.md); Athena is not in CI. DuckDB rejects
+-- it; use sql/duckdb/sparse_current_value.sql there. Spark also accepts
 -- LAST(email, true) OVER (...).
 -- Companion query: sparse_previous_value.sql ends the frame at 1 PRECEDING.
 
