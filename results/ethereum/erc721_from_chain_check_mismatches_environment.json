@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-10-28T08:29:22Z",
+  "population": "mismatches",
+  "sample": 50,
+  "of": 52,
+  "seed": 20261028,
+  "explorer": "https://eth.blockscout.com/api",
+  "rpc": "https://eth-mainnet.public.blastapi.io",
+  "calls": "the explorer's logs API (contract, topic0, tokenId) from the predecessor's block to the transfer's block, compared with the dataset's events for the token in that range; eth_call supportsInterface(0x80ac58cd) at latest"
+}

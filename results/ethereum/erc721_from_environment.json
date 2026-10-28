@@ -1,0 +1,25 @@
+{
+  "started_utc": "2026-10-28T07:38:12Z",
+  "finished_utc": "2026-10-28T07:38:16Z",
+  "source": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.0/eth/logs/date=%s/",
+  "duckdb": "1.4.5",
+  "transfer_topic0": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+  "git_commit": "827cabc0fcac7818e00bdc8c1167e8f11955223c",
+  "files": [
+    {
+      "date": "2026-10-24",
+      "bytes": 1406194703,
+      "sha256": "d7f2fea57887cc26f272b72c45c26cff90ae3225931f9ab13175cb9b546f150c"
+    },
+    {
+      "date": "2026-10-25",
+      "bytes": 1271801476,
+      "sha256": "c28ee6eedc77bb0e0aca861de0b4a756b3f24f7018e15c9c72a6e0ea2f87247d"
+    },
+    {
+      "date": "2026-10-26",
+      "bytes": 1404671961,
+      "sha256": "25e2f7d157403764973c3589e05a599f19a0fd433b02686e3f86eab922e5f092"
+    }
+  ]
+}

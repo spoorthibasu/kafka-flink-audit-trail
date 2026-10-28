@@ -1335,3 +1335,46 @@ The narrow view, named `a` over the audit trail (design B), exposes only the col
 | q4_previous_value_all | 1,000 | yes | 6.885 | 71.908 | 9.236 | 7.165 | 73.325 | 9.436 |
 
 Files: `compat_view_narrow.csv`, `compat_view_narrow_environment.json`.
+
+## Ethereum field check: ERC-721 Transfer from against LAG(to)
+
+Measured by `study/ethereum/erc721_from.py` on the AWS Public Blockchain Data (`s3://aws-public-blockchain/v1.0/eth/logs/`, public Ethereum mainnet data, not synthetic): 3 daily files from 2026-10-24 (4,082,668,140 bytes, 22,130,620 logs, blocks 26,258,774 to 26,280,313). An ERC-721 Transfer is a log with topic0 = keccak256("Transfer(address,address,uint256)") and four topics (from, to, tokenId). Within each token (contract and tokenId), transfers are ordered by block number and log index, and LAG(to) is compared with from for every transfer with a predecessor in the window; mints (from is the zero address) are excluded.
+
+| Measure | Value |
+|---|---|
+| ERC-721 Transfer events | 229,132 |
+| Repeated (block number, log index) among them | 0 |
+| Transfers | 229,132 |
+| Contracts | 3,414 |
+| Tokens | 195,198 |
+| Mints (from zero) | 161,742 |
+| Burns (to zero) | 5,831 |
+| Transfers with a predecessor in the window | 33,934 |
+| Compared (mints excluded) | 33,534 |
+| from equals LAG(to) | 33,482 |
+| Mismatches | 52 |
+| Exact match rate | 0.998449... |
+| Contracts with a mismatch | 1 |
+| Mismatches in the 10 contracts with the most | 52 |
+| ERC-721 contracts that also emit three-topic Transfer events | 0 |
+| Log index order against transaction index order, disagreements | 0 |
+| Control: mismatches after changing one matched transfer's from | 53 |
+| Control detected | yes |
+
+| Mismatch class | Mismatches | Share of mismatches |
+|---|---|---|
+| same_block_ordering | 0 | 0 |
+| non_standard_contract | 0 | 0 |
+| previous_transfer_not_captured | 52 | 1 |
+| other | 0 | 0 |
+
+Classes, checked in this order: same_block_ordering, from is the `to` of another transfer of the token in the same block; non_standard_contract, the contract also emits three-topic (ERC-20 style) Transfer events in the window; previous_transfer_not_captured, from is never the `to` of a captured transfer of the token in the window; other, anything else.
+
+Chain check of mismatches: 50 drawn at random (seed 20261028) of 52, each checked with https://eth.blockscout.com/api and https://eth-mainnet.public.blastapi.io: the explorer's logs API (contract, topic0, tokenId) from the predecessor's block to the transfer's block, compared with the dataset's events for the token in that range; eth_call supportsInterface(0x80ac58cd) at latest.
+
+| Class | Dataset against chain | ERC-165 answer | Sampled |
+|---|---|---|---|
+| previous_transfer_not_captured | dataset equals chain | declares ERC-721 | 7 |
+| previous_transfer_not_captured | explorer error | declares ERC-721 | 43 |
+
+Files: `ethereum/erc721_from.csv`, `erc721_from_days.csv`, `erc721_from_mismatch_classes.csv`, `erc721_from_chain_check_*.csv` and their environment files. Aggregates only: no contract, token, wallet or transaction identifiers.
