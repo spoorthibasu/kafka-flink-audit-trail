@@ -190,9 +190,9 @@ make bench-smoke     # tiny configuration, seconds; checks the script runs
 
 ## Further measurements
 
-Six scripts behind sections of `results/SUMMARY.md` have no Make target. Each writes its
-CSV files and its SUMMARY.md section into the `--out` directory, so `--out results`
-replaces the committed files.
+Nine scripts behind `results/` have no Make target. Eight write their CSV files and their
+SUMMARY.md section into the `--out` directory, and `bench/decision_boundary.py` writes
+`decision_boundary.md` there; with `--out results` each replaces its committed files.
 
 - `bench/sort_order.py`: the design B Parquet file in three row orders (`customer_id`;
   `customer_id, event_timestamp, event_sequence`; `customer_id` with hash order inside an
@@ -255,6 +255,34 @@ replaces the committed files.
   python3 bench/aws/athena_sql_check.py teardown --bucket <name>
   python3 bench/aws/athena_sql_check.py check-teardown --bucket <name> --out results
   python3 bench/aws/athena_sql_check.py report --out results
+  ```
+
+- `bench/compat_view.py`: a view named `a` over the audit trail that exposes every column
+  of the previous-value table, each `previous_x` as `LAG(x)`, under the same names and
+  types. It checks the schema and every row against the stored table, runs the
+  benchmark's design A queries unchanged against both, and times them. It checks its
+  Parquet sizes against the `storage.csv` in the same directory. Needs
+  `bench/requirements.txt`.
+
+  ```bash
+  python3 bench/compat_view.py --config bench/config.json --out results
+  ```
+
+- `bench/compat_view_narrow.py`: the same with only the five columns q1 and q4 read,
+  `previous_email` as `LAG(email)`, timed against the stored table and the full view in
+  one run. Needs `bench/requirements.txt`.
+
+  ```bash
+  python3 bench/compat_view_narrow.py --config bench/config.json --out results
+  ```
+
+- `bench/decision_boundary.py`: measures nothing. From the committed AWS results,
+  `infra/prices.json` and `latency.csv` it computes when a current-state table pays for
+  itself and the read mix at which embedded previous values are cheaper or faster than
+  `LAG`, with every assumption stated. Needs only the Python standard library.
+
+  ```bash
+  python3 bench/decision_boundary.py --out results
   ```
 
 ## Wikimedia field study
