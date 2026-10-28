@@ -34,15 +34,15 @@ Mismatch classes, checked in this order:
   other                           anything else (from is the `to` of an earlier, not
                                   immediate, transfer of the token in another block)
 
-Chain check, per sampled mismatch: the token's Transfer events (contract address, topic0,
-tokenId) from the predecessor's block to the transfer's block, from a public Blockscout
-explorer's logs API, compared with the dataset's events for that token in that range; and
-eth_call supportsInterface (0x80ac58cd, ERC-721 under ERC-165) on the contract at the
-latest block, through a public JSON-RPC endpoint. Public RPC endpoints refuse or cap
-eth_getLogs over ranges of thousands of blocks, so the event check uses the explorer. The
-explorer's keyless API allows a fixed number of calls per rate-limit window and reports it
-in x-ratelimit-* headers; when the window's calls are spent, the check waits for it to reset.
---retry-errors checks again only the draws whose explorer call failed in the first run.
+Chain check, per sampled mismatch (or matched pair, with --population matches): the
+token's Transfer events (contract address, topic0, tokenId) from the predecessor's block to
+the transfer's block, from Etherscan's API V2 logs module, compared with the dataset's
+events for that token in that range; and eth_call supportsInterface (0x80ac58cd, ERC-721
+under ERC-165) on the contract at the latest block, through the same API's proxy module.
+Keyless public endpoints refuse or cap eth_getLogs over ranges of thousands of blocks, so
+the check needs an Etherscan API key in the environment variable ETHERSCAN_API_KEY. The
+key is never printed, logged or written. With --pause 1, the check makes at most one call
+per second, under the free tier's limit of 3 calls per second.
 
 Only aggregates reach --out: counts and shares. Contract addresses, token ids, wallet
 addresses and transaction hashes stay in --work, outside the repository.
@@ -50,7 +50,6 @@ addresses and transaction hashes stay in --work, outside the repository.
   python3 study/ethereum/erc721_from.py download --start 2026-10-24 --days 3 --raw-dir <dir>
   python3 study/ethereum/erc721_from.py analyze --start 2026-10-24 --days 3 --raw-dir <dir> --work <dir> --out results/ethereum
   python3 study/ethereum/erc721_from.py chain-check --work <dir> --out results/ethereum --sample 50 --seed 20261028
-  python3 study/ethereum/erc721_from.py chain-check --retry-errors --pause 5 --work <dir> --out results/ethereum
   python3 study/ethereum/erc721_from.py chain-check --population matches --work <dir> --out results/ethereum
   python3 study/ethereum/erc721_from.py summary --out results/ethereum --summary results/SUMMARY.md
 """
@@ -65,7 +64,6 @@ import random
 import subprocess
 import sys
 import time
-import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -82,6 +80,10 @@ PREFIX = "v1.0/eth/logs/date=%s/"
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO_TOPIC = "0x" + "0" * 64
 ERC721_INTERFACE = "0x80ac58cd"
+EXPLORER = "https://api.etherscan.io/v2/api"
+CHAIN_ID = 1
+KEY_ENV = "ETHERSCAN_API_KEY"
+PAGE = 1000  # the logs module's largest page
 SECTION_HEADING = "## Ethereum field check: ERC-721 Transfer from against LAG(to)"
 USER_AGENT = "audit-trail-bench-erc721-check/1.0 (https://github.com/spoorthibasu/kafka-flink-audit-trail)"
 CLASSES = ("same_block_ordering", "non_standard_contract", "previous_transfer_not_captured", "other")
@@ -263,122 +265,102 @@ def analyze(a):
 # ------------------------------------------------------------------- chain-check
 
 
-def rpc(url, method, params):
-    body = json.dumps({"jsonrpc": "2.0", "id": 1, "method": method, "params": params}).encode()
-    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json", "User-Agent": USER_AGENT})
-    for attempt in range(4):
-        try:
-            res = json.loads(urllib.request.urlopen(req, timeout=60).read())
-            if "error" in res:
-                return None, str(res["error"].get("message", res["error"]))[:120]
-            return res["result"], None
-        except Exception as exc:  # retry transient network errors, then give up on this call
-            err = str(exc)[:120]
-            time.sleep(2 * (attempt + 1))
-    return None, err
+def hexint(s):
+    """An Etherscan hex quantity; Etherscan writes zero as "0x"."""
+    return int(s, 16) if s not in ("0x", "") else 0
 
 
-def window_wait(headers, stats, spent=True):
-    """Wait until the explorer's rate-limit window resets, when its calls are spent. Blockscout's
-    keyless API sends x-ratelimit-limit, x-ratelimit-remaining and x-ratelimit-reset (milliseconds
-    until the window resets); returns False without those headers."""
-    try:
-        limit, remaining, reset = (int(headers.get(h)) for h in ("x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset"))
-    except (TypeError, ValueError):
-        return False
-    stats["rate_limit_per_window"] = limit
-    if spent or remaining <= 0:
-        seconds = reset / 1000.0 + 5
-        print("explorer rate-limit window spent (limit %d); waiting %.0f s" % (limit, seconds), flush=True)
-        stats["window_waits"] = stats.get("window_waits", 0) + 1
-        stats["waited_seconds"] = round(stats.get("waited_seconds", 0) + seconds)
-        time.sleep(seconds)
-    return True
-
-
-def explorer_logs(api, contract, token, from_block, to_block, stats):
-    """The token's Transfer logs in [from_block, to_block] from a Blockscout (Etherscan-compatible)
-    logs API, as (block number, log index) pairs; (None, error) when the call fails."""
-    q = urllib.parse.urlencode({"module": "logs", "action": "getLogs", "fromBlock": from_block, "toBlock": to_block,
-                                "address": contract, "topic0": TRANSFER, "topic3": token, "topic0_3_opr": "and"})
+def explorer_get(api, key, params):
+    """One GET to Etherscan's API V2 for Ethereum mainnet, as parsed JSON; (None, error) when the
+    call fails. Rate-limit answers are retried after a back-off. The key goes only into the
+    request URL: it is never printed, logged or written, and errors are recorded without it."""
+    q = urllib.parse.urlencode(dict(params, chainid=CHAIN_ID, apikey=key))
     err = None
     for attempt in range(4):
         try:
             with get(api + "?" + q, 60) as r:
                 res = json.loads(r.read())
-                window_wait(r.headers, stats, spent=False)
-            if res.get("status") == "1" and isinstance(res.get("result"), list):
-                return sorted((int(l["blockNumber"], 0), int(l["logIndex"], 0)) for l in res["result"]
-                              if len(l["topics"]) >= 4 and l["topics"][3]), None
-            if res.get("message") == "No logs found":
-                return [], None
-            err = str(res.get("message") or res)[:120]
-        except urllib.error.HTTPError as exc:  # 429: wait for the window, as the server asks, or back off
-            err = str(exc)[:120]
-            if exc.code == 429:
-                stats["http_429"] = stats.get("http_429", 0) + 1
-                if not window_wait(exc.headers, stats):
-                    time.sleep(int(exc.headers.get("Retry-After") or 0) or 30 * (attempt + 1))
-                continue
+            if res.get("status") == "0" and "rate limit" in str(res.get("result")).lower():
+                err = str(res["result"])
+            else:
+                return res, None
         except Exception as exc:  # retry transient network errors, then give up on this call
-            err = str(exc)[:120]
+            err = str(exc)
         time.sleep(2 * (attempt + 1))
-    return None, err
+    return None, err.replace(key, "<key>")[:120]
+
+
+def explorer_logs(api, key, contract, token, from_block, to_block):
+    """The token's Transfer logs in [from_block, to_block] (contract, topic0, tokenId as topic3), as
+    (block number, log index) pairs; (None, error) when the call fails."""
+    res, err = explorer_get(api, key, {"module": "logs", "action": "getLogs", "fromBlock": from_block, "toBlock": to_block,
+                                       "address": contract, "topic0": TRANSFER, "topic3": token, "topic0_3_opr": "and",
+                                       "page": 1, "offset": PAGE})
+    if err is not None:
+        return None, err
+    result = res.get("result")
+    if res.get("status") == "1" and isinstance(result, list):
+        if len(result) >= PAGE:
+            return None, "a full page of %d logs" % PAGE
+        return sorted((hexint(l["blockNumber"]), hexint(l["logIndex"])) for l in result
+                      if len(l["topics"]) >= 4 and l["topics"][3]), None
+    if res.get("status") == "0" and result == []:  # "No records found"
+        return [], None
+    return None, str(result if isinstance(result, str) else res.get("message") or res).replace(key, "<key>")[:120]
+
+
+def erc721_declared(api, key, contract):
+    """eth_call supportsInterface(0x80ac58cd) at the latest block, through the API's proxy module."""
+    res, err = explorer_get(api, key, {"module": "proxy", "action": "eth_call", "to": contract, "tag": "latest",
+                                       "data": "0x01ffc9a7" + ERC721_INTERFACE[2:] + "0" * 56})
+    call = None if err is not None or "error" in res else res.get("result")
+    if not isinstance(call, str) or not call.startswith("0x") or call == "0x":
+        return "error or no answer"
+    return "declares ERC-721" if int(call, 16) == 1 else "does not declare ERC-721"
 
 
 def chain_check(a):
+    key = os.environ.get(KEY_ENV)
+    if not key:
+        raise SystemExit("set %s (exported) to an Etherscan API key" % KEY_ENV)
+    started = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     con = duckdb.connect()
     rows = con.execute("SELECT contract, token_topic, block_number, log_index, prev_block, class FROM read_parquet('%s') "
                        "ORDER BY block_number, log_index" % os.path.join(a.work, "%s.parquet" % a.population)).fetchall()
     sample = random.Random(a.seed).sample(rows, min(a.sample, len(rows)))
-    drawn, suffix, started = len(sample), "", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    if a.retry_errors:
-        # The same sample (same seed), restricted to the draws whose explorer call failed in the
-        # first run, read from that run's details in --work (same order as the sample).
-        prev = list(csv.DictReader(open(os.path.join(a.work, "chain_check_%s_details.csv" % a.population))))
-        if len(prev) != len(sample) or any(p["class"] != s[5] or int(p["blocks_between"]) != s[2] - s[4]
-                                           for p, s in zip(prev, sample)):
-            raise SystemExit("the first run's details do not belong to this sample (seed, --sample or --work differ)")
-        sample = [s for p, s in zip(prev, sample) if p["fidelity"].startswith("explorer error")]
-        suffix = "_retry"
-    tally, details, stats = collections.Counter(), [], {}
+    tally, details = collections.Counter(), []
     for i, (contract, token, block, log_index, prev_block, cls) in enumerate(sample):
         ds = sorted(con.execute("SELECT block_number, log_index FROM read_parquet('%s') WHERE contract = ? AND token_topic = ? "
                                 "AND block_number BETWEEN ? AND ?" % os.path.join(a.work, "transfers.parquet"),
                                 [contract, token, prev_block, block]).fetchall())
-        chain, err = explorer_logs(a.explorer, contract, token, prev_block, block, stats)
+        chain, err = explorer_logs(a.explorer, key, contract, token, prev_block, block)
         time.sleep(a.pause)
         if err is not None:
-            fidelity = "explorer error (%s)" % err.split(":")[0]
+            fidelity = "explorer error (%s)" % err
         else:
             fidelity = ("dataset equals chain" if chain == ds else "chain has events the dataset lacks"
                         if set(ds) < set(chain) else "dataset and chain differ")
-        call, err = rpc(a.rpc, "eth_call", [{"to": contract, "data": "0x01ffc9a7" + ERC721_INTERFACE[2:] + "0" * 56}, "latest"])
+        erc165 = erc721_declared(a.explorer, key, contract)
         time.sleep(a.pause)
-        erc165 = "error or no answer" if err is not None or not call or call == "0x" else (
-            "declares ERC-721" if int(call, 16) == 1 else "does not declare ERC-721")
         tally[(cls, fidelity, erc165)] += 1
         details.append({"class": cls, "fidelity": fidelity, "erc165": erc165, "blocks_between": block - prev_block})
         print("%d/%d %s; %s" % (i + 1, len(sample), fidelity, erc165), flush=True)
     con.close()
-    write_csv(os.path.join(a.work, "chain_check_%s%s_details.csv" % (a.population, suffix)), details)
+    write_csv(os.path.join(a.work, "chain_check_%s_details.csv" % a.population), details)
     out = [{"population": a.population, "class": c, "dataset_against_chain": f, "erc165_erc721": e, "sampled": n}
            for (c, f, e), n in sorted(tally.items())]
     if not out:
         out = [{"population": a.population, "class": "", "dataset_against_chain": "", "erc165_erc721": "", "sampled": 0}]
-    write_csv(os.path.join(a.out, "erc721_from_chain_check_%s%s.csv" % (a.population, suffix)), out)
-    env = {"checked_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "population": a.population,
-           "sample": len(sample), "of": len(rows), "seed": a.seed, "explorer": a.explorer, "rpc": a.rpc,
-           "calls": "the explorer's logs API (contract, topic0, tokenId) from the predecessor's block to the "
-                    "transfer's block, compared with the dataset's events for the token in that range; "
-                    "eth_call supportsInterface(0x80ac58cd) at latest"}
-    if a.retry_errors:
-        env.update({"started_utc": started, "retry_of": "erc721_from_chain_check_%s.csv" % a.population, "drawn": drawn,
-                    "pause_seconds": a.pause, "explorer_pacing": stats,
-                    "git_commit": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, stdout=subprocess.PIPE,
-                                                 text=True).stdout.strip()})
-    with open(os.path.join(a.out, "erc721_from_chain_check_%s%s_environment.json" % (a.population, suffix)), "w") as fh:
-        json.dump(env, fh, indent=2)
+    write_csv(os.path.join(a.out, "erc721_from_chain_check_%s.csv" % a.population), out)
+    with open(os.path.join(a.out, "erc721_from_chain_check_%s_environment.json" % a.population), "w") as fh:
+        json.dump({"started_utc": started, "checked_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                   "population": a.population, "sample": len(sample), "of": len(rows), "seed": a.seed,
+                   "explorer": a.explorer, "chain_id": CHAIN_ID, "pause_seconds": a.pause,
+                   "calls": "the logs API (contract, topic0, tokenId as topic3) from the predecessor's block to the "
+                            "transfer's block, both included, compared with the dataset's events for the token in that "
+                            "range; the proxy module's eth_call supportsInterface(0x80ac58cd) at latest",
+                   "git_commit": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, stdout=subprocess.PIPE,
+                                                text=True).stdout.strip()}, fh, indent=2)
     for r in out:
         print(r)
 
@@ -397,14 +379,10 @@ def summary(a):
     classes = list(csv.DictReader(open(os.path.join(a.out, "erc721_from_mismatch_classes.csv"))))
     checks = []
     for pop in ("mismatches", "matches"):
-        runs = []
-        for suffix in ("", "_retry"):
-            f = os.path.join(a.out, "erc721_from_chain_check_%s%s.csv" % (pop, suffix))
-            runs.append((list(csv.DictReader(open(f))),
-                         json.load(open(os.path.join(a.out, "erc721_from_chain_check_%s%s_environment.json" % (pop, suffix)))))
-                        if os.path.exists(f) else None)
-        if runs[0]:
-            checks.append(runs)
+        f = os.path.join(a.out, "erc721_from_chain_check_%s.csv" % pop)
+        if os.path.exists(f):
+            checks.append((list(csv.DictReader(open(f))),
+                           json.load(open(os.path.join(a.out, "erc721_from_chain_check_%s_environment.json" % pop)))))
     fmt = lambda v: "{:,}".format(int(v))  # noqa: E731
     lines = [SECTION_HEADING, ""]
     w = lines.append
@@ -439,33 +417,20 @@ def summary(a):
       "previous_transfer_not_captured, from is never the `to` of a captured transfer of the token in the window; other, "
       "anything else.")
     w("")
-    for (chain, cenv), retry in checks:
-        w("Chain check of %s: %d drawn at random (seed %d) of %s, each checked with %s and %s: %s." % (
-            cenv["population"], cenv["sample"], cenv["seed"], fmt(cenv["of"]), cenv["explorer"], cenv["rpc"], cenv["calls"]))
+    if checks:
+        w("Dataset against chain: \"dataset equals chain\" when the API returns exactly the dataset's Transfer events of "
+          "the token from the predecessor's block to the transfer's block; for a matched pair, that means the chain has no "
+          "Transfer of the token between the two that the dataset lacks.")
+        w("")
+    for chain, cenv in checks:
+        w("Chain check of %s: %d drawn at random (seed %d) of %s, each checked through Etherscan's API V2 (`%s`, chain id "
+          "%d) from %s to %s, with a %s s pause between calls: %s." % (
+              cenv["population"], cenv["sample"], cenv["seed"], fmt(cenv["of"]), cenv["explorer"], cenv["chain_id"],
+              cenv["started_utc"], cenv["checked_utc"], cenv["pause_seconds"], cenv["calls"]))
         w("")
         if cenv["sample"]:
             w(md([[r["class"], r["dataset_against_chain"], r["erc165_erc721"], r["sampled"]] for r in chain],
                  ["Class", "Dataset against chain", "ERC-165 answer", "Sampled"]))
-            w("")
-        if retry:
-            rows, renv = retry
-            pacing = renv["explorer_pacing"]
-            w("Retry of the %d draws whose explorer call failed in the run above, from %s to %s, with the same calls "
-              "through %s and %s. The explorer's keyless API allowed %s calls per rate-limit window; the retry waited for "
-              "the window to reset %d times (%s s in all) and received %d HTTP 429 answers." % (
-                  renv["sample"], renv["started_utc"], renv["checked_utc"], renv["explorer"], renv["rpc"],
-                  pacing.get("rate_limit_per_window", "an unreported number of"),
-                  pacing.get("window_waits", 0), fmt(pacing.get("waited_seconds", 0)), pacing.get("http_429", 0)))
-            w("")
-            w(md([[r["class"], r["dataset_against_chain"], r["erc165_erc721"], r["sampled"]] for r in rows],
-                 ["Class", "Dataset against chain", "ERC-165 answer", "Sampled"]))
-            w("")
-            both = collections.Counter()
-            for r in [r for r in chain if not r["dataset_against_chain"].startswith("explorer error")] + rows:
-                both[(r["class"], r["dataset_against_chain"], r["erc165_erc721"])] += int(r["sampled"])
-            w("Both runs together, each of the %d draws counted once (its retry result when its first call failed):" % cenv["sample"])
-            w("")
-            w(md([list(k) + [n] for k, n in sorted(both.items())], ["Class", "Dataset against chain", "ERC-165 answer", "Sampled"]))
             w("")
     w("Files: `ethereum/erc721_from.csv`, `erc721_from_days.csv`, `erc721_from_mismatch_classes.csv`, "
       "`erc721_from_chain_check_*.csv` and their environment files. Aggregates only: no contract, token, wallet or "
@@ -486,13 +451,10 @@ def main():
     ap.add_argument("--summary", default="results/SUMMARY.md")
     ap.add_argument("--sample", type=int, default=50)
     ap.add_argument("--seed", type=int, default=20261028)
-    ap.add_argument("--rpc", default="https://eth-mainnet.public.blastapi.io", help="JSON-RPC endpoint for eth_call")
-    ap.add_argument("--explorer", default="https://eth.blockscout.com/api", help="Blockscout logs API for the event check")
-    ap.add_argument("--pause", type=float, default=1.0, help="seconds between RPC calls")
+    ap.add_argument("--explorer", default=EXPLORER, help="Etherscan API V2 endpoint (key from %s)" % KEY_ENV)
+    ap.add_argument("--pause", type=float, default=1.0, help="seconds between API calls")
     ap.add_argument("--population", choices=["mismatches", "matches"], default="mismatches",
                     help="sample mismatches, or matched comparisons (a check that the chain has no transfer between them)")
-    ap.add_argument("--retry-errors", action="store_true",
-                    help="check again only the draws whose explorer call failed in the first run; writes *_retry files")
     a = ap.parse_args()
     {"download": download, "analyze": analyze, "chain-check": chain_check, "summary": summary}[a.step](a)
 
