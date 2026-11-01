@@ -1,0 +1,16 @@
+{
+  "started_utc": "2026-10-28T14:26:33Z",
+  "archive_prefix": "wikimedia-page-change-v1/",
+  "files_verified_against_sha256sums": 202,
+  "captures": [
+    "capture-2026-10-20T00Z-2026-10-23T02Z",
+    "capture-earliest-to-2026-10-20T00Z"
+  ],
+  "events": 9390113,
+  "duckdb": "1.4.5",
+  "first_captured_meta_dt": "2026-10-14T10:29:07.853Z",
+  "git_commit": "3b254a0c404f06d6e3b12fae4e301290ddccd595",
+  "api_checked_utc": "2026-10-28T14:26:50Z",
+  "api_requests": 4,
+  "finished_utc": "2026-10-28T14:26:50Z"
+}

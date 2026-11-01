@@ -1,0 +1,5 @@
+cause,committed_class,events,embedded_revision_dated_before_first_captured_event
+not captured: no captured event carries the embedded revision,"missed event: prior revision newer than the LAG revision, not captured",4714,1
+stale prior_state: own parent equals LAG,ordering: prior revision ordered before the LAG row,4,1
+misorder: own parent equals prior_state,ordering: prior revision ordered before the LAG row,2,1
+stale prior_state: own parent equals LAG,"missed event: prior revision older than the LAG revision, not captured",2,1

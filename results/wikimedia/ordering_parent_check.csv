@@ -1,0 +1,4 @@
+ordering,order_by,compared,mismatched,ordering_class,misorder_own_parent_equals_prior_state,not_ordering_own_parent_equals_lag,neither
+receive time: meta.dt,"meta__dt, dt, revision__rev_id, meta__topic, meta__offset",3160332,14036,8167,8163,4,0
+"event time first: dt, rev_id (primary)","dt, revision__rev_id, meta__dt, meta__topic, meta__offset",3160644,4722,6,2,4,0
+"sequence first: rev_id, dt","revision__rev_id, dt, meta__dt, meta__topic, meta__offset",3160665,4750,23,19,4,0

@@ -1385,3 +1385,46 @@ Chain check of matches: 50 drawn at random (seed 20261028) of 33,482, each check
 | match | dataset equals chain | declares ERC-721 | 50 |
 
 Files: `ethereum/erc721_from.csv`, `erc721_from_days.csv`, `erc721_from_mismatch_classes.csv`, `erc721_from_chain_check_*.csv` and their environment files. Aggregates only: no contract, token, wallet or transaction identifiers.
+
+## Wikimedia field study: ordering mismatches against parent revisions
+
+Measured by `study/wikimedia/ordering_check.py` on 2026-10-28 from the archived capture (`wikimedia-page-change-v1/`, 202 files that match its SHA256SUMS.txt), loaded again with `load.py` (9,390,113 events, DuckDB 1.4.5). Under each ordering below, the compared events, the revision mismatches and every class count equal `ordering_sensitivity.csv`; the script stops otherwise.
+
+The "ordering" class is positional: the embedded previous revision (prior_state.revision.rev_id) was captured for the same page, in a row other than the LAG row. Each event's own revision also names its parent (revision.rev_parent_id), as MediaWiki recorded it. A misorder is an ordering-class event whose own parent equals prior_state.revision.rev_id: the revision history agrees with prior_state, and LAG returned a row the ordering put in the wrong place. Where the own parent equals LAG(revision.rev_id) instead, the revision history agrees with LAG, and no ordering is at fault.
+
+| Ordering | Compared | Mismatched | Ordering class | Misorder: own parent = prior_state | Not ordering: own parent = LAG | Neither |
+|---|---|---|---|---|---|---|
+| receive time: meta.dt | 3,160,332 | 14,036 | 8,167 | 8,163 | 4 | 0 |
+| event time first: dt, rev_id (primary) | 3,160,644 | 4,722 | 6 | 2 | 4 | 0 |
+| sequence first: rev_id, dt | 3,160,665 | 4,750 | 23 | 19 | 4 | 0 |
+
+Under the primary key (event time, then revision ID), the 4,722 revision mismatches split into 4,714 revisions that never reached the stream (1 of them dated before the capture began), 6 events whose prior_state points one revision too far back, and 2 misorders:
+
+| Cause | Class in revision_mismatches.csv | Events | Embedded revision dated before the first captured event |
+|---|---|---|---|
+| not captured: no captured event carries the embedded revision | missed event: prior revision newer than the LAG revision, not captured | 4,714 | 1 |
+| stale prior_state: own parent equals LAG | ordering: prior revision ordered before the LAG row | 4 | 1 |
+| misorder: own parent equals prior_state | ordering: prior revision ordered before the LAG row | 2 | 1 |
+| stale prior_state: own parent equals LAG | missed event: prior revision older than the LAG revision, not captured | 2 | 1 |
+
+"Never reached the stream": no captured event carries the embedded revision, and the capture has no offset gaps. The last column counts embedded revisions whose rev_dt is earlier than the first captured event (2026-10-14T10:29:07.853Z): an event for those could have been emitted before the capture began.
+
+Misorders under the primary key. Each page was deleted and restored within one second. The delete (the LAG row) and the undelete (the row with the embedded revision) share one whole-second `dt`, so the revision ID breaks the tie. An undelete carries the restored revision's ID, older than the deleted revision's, so it sorts first although it was received second. The event's own parent is the restored revision, and ordering by receive time returns it.
+
+| Event (wiki_id:page_id:rev_id) | Event dt | LAG row | Row with the embedded revision | Same dt | Its rev_id below the LAG row's | Received after the LAG row | Receive-time LAG equals prior_state |
+|---|---|---|---|---|---|---|---|
+| eswiki:11602061:175861895 | 2026-10-16T22:59:42Z | delete 2026-10-16T22:29:36Z, rev 175861534 | undelete 2026-10-16T22:29:36Z, rev 175432120 | yes | yes | yes | yes |
+| eswiki:11624194:175882105 | 2026-10-18T10:29:47Z | delete 2026-10-18T10:13:44Z, rev 175881975 | undelete 2026-10-18T10:13:44Z, rev 175873487 | yes | yes | yes | yes |
+
+Stale prior_state under the primary key: the event's own parent equals LAG(revision.rev_id), and prior_state names another revision. Each is a move event that follows another move event of the same page, with the same title before and after. In every one, the embedded revision is the parent of the event's own parent: exactly one revision before it, in the archive and in the wiki. "Archive" reads the own parent's parent from its revision.rev_parent_id in the capture; "wiki" reads both parents from the public MediaWiki Action API (2026-10-28T14:26:50Z, 4 requests).
+
+| Event (wiki_id:page_id:rev_id) | Class in revision_mismatches.csv | Own parent (= LAG) | Embedded revision | Own parent's parent: archive | Own parent's parent: wiki | Event's parent: wiki | Embedded is one revision before own parent | LAG row | Seconds after it | Same titles |
+|---|---|---|---|---|---|---|---|---|---|---|
+| cewiki:534202:26609998 | ordering: prior revision ordered before the LAG row | 26609995 | 26609922 | 26609922 | 26609922 | 26609995 | yes | move | 0 | yes |
+| cewiki:1920380:26609999 | ordering: prior revision ordered before the LAG row | 26609997 | 26609924 | 26609924 | 26609924 | 26609997 | yes | move | 0 | yes |
+| dewiki:14008465:271503045 | missed event: prior revision older than the LAG revision, not captured | 271503044 | 271503020 | 271503020 | 271503020 | 271503044 | yes | move | 1 | yes |
+| enwiki:38774416:1380755126 | ordering: prior revision ordered before the LAG row | 1380755125 | 1037580627 | 1037580627 | 1037580627 | 1380755125 | yes | move | 0 | yes |
+| hewiki:2562527:44077014 | missed event: prior revision older than the LAG revision, not captured | 44077012 | 43731112 | 43731112 | 43731112 | 44077012 | yes | move | 0 | yes |
+| hewiki:2585305:44102519 | ordering: prior revision ordered before the LAG row | 44102517 | 44102459 | 44102459 | 44102459 | 44102517 | yes | move | 0 | yes |
+
+Files: `ordering_parent_check.csv`, `ordering_parent_split.csv`, `ordering_misorders.csv`, `ordering_stale_prior.csv`, `ordering_parent_check_environment.json`.
