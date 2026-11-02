@@ -1,7 +1,8 @@
 # kafka-flink-audit-trail
 
 Companion repository for the CACM Practice article *The History Was Already There*: the
-pipeline, queries, benchmarks and field study behind the article's measurements.
+pipeline, queries, benchmarks and two field studies behind the article's measurements.
+The field studies use the Wikimedia page-change stream and Ethereum ERC-721 transfers.
 
 A Kafka and Flink pipeline that appends customer profile change events to an Apache
 Iceberg table. The schema has no previous-value fields. The old value of a field is
@@ -9,12 +10,21 @@ read back at query time with SQL window functions: `LAG`, `ROW_NUMBER`, and
 `LAST_VALUE ... IGNORE NULLS`.
 
 Most of this runs on JDK 11+ and Maven alone. The Kafka and Flink path adds Docker, and
-the benchmarks, the SQL matrix and the field study need Python 3.9 or later.
+the benchmarks, the SQL matrix and the field studies need Python 3.9 or later.
 
-Every row in this repository is synthetic, except the Wikimedia field study's results,
-which come from Wikimedia's public event stream. The demo seeds three events for one
-customer, and the benchmarks generate their data from a fixed seed at demonstration
-scale. Apart from that public stream, no production data exists here.
+Every row in this repository is synthetic, except the results of the two field studies:
+Wikimedia's come from its public event stream, and Ethereum's from public mainnet logs.
+The demo seeds three events for one customer, and the benchmarks generate their data
+from a fixed seed at demonstration scale. Apart from those two public sources, no
+production data exists here.
+
+Results are in `results/SUMMARY.md`, with the files behind it in `results/`,
+`results/aws/` (AWS scale run), `results/wikimedia/` and `results/ethereum/`. On
+synthetic full-state events with 67 attributes, the previous-value schema has 137 fields
+against the audit trail's 70, and the audit trail's Parquet files are 48 to 50 percent
+smaller. `LAG` reproduces the embedded previous value for 99.85 percent of 3,160,644
+compared Wikimedia events (`prior_state.revision.rev_id`) and 99.84 percent of 33,534
+compared Ethereum transfers (`from`, mints excluded).
 
 ## Quickstart
 
@@ -301,6 +311,39 @@ data. They are in `results/wikimedia/` and the "Wikimedia field study" section o
 `make wikimedia-smoke` runs the same steps on a synthetic capture with planted
 mismatches; CI runs it too.
 
+## Ethereum field check
+
+`study/ethereum/erc721_from.py` makes the same comparison on Ethereum. Every ERC-721
+Transfer event carries `from`, the token's previous owner, beside `to`, the new owner.
+Within each token (contract and token ID), ordered by block number and log index,
+`LAG(to)` should equal `from` whenever the token's previous transfer is in the window.
+The script reads the AWS Public Blockchain Data (`s3://aws-public-blockchain/v1.0/eth/logs/`),
+one Parquet file of public Ethereum mainnet logs per day, anonymously over HTTPS with no
+AWS account. Its steps:
+
+- `download` fetches the window's daily files into `--raw-dir`, outside the repository;
+  the committed three days from 2026-10-24 are 4,082,668,140 bytes.
+- `analyze` selects the ERC-721 Transfer events with DuckDB, compares `LAG(to)` with
+  `from`, classifies every mismatch, and writes aggregates to `--out`.
+- `chain-check` checks a random sample of mismatches, or of matched pairs with
+  `--population matches`, against the chain through Etherscan's API V2. It needs an
+  Etherscan API key in the environment variable `ETHERSCAN_API_KEY`, and never prints or
+  writes the key.
+- `summary` writes the "Ethereum field check" section of `results/SUMMARY.md`.
+
+The results come from public Ethereum data, not synthetic data. Only counts and shares
+reach `results/ethereum/`; contract addresses, token IDs, wallet addresses and
+transaction hashes stay in `--work`, outside the repository. Needs network access and
+`bench/requirements.txt`. Nothing in CI runs it.
+
+```bash
+python3 study/ethereum/erc721_from.py download --start 2026-10-24 --days 3 --raw-dir <dir>
+python3 study/ethereum/erc721_from.py analyze --start 2026-10-24 --days 3 --raw-dir <dir> --work <dir> --out results/ethereum
+python3 study/ethereum/erc721_from.py chain-check --work <dir> --out results/ethereum --sample 50 --seed 20261028
+python3 study/ethereum/erc721_from.py chain-check --population matches --work <dir> --out results/ethereum
+python3 study/ethereum/erc721_from.py summary --out results/ethereum --summary results/SUMMARY.md
+```
+
 ## AWS scale run
 
 `infra/` and `bench/aws/` run designs A and B through Amazon MSK, Amazon Managed Service for
@@ -396,6 +439,9 @@ study/wikimedia/
   capture.py                            Wikimedia EventStreams capture with offset resume
   study.py                              steps 3 to 7: Parquet, LAG versus prior_state, size, cost
   README.md                             data handling and the commands to capture again
+
+study/ethereum/
+  erc721_from.py                        ERC-721 Transfer from against LAG(to), and the chain check
 
 infra/
   budget/, base/, stream/               Terraform for the AWS scale run, applied in that order
