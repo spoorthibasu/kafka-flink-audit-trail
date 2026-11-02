@@ -43,9 +43,12 @@ event -> Flink -> Iceberg -> `LAG`. Batch mode needs no Kafka or Docker, just a 
 seconds.
 
 `make bench` compares the two schemas `bench/generate_schemas.py` builds from a
-representative 80-attribute profile: 150 fields with the previous-value companions
-against 83 without. The full benchmark (`make bench-full`) uses K=67 attributes instead,
-which gives 137 fields against 70 (`results/SUMMARY.md`).
+representative 80-attribute profile. With a previous-value companion for each of the 80
+attributes, as in the article, the profile has 160 attribute fields. The generator gives
+companions to the 67 mutable attributes only, so the two schemas have 150 fields against
+83, counting the event fields `customer_id`, `event_timestamp` and `event_sequence`. The
+full benchmark (`make bench-full`) uses K=67 attributes instead, which gives 137 fields
+against 70 (`results/SUMMARY.md`).
 
 ## Versions
 
@@ -388,9 +391,6 @@ ci/
   run_sql_matrix.py                     every sql/ file on DuckDB, Spark, Trino vs golden outputs
   golden/                               four cases: input.csv and expected/<query>.csv
   matrix.md                             the dialect matrix from the last local run
-
-docs/
-  AUDIT.md                              historical record: the repository at 7eeae21 against the article
 
 study/wikimedia/
   capture.py                            Wikimedia EventStreams capture with offset resume

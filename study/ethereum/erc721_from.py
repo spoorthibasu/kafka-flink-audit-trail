@@ -11,7 +11,7 @@ one Parquet file per day, read anonymously over HTTPS; no AWS account).
   download      fetch the window's daily logs files into --raw-dir (outside the repository)
   analyze       select ERC-721 Transfer events with DuckDB, compare LAG(to) with from,
                 classify every mismatch, write aggregates to --out
-  chain-check   check a random sample of mismatches against an Ethereum JSON-RPC endpoint
+  chain-check   check a random sample of mismatches against Etherscan's API V2
   summary       write the SUMMARY.md section from the aggregates
 
 An ERC-721 Transfer event has topic0 = keccak256("Transfer(address,address,uint256)") =
